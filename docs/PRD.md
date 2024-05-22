@@ -2,13 +2,13 @@
 
 ## Functional Overview
 
-- **Product Name**: RankedChoicePlayground
+- **Product Name**: ElectionSim
 - **Version**: 1.0
 - **Release Date**: [TBD]
-- **Owner**: Patrick Dukes
-- 
+- **Owner**: [Owner's Name]
+
 **Objective**: 
-RankedChoicePlayground is a web-based application that enables users to configure and simulate ranked choice voting (RCV) elections. Users can visualize how different RCV algorithms work and compare these to standard voting schemes.
+ElectionSim is a web-based application that enables users to configure and simulate ranked choice voting (RCV) elections. Users can visualize how different RCV algorithms work and compare these to standard voting schemes.
 
 ## Requirement Objectives
 
@@ -172,7 +172,7 @@ RankedChoicePlayground is a web-based application that enables users to configur
   - Generate reports in various formats (PDF, CSV) for sharing and documentation.
   - Include visualizations and detailed analysis in reports.
 
-### Wireframe for RankedChoicePlayground
+### Wireframe for ElectionSim
 
 #### Home Page
 - **Header**:

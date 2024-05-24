@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import SetupElection from "./wizard/SetupElection.component";
 import SetupParties from "./wizard/SetupParties.component";
 import SetupVoters from "./wizard/SetupVoters.component";
+import ProgressTracker from "./wizard/ProgressTracker.component";
 
 const Wizard: React.FC = () => {
   const [step, setStep] = useState(0);
@@ -24,6 +25,7 @@ const Wizard: React.FC = () => {
 
   return (
     <div>
+      <ProgressTracker numSteps={4} currentStep={step}/>
       {renderStep()}
       <div>
         {step > 0 && <button onClick={prevStep}>Previous</button>}

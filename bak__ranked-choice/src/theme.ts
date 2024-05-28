@@ -6,6 +6,7 @@ export const themeOptions: ThemeOptions = {
     primary: {
       main: "#0d436b",
       dark: "#094067",
+      // bright #0098FA 
     },
     secondary: {
       main: "#aa1634",
@@ -14,6 +15,7 @@ export const themeOptions: ThemeOptions = {
       default: "#f8f6f7",
     },
     divider: "#5F6C7B",
+    //green #007D52
   },
   typography: {
     fontFamily: '"Manrope", "Helvetica", "Arial", sans-serif',

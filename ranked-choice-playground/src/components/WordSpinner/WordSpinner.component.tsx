@@ -52,7 +52,6 @@ const shuffleAndConcatList = (baseList: string[], currentItem: string) => {
     currentItem,
     ...filteredList.sort(() => Math.random() - 0.5),
     ...baseList.sort(() => Math.random() - 0.5),
-    ...baseList.sort(() => Math.random() - 0.5),
   ];
 };
 

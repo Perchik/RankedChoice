@@ -1,6 +1,8 @@
-import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import React, { useRef } from "react";
+import { Button } from "@mui/material";
+
 import WordSpinner from "./components/WordSpinner/WordSpinner.component";
 
 const titles: string[] = [
@@ -17,13 +19,26 @@ const responsibilities: string[] = [
   "Public Safety",
   "Economy",
 ];
-function App() {
+const App: React.FC = () => {
+  const spinnerRef = useRef<{ startSpinning: () => void }>(null);
+
+  const handleExternalStart = () => {
+    spinnerRef.current?.startSpinning();
+  };
+
   return (
     <div className="App">
       <img src={logo} className="App-logo" alt="logo" />
-      <WordSpinner words={titles} />
+      <WordSpinner ref={spinnerRef} words={titles} />
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={handleExternalStart}
+      >
+        Spin
+      </Button>
     </div>
   );
-}
+};
 
 export default App;

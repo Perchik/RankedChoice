@@ -4,12 +4,11 @@ import React, {
   useImperativeHandle,
   forwardRef,
   useRef,
+  useCallback,
 } from "react";
 import styled from "@emotion/styled";
 
 const WORD_HEIGHT = 2; // height of each word in em units
-const SPIN_DURATION = 100; // duration for each spin step in milliseconds
-const SLOW_SPIN_DURATION = 1000; // duration for the slow spin in milliseconds
 
 const SpinContainer = styled.div`
   align-items: flex-start;
@@ -21,10 +20,24 @@ const SpinContainer = styled.div`
   width: 200px;
 `;
 
-const SpinningText = styled.div<{ spin: boolean; slow: boolean }>`
+const SpinningText = styled.div<{
+  animationDuration: number;
+  finalIndex: number;
+}>`
   display: inline-block;
-  transition: ${({ spin, slow }) =>
-    spin ? (slow ? "transform 1s ease-out" : "transform 0.6s linear") : "none"};
+  will-change: transform;
+
+  &.is-animating {
+    transition: transform ${({ animationDuration }) => animationDuration}s
+      ease-in-out;
+    transform: ${({ finalIndex }) =>
+      `translateY(calc(${finalIndex} * -${WORD_HEIGHT}em))`};
+  }
+
+  &.is-resetting {
+    transition: none;
+    transform: translateY(0);
+  }
 `;
 
 const TextItem = styled.div`
@@ -47,77 +60,57 @@ interface WordSpinnerProps {
   words: string[];
   onFinish?: (finalWord: string) => void;
 }
+
 const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
   ({ words, onFinish }, ref) => {
-    const [spinning, setSpinning] = useState<boolean>(false);
-    const [currentIndex, setCurrentIndex] = useState<number>(0);
-    const [slowTransition, setSlowTransition] = useState<boolean>(false);
-    const [animationEnabled, setAnimationEnabled] = useState<boolean>(true);
     const [shiftedList, setShiftedList] = useState<string[]>(() =>
       shuffleAndConcatList(words, words[0])
     );
+    const [finalIndex, setFinalIndex] = useState<number>(0);
+    const [animationDuration, setAnimationDuration] = useState<number>(2);
+    const [isAnimating, setIsAnimating] = useState<boolean>(false);
+    const [isResetting, setIsResetting] = useState<boolean>(false);
+    const spinningTextRef = useRef<HTMLDivElement>(null);
 
-    const finalWordRef = useRef<string | null>(null);
+    const resetSpinner = useCallback(() => {
+      setIsAnimating(false);
+      setIsResetting(true);
+      const currentItem = shiftedList[finalIndex];
+      setShiftedList(shuffleAndConcatList(words, currentItem));
+
+      requestAnimationFrame(() => setIsResetting(false));
+    }, [shiftedList, finalIndex, words]);
 
     useEffect(() => {
-      setShiftedList(shuffleAndConcatList(words, words[0]));
-    }, [words]);
+      const handleTransitionEnd = () => {
+        if (onFinish) {
+          onFinish(shiftedList[finalIndex]);
+        }
+        resetSpinner();
+      };
 
-    useEffect(() => {
-      let spinInterval: NodeJS.Timeout;
-      let finalTimeout: NodeJS.Timeout;
-
-      if (spinning) {
-        spinInterval = setInterval(() => {
-          setCurrentIndex((prevIndex) => prevIndex + 1);
-        }, SPIN_DURATION);
-
-        finalTimeout = setTimeout(() => {
-          clearInterval(spinInterval);
-          const randomIndex = Math.floor(Math.random() * words.length);
-
-          // Enable slow transition for final item
-          setSlowTransition(true);
-          setCurrentIndex((prevIndex) => {
-            const newIndex = prevIndex + randomIndex;
-            finalWordRef.current = shiftedList[newIndex % shiftedList.length];
-            return newIndex;
-          });
-
-          // Disable slow transition after it completes
-          setTimeout(() => {
-            setSlowTransition(false);
-            setSpinning(false);
-            if (onFinish && finalWordRef.current) {
-              onFinish(finalWordRef.current);
-            }
-          }, SLOW_SPIN_DURATION);
-        }, words.length * 2 * SPIN_DURATION); // Spin through the list twice (words.length * 2 * 100ms)
-
-        return () => {
-          clearInterval(spinInterval);
-          clearTimeout(finalTimeout);
-        };
+      const spinningTextNode = spinningTextRef.current;
+      if (spinningTextNode) {
+        spinningTextNode.addEventListener("transitionend", handleTransitionEnd);
       }
-    }, [spinning, words.length, onFinish, shiftedList]);
+
+      return () => {
+        if (spinningTextNode) {
+          spinningTextNode.removeEventListener(
+            "transitionend",
+            handleTransitionEnd
+          );
+        }
+      };
+    }, [finalIndex, onFinish, resetSpinner, shiftedList]);
 
     const startSpinning = () => {
-      // Temporarily disable the transition for resetting the position
-      setAnimationEnabled(false);
-
-      // Move the current item to the first spot in the parent div
-      const currentItem = shiftedList[currentIndex % shiftedList.length];
-      setShiftedList(shuffleAndConcatList(words, currentItem));
-      setCurrentIndex(0);
-
-      // Force a reflow to apply the change immediately
-      setTimeout(() => {
-        // Enable the transition again
-        setAnimationEnabled(true);
-
-        // Start the spinning animation
-        setSpinning(true);
-      }, 10);
+      const randomIndex = Math.floor(Math.random() * words.length);
+      const newFinalIndex = randomIndex + words.length; // We loop through once before settling on a random entry, so we add words.length here.
+      const newAnimationDuration = 2 + Math.random() * 2; // total duration 2-4s. Randomized to prevent multiple spinners from running in sync.
+      setFinalIndex(newFinalIndex);
+      setAnimationDuration(newAnimationDuration);
+      setIsAnimating(true);
     };
 
     useImperativeHandle(ref, () => ({
@@ -125,13 +118,14 @@ const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
     }));
 
     return (
-      <SpinContainer aria-live="polite">
+      <SpinContainer>
         <SpinningText
-          spin={animationEnabled && spinning}
-          slow={slowTransition}
-          style={{
-            transform: `translateY(-${currentIndex * WORD_HEIGHT}em)`,
-          }}
+          ref={spinningTextRef}
+          className={`${isAnimating ? "is-animating" : ""} ${
+            isResetting ? "is-resetting" : ""
+          }`}
+          animationDuration={animationDuration}
+          finalIndex={finalIndex}
         >
           {shiftedList.map((word, index) => (
             <TextItem key={index}>{word}</TextItem>

@@ -54,12 +54,7 @@ const WordSpinner: React.FC<WordSpinnerProps> = ({ words }) => {
   );
 
   useEffect(() => {
-    setShiftedList(
-      [...words]
-        .sort(() => Math.random() - 0.5)
-        .concat([...words].sort(() => Math.random() - 0.5))
-        .concat([...words].sort(() => Math.random() - 0.5))
-    );
+    shuffleAndConcatList(words, words[0]);
   }, [words]);
 
   useEffect(() => {
@@ -126,7 +121,7 @@ const WordSpinner: React.FC<WordSpinnerProps> = ({ words }) => {
         </ScrollingText>
       </ScrollContainer>
       <Button variant="contained" color="primary" onClick={startScrolling}>
-        Generate Pairing
+        Generate
       </Button>
     </div>
   );

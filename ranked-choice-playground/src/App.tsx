@@ -22,7 +22,7 @@ function App() {
     <div className="App">
       <img src={logo} className="App-logo" alt="logo" />
       name spinner
-      <NameSpinner list1={titles} list2={responsibilities} />
+      <NameSpinner />
     </div>
   );
 }

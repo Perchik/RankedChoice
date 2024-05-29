@@ -2,67 +2,122 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import styled from "@emotion/styled";
 
+const WORD_HEIGHT = 2; // height of each word in em units
+
 const ScrollContainer = styled.div`
-  overflow: hidden;
-  height: 2em;
-  width: 200px;
+  align-items: flex-start;
   border: 1px solid #ccc;
+  display: flex;
+  height: ${WORD_HEIGHT}em;
+  overflow: hidden;
   position: relative;
+  width: 200px;
 `;
 
-const ScrollingText = styled.div<{ scroll: boolean }>`
-  transition: transform 2s ease-out;
-  transform: ${({ scroll }) =>
-    scroll ? "translateY(-100%)" : "translateY(0)"};
+const ScrollingText = styled.div<{ scroll: boolean; slow: boolean }>`
+  display: inline-block;
+  transition: ${({ scroll, slow }) =>
+    scroll
+      ? slow
+        ? "transform 1s ease-out"
+        : "transform 0.6s linear"
+      : "none"};
 `;
 
-interface NameSpinnerProps {
-  list1: string[];
-  list2: string[];
-}
+const TextItem = styled.div`
+  height: ${WORD_HEIGHT}em;
+  line-height: ${WORD_HEIGHT}em;
+  text-align: center;
+`;
 
-const NameSpinner: React.FC<NameSpinnerProps> = ({ list1, list2 }) => {
-  const [word1, setWord1] = useState<string>("");
-  const [word2, setWord2] = useState<string>("");
+const list = ["apple", "banana", "cherry", "date", "elderberry"];
+
+const NameSpinner: React.FC = () => {
   const [scrolling, setScrolling] = useState<boolean>(false);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [slowTransition, setSlowTransition] = useState<boolean>(false);
+  const [animationEnabled, setAnimationEnabled] = useState<boolean>(true);
+  const [shiftedList, setShiftedList] = useState<string[]>([]);
+
+  useEffect(() => {
+    setShiftedList(
+      [...list]
+        .sort(() => Math.random() - 0.5)
+        .concat([...list].sort(() => Math.random() - 0.5))
+        .concat([...list].sort(() => Math.random() - 0.5))
+    );
+  }, []);
+
+  useEffect(() => {
+    let scrollInterval: NodeJS.Timeout;
+    let finalTimeout: NodeJS.Timeout;
+
+    if (scrolling) {
+      scrollInterval = setInterval(() => {
+        setCurrentIndex((prevIndex) => prevIndex + 1);
+      }, 100);
+
+      finalTimeout = setTimeout(() => {
+        clearInterval(scrollInterval);
+        const randomIndex = Math.floor(Math.random() * list.length);
+
+        // Enable slow transition for final item
+        setSlowTransition(true);
+        setCurrentIndex((prevIndex) => prevIndex + randomIndex);
+
+        // Disable slow transition after it completes
+        setTimeout(() => {
+          setSlowTransition(false);
+          setScrolling(false);
+        }, 1000); // Match the duration of the slow transition
+      }, list.length * 2 * 100); // Scroll through the list twice (list.length * 2 * 100ms)
+
+      return () => {
+        clearInterval(scrollInterval);
+        clearTimeout(finalTimeout);
+      };
+    }
+  }, [scrolling]);
 
   const startScrolling = () => {
-    setScrolling(true);
+    // Temporarily disable the transition for resetting the position
+    setAnimationEnabled(false);
+
+    // Move the current item to the first spot in the parent div
+    const currentItem = shiftedList[currentIndex % shiftedList.length];
+    setShiftedList(
+      [currentItem]
+        .concat(
+          [...list]
+            .filter((item) => item !== currentItem)
+            .sort(() => Math.random() - 0.5)
+        )
+        .concat([...list].sort(() => Math.random() - 0.5))
+        .concat([...list].sort(() => Math.random() - 0.5))
+    );
+    setCurrentIndex(0);
+
+    // Force a reflow to apply the change immediately
     setTimeout(() => {
-      const randomWord1 = list1[Math.floor(Math.random() * list1.length)];
-      const randomWord2 = list2[Math.floor(Math.random() * list2.length)];
-      setWord1(randomWord1);
-      setWord2(randomWord2);
-      setScrolling(false);
-    }, 2000); // Scroll for 2 seconds
+      // Enable the transition again
+      setAnimationEnabled(true);
+
+      // Start the scrolling animation
+      setScrolling(true);
+    }, 10);
   };
 
   return (
     <div>
       <ScrollContainer>
-        <ScrollingText scroll={scrolling}>
-          {scrolling ? (
-            <>
-              {list1.concat(list1).map((word, index) => (
-                <div key={index}>{word}</div>
-              ))}
-            </>
-          ) : (
-            <div>{word1}</div>
-          )}
-        </ScrollingText>
-      </ScrollContainer>
-      <ScrollContainer>
-        <ScrollingText scroll={scrolling}>
-          {scrolling ? (
-            <>
-              {list2.concat(list2).map((word, index) => (
-                <div key={index}>{word}</div>
-              ))}
-            </>
-          ) : (
-            <div>{word2}</div>
-          )}
+        <ScrollingText
+          scroll={animationEnabled && scrolling}
+          slow={slowTransition}
+          style={{ transform: `translateY(-${currentIndex * WORD_HEIGHT}em)` }}
+        >
+          {shiftedList.map((word, index) => (
+            <TextItem key={index}>{word}</TextItem>
+          ))}
         </ScrollingText>
       </ScrollContainer>
       <Button variant="contained" color="primary" onClick={startScrolling}>

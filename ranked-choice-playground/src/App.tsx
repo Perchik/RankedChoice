@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import NameSpinner from "./components/WordSpinner/NameSpinner.component";
+import WordSpinner from "./components/WordSpinner/WordSpinner.component";
 
 const titles: string[] = [
   "Senator",
@@ -21,8 +21,7 @@ function App() {
   return (
     <div className="App">
       <img src={logo} className="App-logo" alt="logo" />
-      name spinner
-      <NameSpinner />
+      <WordSpinner />
     </div>
   );
 }

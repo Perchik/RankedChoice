@@ -4,7 +4,6 @@ import React, {
   useImperativeHandle,
   forwardRef,
 } from "react";
-import { Button } from "@mui/material";
 import styled from "@emotion/styled";
 
 const WORD_HEIGHT = 2; // height of each word in em units
@@ -115,24 +114,19 @@ const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
     }));
 
     return (
-      <div>
-        <SpinContainer aria-live="polite">
-          <SpinningText
-            spin={animationEnabled && spinning}
-            slow={slowTransition}
-            style={{
-              transform: `translateY(-${currentIndex * WORD_HEIGHT}em)`,
-            }}
-          >
-            {shiftedList.map((word, index) => (
-              <TextItem key={index}>{word}</TextItem>
-            ))}
-          </SpinningText>
-        </SpinContainer>
-        <Button variant="contained" color="primary" onClick={startSpinning}>
-          Generate
-        </Button>
-      </div>
+      <SpinContainer aria-live="polite">
+        <SpinningText
+          spin={animationEnabled && spinning}
+          slow={slowTransition}
+          style={{
+            transform: `translateY(-${currentIndex * WORD_HEIGHT}em)`,
+          }}
+        >
+          {shiftedList.map((word, index) => (
+            <TextItem key={index}>{word}</TextItem>
+          ))}
+        </SpinningText>
+      </SpinContainer>
     );
   }
 );

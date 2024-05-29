@@ -16,7 +16,7 @@ const SpinContainer = styled.div`
   width: 200px;
 `;
 
-const SpiningText = styled.div<{ spin: boolean; slow: boolean }>`
+const SpinningText = styled.div<{ spin: boolean; slow: boolean }>`
   display: inline-block;
   transition: ${({ spin, slow }) =>
     spin ? (slow ? "transform 1s ease-out" : "transform 0.6s linear") : "none"};
@@ -43,7 +43,7 @@ interface WordSpinnerProps {
 }
 
 const WordSpinner: React.FC<WordSpinnerProps> = ({ words }) => {
-  const [spining, setSpining] = useState<boolean>(false);
+  const [spinning, setSpinning] = useState<boolean>(false);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [slowTransition, setSlowTransition] = useState<boolean>(false);
   const [animationEnabled, setAnimationEnabled] = useState<boolean>(true);
@@ -59,7 +59,7 @@ const WordSpinner: React.FC<WordSpinnerProps> = ({ words }) => {
     let spinInterval: NodeJS.Timeout;
     let finalTimeout: NodeJS.Timeout;
 
-    if (spining) {
+    if (spinning) {
       spinInterval = setInterval(() => {
         setCurrentIndex((prevIndex) => prevIndex + 1);
       }, 100);
@@ -75,7 +75,7 @@ const WordSpinner: React.FC<WordSpinnerProps> = ({ words }) => {
         // Disable slow transition after it completes
         setTimeout(() => {
           setSlowTransition(false);
-          setSpining(false);
+          setSpinning(false);
         }, SLOW_SPIN_DURATION);
       }, words.length * 2 * SPIN_DURATION); // Spin through the list twice (words.length * 2 * 100ms)
 
@@ -84,9 +84,9 @@ const WordSpinner: React.FC<WordSpinnerProps> = ({ words }) => {
         clearTimeout(finalTimeout);
       };
     }
-  }, [spining, words.length]);
+  }, [spinning, words.length]);
 
-  const startSpining = () => {
+  const startSpinning = () => {
     // Temporarily disable the transition for resetting the position
     setAnimationEnabled(false);
 
@@ -100,25 +100,25 @@ const WordSpinner: React.FC<WordSpinnerProps> = ({ words }) => {
       // Enable the transition again
       setAnimationEnabled(true);
 
-      // Start the spining animation
-      setSpining(true);
+      // Start the spinning animation
+      setSpinning(true);
     }, 10);
   };
 
   return (
     <div>
       <SpinContainer aria-live="polite">
-        <SpiningText
-          spin={animationEnabled && spining}
+        <SpinningText
+          spin={animationEnabled && spinning}
           slow={slowTransition}
           style={{ transform: `translateY(-${currentIndex * WORD_HEIGHT}em)` }}
         >
           {shiftedList.map((word, index) => (
             <TextItem key={index}>{word}</TextItem>
           ))}
-        </SpiningText>
+        </SpinningText>
       </SpinContainer>
-      <Button variant="contained" color="primary" onClick={startSpining}>
+      <Button variant="contained" color="primary" onClick={startSpinning}>
         Generate
       </Button>
     </div>

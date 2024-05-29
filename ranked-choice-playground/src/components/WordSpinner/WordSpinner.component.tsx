@@ -3,8 +3,10 @@ import { Button } from "@mui/material";
 import styled from "@emotion/styled";
 
 const WORD_HEIGHT = 2; // height of each word in em units
+const SPIN_DURATION = 100; // duration for each spin step in milliseconds
+const SLOW_SPIN_DURATION = 1000; // duration for the slow spin in milliseconds
 
-const ScrollContainer = styled.div`
+const SpinContainer = styled.div`
   align-items: flex-start;
   border: 1px solid #ccc;
   display: flex;
@@ -14,14 +16,10 @@ const ScrollContainer = styled.div`
   width: 200px;
 `;
 
-const ScrollingText = styled.div<{ scroll: boolean; slow: boolean }>`
+const SpiningText = styled.div<{ spin: boolean; slow: boolean }>`
   display: inline-block;
-  transition: ${({ scroll, slow }) =>
-    scroll
-      ? slow
-        ? "transform 1s ease-out"
-        : "transform 0.6s linear"
-      : "none"};
+  transition: ${({ spin, slow }) =>
+    spin ? (slow ? "transform 1s ease-out" : "transform 0.6s linear") : "none"};
 `;
 
 const TextItem = styled.div`
@@ -45,7 +43,7 @@ interface WordSpinnerProps {
 }
 
 const WordSpinner: React.FC<WordSpinnerProps> = ({ words }) => {
-  const [scrolling, setScrolling] = useState<boolean>(false);
+  const [spining, setSpining] = useState<boolean>(false);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [slowTransition, setSlowTransition] = useState<boolean>(false);
   const [animationEnabled, setAnimationEnabled] = useState<boolean>(true);
@@ -54,20 +52,20 @@ const WordSpinner: React.FC<WordSpinnerProps> = ({ words }) => {
   );
 
   useEffect(() => {
-    shuffleAndConcatList(words, words[0]);
+    setShiftedList(shuffleAndConcatList(words, words[0]));
   }, [words]);
 
   useEffect(() => {
-    let scrollInterval: NodeJS.Timeout;
+    let spinInterval: NodeJS.Timeout;
     let finalTimeout: NodeJS.Timeout;
 
-    if (scrolling) {
-      scrollInterval = setInterval(() => {
+    if (spining) {
+      spinInterval = setInterval(() => {
         setCurrentIndex((prevIndex) => prevIndex + 1);
       }, 100);
 
       finalTimeout = setTimeout(() => {
-        clearInterval(scrollInterval);
+        clearInterval(spinInterval);
         const randomIndex = Math.floor(Math.random() * words.length);
 
         // Enable slow transition for final item
@@ -77,18 +75,18 @@ const WordSpinner: React.FC<WordSpinnerProps> = ({ words }) => {
         // Disable slow transition after it completes
         setTimeout(() => {
           setSlowTransition(false);
-          setScrolling(false);
-        }, 1000); // Match the duration of the slow transition
-      }, words.length * 2 * 100); // Scroll through the list twice (words.length * 2 * 100ms)
+          setSpining(false);
+        }, SLOW_SPIN_DURATION);
+      }, words.length * 2 * SPIN_DURATION); // Spin through the list twice (words.length * 2 * 100ms)
 
       return () => {
-        clearInterval(scrollInterval);
+        clearInterval(spinInterval);
         clearTimeout(finalTimeout);
       };
     }
-  }, [scrolling, words.length]);
+  }, [spining, words.length]);
 
-  const startScrolling = () => {
+  const startSpining = () => {
     // Temporarily disable the transition for resetting the position
     setAnimationEnabled(false);
 
@@ -102,25 +100,25 @@ const WordSpinner: React.FC<WordSpinnerProps> = ({ words }) => {
       // Enable the transition again
       setAnimationEnabled(true);
 
-      // Start the scrolling animation
-      setScrolling(true);
+      // Start the spining animation
+      setSpining(true);
     }, 10);
   };
 
   return (
     <div>
-      <ScrollContainer>
-        <ScrollingText
-          scroll={animationEnabled && scrolling}
+      <SpinContainer aria-live="polite">
+        <SpiningText
+          spin={animationEnabled && spining}
           slow={slowTransition}
           style={{ transform: `translateY(-${currentIndex * WORD_HEIGHT}em)` }}
         >
           {shiftedList.map((word, index) => (
             <TextItem key={index}>{word}</TextItem>
           ))}
-        </ScrollingText>
-      </ScrollContainer>
-      <Button variant="contained" color="primary" onClick={startScrolling}>
+        </SpiningText>
+      </SpinContainer>
+      <Button variant="contained" color="primary" onClick={startSpining}>
         Generate
       </Button>
     </div>

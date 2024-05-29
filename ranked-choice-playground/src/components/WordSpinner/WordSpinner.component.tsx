@@ -71,6 +71,7 @@ const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
     const [isAnimating, setIsAnimating] = useState<boolean>(false);
     const [isResetting, setIsResetting] = useState<boolean>(false);
     const spinningTextRef = useRef<HTMLDivElement>(null);
+    const generatedWordRef = useRef<string | null>(null);
 
     const resetSpinner = useCallback(() => {
       setIsAnimating(false);
@@ -83,8 +84,10 @@ const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
 
     useEffect(() => {
       const handleTransitionEnd = () => {
+        const generatedWord = shiftedList[finalIndex];
+        generatedWordRef.current = generatedWord;
         if (onFinish) {
-          onFinish(shiftedList[finalIndex]);
+          onFinish(generatedWord);
         }
         resetSpinner();
       };
@@ -108,6 +111,7 @@ const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
       const randomIndex = Math.floor(Math.random() * words.length);
       const newFinalIndex = randomIndex + words.length; // We loop through once before settling on a random entry, so we add words.length here.
       const newAnimationDuration = 2 + Math.random() * 2; // total duration 2-4s. Randomized to prevent multiple spinners from running in sync.
+
       setFinalIndex(newFinalIndex);
       setAnimationDuration(newAnimationDuration);
       setIsAnimating(true);
@@ -115,6 +119,7 @@ const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
 
     useImperativeHandle(ref, () => ({
       startSpinning,
+      getGeneratedWord: () => generatedWordRef.current,
     }));
 
     return (
@@ -126,9 +131,12 @@ const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
           }`}
           animationDuration={animationDuration}
           finalIndex={finalIndex}
+          data-testid="spinning-text"
         >
           {shiftedList.map((word, index) => (
-            <TextItem key={index}>{word}</TextItem>
+            <TextItem key={index} data-testid={`text-item-${index}`}>
+              {word}
+            </TextItem>
           ))}
         </SpinningText>
       </SpinContainer>

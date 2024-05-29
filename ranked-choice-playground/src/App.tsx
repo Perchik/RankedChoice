@@ -1,6 +1,6 @@
 import logo from "./logo.svg";
 import "./App.css";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "@mui/material";
 
 import WordSpinner from "./components/WordSpinner/WordSpinner.component";
@@ -21,22 +21,32 @@ const responsibilities: string[] = [
 ];
 const App: React.FC = () => {
   const spinnerRef = useRef<{ startSpinning: () => void }>(null);
-
-  const handleExternalStart = () => {
+  const [generatedWord, setGeneratedWord] = useState<string>("");
+  const handleStartSpinning = () => {
     spinnerRef.current?.startSpinning();
+  };
+
+  const handleSpinningFinish = (finalWord: string) => {
+    setGeneratedWord(finalWord);
   };
 
   return (
     <div className="App">
       <img src={logo} className="App-logo" alt="logo" />
-      <WordSpinner ref={spinnerRef} words={titles} />
+      <WordSpinner
+        ref={spinnerRef}
+        words={titles}
+        onFinish={handleSpinningFinish}
+      />
       <Button
         variant="contained"
         color="secondary"
-        onClick={handleExternalStart}
+        onClick={handleStartSpinning}
       >
         Spin
       </Button>
+
+      {generatedWord}
     </div>
   );
 };

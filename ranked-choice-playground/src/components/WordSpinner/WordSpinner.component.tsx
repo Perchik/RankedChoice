@@ -3,6 +3,7 @@ import React, {
   useEffect,
   useImperativeHandle,
   forwardRef,
+  useRef,
 } from "react";
 import styled from "@emotion/styled";
 
@@ -44,9 +45,10 @@ const shuffleAndConcatList = (baseList: string[], currentItem: string) => {
 
 interface WordSpinnerProps {
   words: string[];
+  onFinish?: (finalWord: string) => void;
 }
 const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
-  ({ words }, ref) => {
+  ({ words, onFinish }, ref) => {
     const [spinning, setSpinning] = useState<boolean>(false);
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [slowTransition, setSlowTransition] = useState<boolean>(false);
@@ -54,6 +56,8 @@ const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
     const [shiftedList, setShiftedList] = useState<string[]>(() =>
       shuffleAndConcatList(words, words[0])
     );
+
+    const finalWordRef = useRef<string | null>(null);
 
     useEffect(() => {
       setShiftedList(shuffleAndConcatList(words, words[0]));
@@ -74,12 +78,19 @@ const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
 
           // Enable slow transition for final item
           setSlowTransition(true);
-          setCurrentIndex((prevIndex) => prevIndex + randomIndex);
+          setCurrentIndex((prevIndex) => {
+            const newIndex = prevIndex + randomIndex;
+            finalWordRef.current = shiftedList[newIndex % shiftedList.length];
+            return newIndex;
+          });
 
           // Disable slow transition after it completes
           setTimeout(() => {
             setSlowTransition(false);
             setSpinning(false);
+            if (onFinish && finalWordRef.current) {
+              onFinish(finalWordRef.current);
+            }
           }, SLOW_SPIN_DURATION);
         }, words.length * 2 * SPIN_DURATION); // Spin through the list twice (words.length * 2 * 100ms)
 
@@ -88,7 +99,7 @@ const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
           clearTimeout(finalTimeout);
         };
       }
-    }, [spinning, words.length]);
+    }, [spinning, words.length, onFinish, shiftedList]);
 
     const startSpinning = () => {
       // Temporarily disable the transition for resetting the position

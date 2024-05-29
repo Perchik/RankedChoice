@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import NameSpinner from "./components/NameSpinner";
+import NameSpinner from "./components/WordSpinner/NameSpinner.component";
 
 const titles: string[] = [
   "Senator",

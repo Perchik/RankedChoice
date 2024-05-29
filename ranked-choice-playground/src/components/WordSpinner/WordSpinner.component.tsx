@@ -30,23 +30,37 @@ const TextItem = styled.div`
   text-align: center;
 `;
 
-const list = ["apple", "banana", "cherry", "date", "elderberry"];
+const shuffleAndConcatList = (baseList: string[], currentItem: string) => {
+  const filteredList = baseList.filter((item) => item !== currentItem);
+  return [
+    currentItem,
+    ...filteredList.sort(() => Math.random() - 0.5),
+    ...baseList.sort(() => Math.random() - 0.5),
+    ...baseList.sort(() => Math.random() - 0.5),
+  ];
+};
 
-const NameSpinner: React.FC = () => {
+interface WordSpinnerProps {
+  words: string[];
+}
+
+const WordSpinner: React.FC<WordSpinnerProps> = ({ words }) => {
   const [scrolling, setScrolling] = useState<boolean>(false);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [slowTransition, setSlowTransition] = useState<boolean>(false);
   const [animationEnabled, setAnimationEnabled] = useState<boolean>(true);
-  const [shiftedList, setShiftedList] = useState<string[]>([]);
+  const [shiftedList, setShiftedList] = useState<string[]>(() =>
+    shuffleAndConcatList(words, words[0])
+  );
 
   useEffect(() => {
     setShiftedList(
-      [...list]
+      [...words]
         .sort(() => Math.random() - 0.5)
-        .concat([...list].sort(() => Math.random() - 0.5))
-        .concat([...list].sort(() => Math.random() - 0.5))
+        .concat([...words].sort(() => Math.random() - 0.5))
+        .concat([...words].sort(() => Math.random() - 0.5))
     );
-  }, []);
+  }, [words]);
 
   useEffect(() => {
     let scrollInterval: NodeJS.Timeout;
@@ -59,7 +73,7 @@ const NameSpinner: React.FC = () => {
 
       finalTimeout = setTimeout(() => {
         clearInterval(scrollInterval);
-        const randomIndex = Math.floor(Math.random() * list.length);
+        const randomIndex = Math.floor(Math.random() * words.length);
 
         // Enable slow transition for final item
         setSlowTransition(true);
@@ -70,14 +84,14 @@ const NameSpinner: React.FC = () => {
           setSlowTransition(false);
           setScrolling(false);
         }, 1000); // Match the duration of the slow transition
-      }, list.length * 2 * 100); // Scroll through the list twice (list.length * 2 * 100ms)
+      }, words.length * 2 * 100); // Scroll through the list twice (words.length * 2 * 100ms)
 
       return () => {
         clearInterval(scrollInterval);
         clearTimeout(finalTimeout);
       };
     }
-  }, [scrolling]);
+  }, [scrolling, words.length]);
 
   const startScrolling = () => {
     // Temporarily disable the transition for resetting the position
@@ -85,16 +99,7 @@ const NameSpinner: React.FC = () => {
 
     // Move the current item to the first spot in the parent div
     const currentItem = shiftedList[currentIndex % shiftedList.length];
-    setShiftedList(
-      [currentItem]
-        .concat(
-          [...list]
-            .filter((item) => item !== currentItem)
-            .sort(() => Math.random() - 0.5)
-        )
-        .concat([...list].sort(() => Math.random() - 0.5))
-        .concat([...list].sort(() => Math.random() - 0.5))
-    );
+    setShiftedList(shuffleAndConcatList(words, currentItem));
     setCurrentIndex(0);
 
     // Force a reflow to apply the change immediately
@@ -127,4 +132,4 @@ const NameSpinner: React.FC = () => {
   );
 };
 
-export default NameSpinner;
+export default WordSpinner;

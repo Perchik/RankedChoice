@@ -15,7 +15,6 @@ const PartyDiagram: React.FC<{ numberOfParties: number }> = ({
       const width = 600;
       const height = 600;
       const radius = 100;
-
       // Define colors for parties
       const colors = ["red", "yellow", "blue", "cyan", "magenta", "lime"];
 

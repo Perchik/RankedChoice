@@ -8,6 +8,7 @@ export const partyColors: { [key: string]: string } = {
   "Pink Party": "#DB7093", // PaleVioletRed
   "Grey Party": "#696969", // DimGray
   "Black Party": "#000000", // Black
+  "Teal Party": "#0d8662", 
 };
 
 export const partyNames = Object.keys(partyColors);

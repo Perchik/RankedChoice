@@ -1,0 +1,52 @@
+/* PoliticianCard.css */
+.politician-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.politician-photo {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 16px;
+}
+
+.politician-photo svg {
+  width: 100%;
+  height: 100%;
+}
+.avatar-frame {
+  display: inline-block;
+  padding: 4px;
+  border: 4px solid transparent;
+  border-radius: 50%;
+}
+
+.politician-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.name-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toggle-edit-section {
+  margin-top: 8px;
+}
+
+.edit-section,
+.view-section {
+  margin-top: 16px;
+}
+
+.popularity-section {
+  margin-top: 16px;
+}

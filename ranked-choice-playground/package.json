@@ -4,6 +4,7 @@
   "homepage": "https://perchik.github.io/RankedChoice",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^7.1.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@fontsource/lexend": "^5.0.20",
@@ -29,8 +30,8 @@
     "web-vitals": "^4.0.1"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "ts-node --files ./node_modules/jest/bin/jest",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",

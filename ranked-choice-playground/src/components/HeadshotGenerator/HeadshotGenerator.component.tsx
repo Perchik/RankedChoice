@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
+import { ReactSVG } from "react-svg";
 import { bodySvgs, hairSvgs } from "../../utils/loadSvgs";
-import skinHairCombinations from "../../../public/SkinHairCombinations.json";
+import skinHairCombinations from "../../SkinHairCombinations.json";
 
 const HEX_CODES = [
   "#f94144",
@@ -16,7 +16,6 @@ const HEX_CODES = [
   "#c0c0c0",
   "#111111",
 ];
-
 const generateRandomHeadshot = (accessoryColor: string) => {
   const skinHairCombo =
     skinHairCombinations[
@@ -57,28 +56,8 @@ const HeadshotGenerator: React.FC = () => {
   return (
     <div>
       <HeadshotContainer>
-        <headshot.BodySVG
-          css={css`
-            #Head {
-              fill: ${headshot.colors.skinColor};
-            }
-            #Tie,
-            #TieKnot,
-            #Bowtie {
-              fill: ${headshot.colors.accessoryColor};
-            }
-          `}
-        />
-        <headshot.HairSVG
-          css={css`
-            #hair {
-              fill: ${headshot.colors.hairColor};
-            }
-            #accessory {
-              fill: ${headshot.colors.accessoryColor};
-            }
-          `}
-        />
+        <ReactSVG src={headshot.BodySVG} />
+        <ReactSVG src={headshot.HairSVG} />
       </HeadshotContainer>
       <button onClick={handleGenerate}>Generate New Headshot</button>
     </div>

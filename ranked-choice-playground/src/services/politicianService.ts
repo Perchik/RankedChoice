@@ -1,7 +1,6 @@
 // src/services/politicianService.ts
 import { Politician } from "../types/types";
 import { fetchRandomName } from "./nameService";
-import { generateHeadshot } from "./headshotService";
 import { partyNames, partyColors } from "../utils/partyColors";
 
 const generateRandomPopularity = () => Math.floor(Math.random() * 100);
@@ -21,7 +20,7 @@ export const generateRandomPolitician = async (): Promise<Politician> => {
       Math.random() > 0.5 ? getRandomParty(majorParty) : undefined;
     const popularity = generateRandomPopularity();
     const accessoryColor = partyColors[majorParty];
-    const photoSvg = await generateHeadshot(accessoryColor);
+    const photoSvg = "";
 
     return {
       firstName,

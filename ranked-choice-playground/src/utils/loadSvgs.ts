@@ -1,5 +1,5 @@
 const loadSvgs = (context: __WebpackModuleApi.RequireContext) => {
-  return context.keys().map((key) => context(key).ReactComponent);
+  return context.keys().map(context);
 };
 
 export const bodySvgs = loadSvgs(

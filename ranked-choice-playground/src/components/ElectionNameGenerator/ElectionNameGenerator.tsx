@@ -14,7 +14,7 @@ import {
   orgs,
   orgJoiners,
 } from "./electionNameStrings";
-import "./ElectionNameGenerator.module.css";
+import styles from "./ElectionNameGenerator.module.css";
 
 interface ElectionNameGeneratorProps {
   onNext: (name: string) => void;
@@ -79,7 +79,7 @@ const ElectionNameGenerator: React.FC<ElectionNameGeneratorProps> = ({
       );
       const combinedName = isSingleMode
         ? `${generatedWords[0]} of ${generatedWords[1]}`
-        : `${numberOfSeats} seats on The ${generatedWords[0]} ${generatedWords[1]} ${generatedWords[2]}`;
+        : `${numberOfSeats} seats on the ${generatedWords[0]} ${generatedWords[1]} ${generatedWords[2]}`;
       setCombinedName(combinedName);
     }
   }, [isSpinnerDone, isSingleMode, numberOfSeats, currentRefs]);
@@ -106,23 +106,23 @@ const ElectionNameGenerator: React.FC<ElectionNameGeneratorProps> = ({
   };
 
   return (
-    <div className="container">
+    <div className={styles.container}>
       <FormControlLabel
         control={<Switch checked={!isSingleMode} onChange={handleModeToggle} />}
         label={isSingleMode ? "Single" : "Multiple"}
       />
-      <div className={`spinner-container `}>
+      <div className={styles.spinnerContainer}>
         {!isSingleMode && (
           <>
             <TextField
-              className="styled-text-field"
+              className={styles.styledTextField}
               type="number"
               value={numberOfSeats}
               onChange={(e) => setNumberOfSeats(Number(e.target.value))}
               label="Seats"
               inputProps={{ min: 1 }}
             />
-            <span className="sentence-text">seats on The</span>
+            <span className={styles.sentenceText}>seats on The</span>
           </>
         )}
         {wordLists.map((words, index) => (
@@ -135,7 +135,7 @@ const ElectionNameGenerator: React.FC<ElectionNameGeneratorProps> = ({
               onFinish={() => handleFinish(index)}
             />
             {isSingleMode && index === 0 && (
-              <span className="sentence-text">of</span>
+              <span className={styles.sentenceText}>of</span>
             )}
           </React.Fragment>
         ))}
@@ -143,7 +143,7 @@ const ElectionNameGenerator: React.FC<ElectionNameGeneratorProps> = ({
           <Refresh />
         </IconButton>
       </div>
-      <div className="combined-name">{combinedName}</div>
+      <div className={styles.combinedName}>{combinedName}</div>
       <div>
         <Button variant="contained" color="primary" onClick={handleNext}>
           Next

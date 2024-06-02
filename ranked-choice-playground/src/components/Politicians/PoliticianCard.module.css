@@ -1,4 +1,4 @@
-.politician-card {
+.politicianCard {
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 16px;
@@ -8,44 +8,45 @@
   box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
 }
 
-.politician-photo {
+.politicianPhoto {
   width: 100px;
   height: 100px;
   margin: 0 auto 16px;
 }
 
-.politician-photo svg {
+.politicianPhoto svg {
   width: 100%;
   height: 100%;
 }
-.avatar-frame {
+
+.avatarFrame {
   display: inline-block;
   padding: 4px;
   border: 4px solid transparent;
   border-radius: 50%;
 }
 
-.politician-list {
+.politicianList {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
 
-.name-section {
+.nameSection {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.toggle-edit-section {
+.toggleEditSection {
   margin-top: 8px;
 }
 
-.edit-section,
-.view-section {
+.editSection,
+.viewSection {
   margin-top: 16px;
 }
 
-.popularity-section {
+.popularitySection {
   margin-top: 16px;
 }

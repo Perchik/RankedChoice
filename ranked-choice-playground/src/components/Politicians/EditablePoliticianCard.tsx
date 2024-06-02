@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./PoliticianCard.module.css";
+import styles from "./PoliticianCard.module.css"; // Updated to import CSS module
 import { Button } from "@mui/material";
 import { fetchRandomName } from "../../services/nameService";
 import { partyStyle, partyNames } from "../../constants/partyData";
@@ -54,15 +54,14 @@ const EditablePoliticianCard: React.FC<EditablePoliticianCardProps> = ({
   const frameColor = partyStyle[currentPolitician.majorParty];
 
   return (
-    <div className="politician-card">
-      <div className="avatar-frame" style={{ borderColor: frameColor }}>
+    <div className={styles.politicianCard}>
+      <div className={styles.avatarFrame} style={{ borderColor: frameColor }}>
         <div
-          // alt={`${currentPolitician.firstName} ${currentPolitician.lastName}`}
-          className="politician-photo"
+          className={styles.politicianPhoto}
           dangerouslySetInnerHTML={{ __html: politician.photoSvg }}
         />
       </div>
-      <div className="name-section">
+      <div className={styles.nameSection}>
         <h2>{`${currentPolitician.firstName} ${currentPolitician.lastName}`}</h2>
         {isEditing && (
           <Button variant="contained" onClick={handleFetchNewName}>
@@ -70,13 +69,13 @@ const EditablePoliticianCard: React.FC<EditablePoliticianCardProps> = ({
           </Button>
         )}
       </div>
-      <div className="toggle-edit-section">
+      <div className={styles.toggleEditSection}>
         <Button variant="contained" onClick={() => setIsEditing(!isEditing)}>
           {isEditing ? "Save" : "Edit"}
         </Button>
       </div>
       {isEditing ? (
-        <div className="edit-section">
+        <div className={styles.editSection}>
           <PartySelect
             label="Major Party"
             value={currentPolitician.majorParty}
@@ -95,7 +94,7 @@ const EditablePoliticianCard: React.FC<EditablePoliticianCardProps> = ({
           />
         </div>
       ) : (
-        <div className="view-section">
+        <div className={styles.viewSection}>
           <p>Major Party: {currentPolitician.majorParty}</p>
           {currentPolitician.minorParty && (
             <p>Minor Party: {currentPolitician.minorParty}</p>

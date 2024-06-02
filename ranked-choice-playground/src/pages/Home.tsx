@@ -1,8 +1,8 @@
-import logo from "../logo.svg";
+import logo from "../assets/logo.svg";
 import "../App.css";
 import React from "react";
-import ElectionNameGenerator from "../components/ElectionNameGenerator/ElectionNameGenerator.component";
-import EditablePoliticianList from "../components/Politicians/EditablePoliticianList.component";
+import ElectionNameGenerator from "../components/ElectionNameGenerator/ElectionNameGenerator";
+import EditablePoliticianList from "../components/Politicians/EditablePoliticianList";
 
 const Home: React.FC = () => {
   const handleNext = (name: string) => {

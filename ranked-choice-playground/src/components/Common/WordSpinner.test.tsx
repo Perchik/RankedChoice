@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, waitFor, act } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import WordSpinner from "./WordSpinner.component";
+import WordSpinner from "./WordSpinner";
 
 // Mock requestAnimationFrame
 beforeEach(() => {

@@ -13,8 +13,8 @@ import {
   MenuItem,
   InputLabel,
 } from "@mui/material";
-import Headshot from "./Headshot.component";
-import { partyColors } from "../../constants/partyStyles";
+import Headshot from "./Headshot";
+import { partyColors } from "../../constants/partyData";
 import ColorPalette from "../Common/ColorPalette";
 
 interface Variant {
@@ -85,7 +85,7 @@ const HeadshotConfigurator: React.FC = () => {
     <div style={{ padding: "20px" }}>
       <h1>SVG Variant Creator</h1>
       <div style={{ display: "flex", marginBottom: "20px" }}>
-        <div >
+        <div>
           <Headshot
             variantId=""
             accessoryColor={accessoryColor}

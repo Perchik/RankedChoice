@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import "./PoliticianCard.css";
+import "./PoliticianCard.module.css";
 import { Button } from "@mui/material";
 import { fetchRandomName } from "../../services/nameService";
-import { partyStyle, partyNames } from "../../constants/partyStyles";
+import { partyStyle, partyNames } from "../../constants/partyData";
 import { PartySelect, PopularitySlider } from "../Common/FormControls";
-import { Politician } from "./../../types/types";
+import { Politician } from "../../types/types";
 import { SelectChangeEvent } from "@mui/material";
 
 interface EditablePoliticianCardProps {

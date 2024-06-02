@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, createRef, useState, useMemo } from "react";
-import WordSpinner from "../Common/WordSpinner/WordSpinner.component";
+import WordSpinner from "../Common/WordSpinner";
 import {
   Button,
   TextField,
@@ -8,8 +8,13 @@ import {
   IconButton,
 } from "@mui/material";
 import { Refresh } from "@mui/icons-material";
-import { titles, responsibilities, orgs, orgJoiners } from "./strings";
-import "./ElectionNameGenerator.css";
+import {
+  titles,
+  responsibilities,
+  orgs,
+  orgJoiners,
+} from "./electionNameStrings";
+import "./ElectionNameGenerator.module.css";
 
 interface ElectionNameGeneratorProps {
   onNext: (name: string) => void;

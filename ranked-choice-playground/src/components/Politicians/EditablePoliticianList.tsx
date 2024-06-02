@@ -1,6 +1,5 @@
-// EditablePoliticianList.tsx
 import React, { useState, useEffect } from "react";
-import EditablePoliticianCard from "./EditablePoliticianCard.component";
+import EditablePoliticianCard from "./EditablePoliticianCard";
 import { Politician } from "./../../types/types";
 import { generateRandomPolitician } from "../../services/politicianService";
 const EditablePoliticianList: React.FC<{ numberOfPoliticians: number }> = ({

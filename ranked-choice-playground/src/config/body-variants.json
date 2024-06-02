@@ -1,0 +1,20 @@
+[
+  {
+    "id": "default",
+    "suitColor": "#1c2546",
+    "shirtColor": "#ffffff",
+    "lapelColor": "#2b3763",
+    "collarColor": "#ffffff",
+    "tieType": "tie",
+    "pocketSquareType": "emptypocket"
+  },
+  {
+    "id": "variant2",
+    "suitColor": "#333333",
+    "shirtColor": "#cccccc",
+    "lapelColor": "#666666",
+    "collarColor": "#999999",
+    "tieType": "bowtie",
+    "pocketSquareType": "type1"
+  }
+]

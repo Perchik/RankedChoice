@@ -1,22 +1,34 @@
+import React from "react";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import Home from "./pages/Home";
+import EditBody from "./pages/EditBody";
+import { IconButton } from "@mui/material";
 import logo from "./logo.svg";
 import "./App.css";
-import React from "react";
-import ElectionNameGenerator from "./components/ElectionNameGenerator/ElectionNameGenerator.component";
-import EditablePoliticianList from "./components/Politicians/EditablePoliticianList.component";
-import HeadshotGenerator from "./components/HeadshotGenerator/HeadshotGenerator.component";
-const App: React.FC = () => {
-  const handleNext = (name: string) => {
-    console.log("Generated or entered name:", name);
-    // Handle the generated or entered name
-  };
 
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <img src={logo} className="App-logo" alt="logo" />
-      <ElectionNameGenerator onNext={handleNext} />
-      <EditablePoliticianList numberOfPoliticians={5} />
-      <HeadshotGenerator />
-    </div>
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <IconButton component={Link} to="/" aria-label="home">
+                <img src={logo} className="App-logo" alt="logo" />
+              </IconButton>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/edit-body">Edit Body</Link>
+            </li>
+          </ul>
+        </nav>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/edit-body" element={<EditBody />} />
+        </Routes>
+      </div>
+    </Router>
   );
 };
 

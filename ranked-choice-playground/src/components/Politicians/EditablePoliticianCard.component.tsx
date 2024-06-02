@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import "./PoliticianCard.css";
 import { Button } from "@mui/material";
 import { fetchRandomName } from "../../services/nameService";
-import { partyColors, partyNames } from "./../../utils/partyColors";
-import { PartySelect, PopularitySlider } from "./../FormControls";
+import { partyStyle, partyNames } from "../../constants/partyStyles";
+import { PartySelect, PopularitySlider } from "../Common/FormControls";
 import { Politician } from "./../../types/types";
 import { SelectChangeEvent } from "@mui/material";
 
@@ -51,7 +51,7 @@ const EditablePoliticianCard: React.FC<EditablePoliticianCardProps> = ({
     onUpdate(updatedPolitician);
   };
 
-  const frameColor = partyColors[currentPolitician.majorParty];
+  const frameColor = partyStyle[currentPolitician.majorParty];
 
   return (
     <div className="politician-card">

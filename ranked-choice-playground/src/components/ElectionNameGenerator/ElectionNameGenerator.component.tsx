@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, createRef, useState, useMemo } from "react";
-import WordSpinner from "./../WordSpinner/WordSpinner.component";
+import WordSpinner from "../Common/WordSpinner/WordSpinner.component";
 import {
   Button,
   TextField,
@@ -108,7 +108,7 @@ const ElectionNameGenerator: React.FC<ElectionNameGeneratorProps> = ({
       />
       <div className={`spinner-container `}>
         {!isSingleMode && (
-          <>            
+          <>
             <TextField
               className="styled-text-field"
               type="number"

@@ -1,21 +1,21 @@
+import { PartyStatus } from "../constants/PartyStatus";
+
 interface PartyInteraction {
   toParty: Party;
   weight: number;
-  opposition: boolean; 
+  opposition: boolean;
 }
 
 export class Party {
   id: string;
   name: string;
   color: string;
-  status: "major" | "minor" | "fringe";
+  status: PartyStatus;
   interactions: PartyInteraction[];
-  ref: string;
 
   constructor(id: string, name: string, color: string, ordinal: number) {
     this.id = id;
     this.name = name;
-    this.ref = name[0];
     this.color = color;
     this.status = this.getStatusFromOrdinal(ordinal);
     this.interactions = [];
@@ -25,15 +25,16 @@ export class Party {
     this.interactions.push({ toParty, weight, opposition });
   }
 
-  private getStatusFromOrdinal(ordinal: number): "major" | "minor" | "fringe" {
+  private getStatusFromOrdinal(ordinal: number): PartyStatus {
     switch (ordinal) {
       case 1:
-        return "major";
+        return PartyStatus.Major;
       case 2:
-        return "minor";
+        return PartyStatus.Minor;
       case 3:
+        return PartyStatus.Fringe;
       default:
-        return "fringe";
+        return PartyStatus.Independent;
     }
   }
 }

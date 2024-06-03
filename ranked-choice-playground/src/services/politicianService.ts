@@ -1,7 +1,7 @@
 // src/services/politicianService.ts
 import { Politician } from "../types/types";
 import { fetchRandomName } from "./nameService";
-import { partyNames } from "../constants/partyData";
+import { partyNames } from "../constants/PartyData";
 
 const generateRandomPopularity = () => Math.floor(Math.random() * 100);
 

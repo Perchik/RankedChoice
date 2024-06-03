@@ -21,5 +21,8 @@ const parties: { [key: string]: PartyData } = {
 
 export const partyIds = Object.keys(parties);
 export const partyNames = Object.values(parties).map((style) => style.name);
-export const partyColors = Object.values(parties).map((style) => style.color);
+export const partyColors = Object.fromEntries(
+  Object.entries(parties).map(([id, party]) => [id, party.color])
+);
+
 export { parties };

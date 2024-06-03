@@ -14,7 +14,7 @@ import {
   InputLabel,
 } from "@mui/material";
 import Headshot from "./Headshot";
-import { partyColors } from "../../constants/partyData";
+import { partyColors } from "../../constants/PartyData";
 import ColorPalette from "../Common/ColorPalette";
 
 interface Variant {
@@ -38,7 +38,7 @@ const skinColors = [
 ];
 
 const defaultSkinColor = skinColors[0];
-const defaultAccessoryColor = partyColors[0];
+const defaultAccessoryColor = partyColors["red"];
 
 const HeadshotConfigurator: React.FC = () => {
   const [variants, setVariants] = useState<Variant[]>([]);
@@ -105,7 +105,10 @@ const HeadshotConfigurator: React.FC = () => {
           <Typography variant="h6" gutterBottom>
             Accessory Color
           </Typography>
-          <ColorPalette colors={partyColors} onClick={setAccessoryColor} />
+          <ColorPalette
+            colors={Object.values(partyColors)}
+            onClick={setAccessoryColor}
+          />
           <Typography variant="h6" gutterBottom>
             Skin Color
           </Typography>

@@ -1,6 +1,19 @@
 import { Party } from "./Party";
-import { partyIds, parties } from "../constants/partyData";
 import { Voter } from "./Voter";
+import { partyIds, parties } from "../constants/PartyData";
+import * as fs from "fs";
+import { Graph } from "graphlib";
+import { parse } from "graphlib-dot";
+
+interface Edge {
+  v: string; // ID of the source node
+  w: string; // ID of the target node
+}
+
+interface EdgeAttributes {
+  weight: number;
+  opposition?: boolean;
+}
 
 class PartyGraph {
   parties: Party[];
@@ -64,6 +77,21 @@ class PartyGraph {
     });
 
     return results;
+  }
+
+  // Loads the party interactions from a DOT file
+  loadFromDot(filePath: string) {
+    const dotData = fs.readFileSync(filePath, "utf-8");
+    const g = parse(dotData) as Graph;
+
+    g.edges().forEach((edge: Edge) => {
+      const fromPartyId = g.node(edge.v).id;
+      const toPartyId = g.node(edge.w).id;
+      const edgeAttributes = g.edge(edge) as EdgeAttributes;
+      const weight = edgeAttributes.weight;
+      const opposition = edgeAttributes.opposition || false;
+      this.addInteraction(fromPartyId, toPartyId, weight, opposition);
+    });
   }
 }
 

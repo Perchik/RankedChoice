@@ -1,4 +1,10 @@
-const parties = {
+interface PartyData {
+  name: string;
+  color: string;
+  ordinal: number;
+}
+
+const parties: { [key: string]: PartyData } = {
   red: { name: "Red Party", color: "#FF0000", ordinal: 1 },
   scarlet: { name: "Scarlet Party", color: "#E34234", ordinal: 3 },
   orange: { name: "Orange Party", color: "#ff8800", ordinal: 2 },
@@ -16,3 +22,4 @@ const parties = {
 export const partyIds = Object.keys(parties);
 export const partyNames = Object.values(parties).map((style) => style.name);
 export const partyColors = Object.values(parties).map((style) => style.color);
+export { parties };

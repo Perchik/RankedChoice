@@ -1,7 +1,7 @@
 interface PartyInteraction {
   toParty: Party;
   weight: number;
-  opposition: boolean;
+  opposition: boolean; 
 }
 
 export class Party {
@@ -10,10 +10,12 @@ export class Party {
   color: string;
   status: "major" | "minor" | "fringe";
   interactions: PartyInteraction[];
+  ref: string;
 
   constructor(id: string, name: string, color: string, ordinal: number) {
     this.id = id;
     this.name = name;
+    this.ref = name[0];
     this.color = color;
     this.status = this.getStatusFromOrdinal(ordinal);
     this.interactions = [];
@@ -30,7 +32,6 @@ export class Party {
       case 2:
         return "minor";
       case 3:
-        return "fringe";
       default:
         return "fringe";
     }

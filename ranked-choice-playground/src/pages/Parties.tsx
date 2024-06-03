@@ -1,7 +1,5 @@
-// src/pages/PartyDiagramPage.tsx
 import React, { useState } from "react";
 import { Slider, Typography, Box } from "@mui/material";
-import PartyDiagram from "../components/PartyDiagram/PartyDiagram";
 
 const Parties: React.FC = () => {
   const [numberOfParties, setNumberOfParties] = useState(1);
@@ -26,7 +24,6 @@ const Parties: React.FC = () => {
         max={10}
       />
       <Typography variant="h6">Number of Parties: {numberOfParties}</Typography>
-      <PartyDiagram numberOfParties={numberOfParties} />
     </Box>
   );
 };

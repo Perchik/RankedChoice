@@ -2,14 +2,15 @@ import React, { useEffect, useRef, createRef, useState, useMemo } from "react";
 import WordSpinner from "../Common/WordSpinner";
 import {
   Button,
-  Form,
-  Row,
-  Col,
-  FormGroup,
-  FormCheck,
   FormControl,
+  FormControlLabel,
   FormLabel,
-} from "react-bootstrap";
+  Radio,
+  RadioGroup,
+  TextField,
+  Box,
+  Typography,
+} from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -111,27 +112,38 @@ const ElectionNameGenerator: React.FC<ElectionNameGeneratorProps> = ({
 
   return (
     <div className={styles.container}>
-      <FormGroup controlId="formBasicCheckbox">
-        <FormCheck
-          type="switch"
-          label={isSingleMode ? "Single" : "Multiple"}
-          checked={!isSingleMode}
+      <FormControl component="fieldset">
+        <FormLabel component="legend">Mode</FormLabel>
+        <RadioGroup
+          row
+          aria-label="mode"
+          name="mode"
+          value={isSingleMode ? "single" : "multiple"}
           onChange={handleModeToggle}
-        />
-      </FormGroup>
+        >
+          <FormControlLabel value="single" control={<Radio />} label="Single" />
+          <FormControlLabel
+            value="multiple"
+            control={<Radio />}
+            label="Multiple"
+          />
+        </RadioGroup>
+      </FormControl>
       <div className={styles.spinnerContainer}>
         {!isSingleMode && (
           <>
-            <FormGroup>
-              <FormLabel>Seats</FormLabel>
-              <FormControl
-                type="number"
-                value={numberOfSeats}
-                onChange={(e) => setNumberOfSeats(Number(e.target.value))}
-                min="1"
-              />
-            </FormGroup>
-            <span className={styles.sentenceText}>seats on The</span>
+            <TextField
+              label="Seats"
+              type="number"
+              value={numberOfSeats}
+              onChange={(e) => setNumberOfSeats(Number(e.target.value))}
+              inputProps={{ min: 1 }}
+              variant="outlined"
+              margin="normal"
+            />
+            <Typography className={styles.sentenceText}>
+              seats on The
+            </Typography>
           </>
         )}
         {wordLists.map((words, index) => (
@@ -144,17 +156,17 @@ const ElectionNameGenerator: React.FC<ElectionNameGeneratorProps> = ({
               onFinish={() => handleFinish(index)}
             />
             {isSingleMode && index === 0 && (
-              <span className={styles.sentenceText}>of</span>
+              <Typography className={styles.sentenceText}>of</Typography>
             )}
           </React.Fragment>
         ))}
-        <Button onClick={handleSpin} variant="primary">
+        <Button onClick={handleSpin} variant="contained" color="primary">
           <FontAwesomeIcon icon={faRefresh} />
         </Button>
       </div>
       <div className={styles.combinedName}>{combinedName}</div>
       <div>
-        <Button variant="primary" onClick={handleNext}>
+        <Button variant="contained" color="primary" onClick={handleNext}>
           Next
         </Button>
       </div>

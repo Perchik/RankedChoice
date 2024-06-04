@@ -2,14 +2,17 @@ import React, { useState } from "react";
 import { SketchPicker } from "react-color";
 import {
   Button,
-  Form,
-  Row,
-  Col,
-  FormGroup,
-  FormLabel,
+  TextField,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
   FormControl,
-  FormCheck,
-} from "react-bootstrap";
+  FormLabel,
+  Select,
+  MenuItem,
+  Typography,
+  Box,
+} from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import Headshot from "./Headshot";
@@ -82,8 +85,8 @@ const HeadshotConfigurator: React.FC = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>SVG Variant Creator</h1>
-      <div style={{ display: "flex", marginBottom: "20px" }}>
+      <Typography variant="h4">SVG Variant Creator</Typography>
+      <Box display="flex" mb={3}>
         <div>
           <Headshot
             variantId=""
@@ -92,113 +95,92 @@ const HeadshotConfigurator: React.FC = () => {
             {...currentVariant}
           />
         </div>
-        <div style={{ marginLeft: "20px" }}>
-          <FormGroup>
-            <FormLabel>ID</FormLabel>
-            <FormControl
+        <Box ml={3}>
+          <FormControl fullWidth margin="normal">
+            <TextField
+              label="ID"
               type="text"
               name="id"
               value={currentVariant.id}
               onChange={(event) => handleInputChange(event as any)}
             />
-          </FormGroup>
-          <h6>Accessory Color</h6>
+          </FormControl>
+          <Typography variant="h6">Accessory Color</Typography>
           <ColorPalette
             colors={Object.values(partyColors)}
             onClick={setAccessoryColor}
           />
-          <h6>Skin Color</h6>
+          <Typography variant="h6">Skin Color</Typography>
           <ColorPalette colors={skinColors} onClick={setSkinColor} />
-          <FormGroup>
+          <FormControl fullWidth margin="normal">
             <FormLabel>Color Target</FormLabel>
-            <FormControl
-              as="select"
+            <Select
               value={colorTarget}
               onChange={(event) =>
                 setColorTarget(event.target.value as keyof Variant)
               }
             >
-              <option value="suitColor">Suit Color</option>
-              <option value="shirtColor">Shirt Color</option>
-              <option value="lapelColor">Lapel Color</option>
-            </FormControl>
-          </FormGroup>
+              <MenuItem value="suitColor">Suit Color</MenuItem>
+              <MenuItem value="shirtColor">Shirt Color</MenuItem>
+              <MenuItem value="lapelColor">Lapel Color</MenuItem>
+            </Select>
+          </FormControl>
           <SketchPicker
             color={currentColor}
             onChangeComplete={handleColorChange}
           />
-          <FormGroup>
-            <FormLabel>Tie Type</FormLabel>
-            <div>
-              <FormCheck
-                type="radio"
-                name="tieType"
-                value="none"
-                label="None"
-                checked={currentVariant.tieType === "none"}
-                onChange={handleInputChange}
-              />
-              <FormCheck
-                type="radio"
-                name="tieType"
-                value="tie"
-                label="Tie"
-                checked={currentVariant.tieType === "tie"}
-                onChange={handleInputChange}
-              />
-              <FormCheck
-                type="radio"
-                name="tieType"
+          <FormControl component="fieldset" margin="normal">
+            <FormLabel component="legend">Tie Type</FormLabel>
+            <RadioGroup
+              name="tieType"
+              value={currentVariant.tieType}
+              onChange={handleInputChange}
+            >
+              <FormControlLabel value="none" control={<Radio />} label="None" />
+              <FormControlLabel value="tie" control={<Radio />} label="Tie" />
+              <FormControlLabel
                 value="bowtie"
+                control={<Radio />}
                 label="Bowtie"
-                checked={currentVariant.tieType === "bowtie"}
-                onChange={handleInputChange}
               />
-            </div>
-          </FormGroup>
-          <FormGroup>
-            <FormLabel>Pocket Square Variation</FormLabel>
-            <div>
-              <FormCheck
-                type="radio"
-                name="pocketSquareVariation"
-                value="none"
-                label="None"
-                checked={currentVariant.pocketSquareVariation === "none"}
-                onChange={handleInputChange}
-              />
-              <FormCheck
-                type="radio"
-                name="pocketSquareVariation"
+            </RadioGroup>
+          </FormControl>
+          <FormControl component="fieldset" margin="normal">
+            <FormLabel component="legend">Pocket Square Variation</FormLabel>
+            <RadioGroup
+              name="pocketSquareVariation"
+              value={currentVariant.pocketSquareVariation}
+              onChange={handleInputChange}
+            >
+              <FormControlLabel value="none" control={<Radio />} label="None" />
+              <FormControlLabel
                 value="variation1"
+                control={<Radio />}
                 label="Variation 1"
-                checked={currentVariant.pocketSquareVariation === "variation1"}
-                onChange={handleInputChange}
               />
-              <FormCheck
-                type="radio"
-                name="pocketSquareVariation"
+              <FormControlLabel
                 value="variation2"
+                control={<Radio />}
                 label="Variation 2"
-                checked={currentVariant.pocketSquareVariation === "variation2"}
-                onChange={handleInputChange}
               />
-            </div>
-          </FormGroup>
+            </RadioGroup>
+          </FormControl>
           <Button
-            variant="primary"
+            variant="contained"
+            color="primary"
             onClick={handleAddVariant}
             style={{ marginTop: "20px" }}
           >
             Add Variant
           </Button>
-        </div>
-      </div>
+        </Box>
+      </Box>
       <div>
-        <h2>Variants</h2>
+        <Typography variant="h5">Variants</Typography>
         <pre>{JSON.stringify(variants, null, 2)}</pre>
         <Button
-          variant="secondary"
+          variant="contained"
+          color="secondary"
           onClick={() =>
             navigator.clipboard.writeText(JSON.stringify(variants, null, 2))
           }

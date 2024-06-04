@@ -1,5 +1,6 @@
 import React from "react";
-import { Row, Col } from "react-bootstrap";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
 
 interface ColorPaletteProps {
   colors: string[];
@@ -13,22 +14,22 @@ const ColorPalette: React.FC<ColorPaletteProps> = ({
   size = 20,
 }) => {
   return (
-    <Row className="d-flex flex-wrap g-1">
+    <Grid container spacing={1} wrap="wrap">
       {colors.map((color) => (
-        <Col
-          key={color}
-          xs="auto"
-          style={{
-            width: size,
-            height: size,
-            backgroundColor: color,
-            cursor: "pointer",
-            border: "1px solid #000",
-          }}
-          onClick={() => onClick(color)}
-        />
+        <Grid item key={color}>
+          <Box
+            sx={{
+              width: size,
+              height: size,
+              backgroundColor: color,
+              cursor: "pointer",
+              border: "1px solid #000",
+            }}
+            onClick={() => onClick(color)}
+          />
+        </Grid>
       ))}
-    </Row>
+    </Grid>
   );
 };
 

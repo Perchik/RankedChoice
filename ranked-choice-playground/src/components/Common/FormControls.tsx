@@ -1,10 +1,19 @@
 import React from "react";
-import { Form, FormGroup, FormLabel, FormControl } from "react-bootstrap";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  Slider,
+  Box,
+  Typography,
+} from "@mui/material";
 
 interface PartySelectProps {
   label: string;
   value: string | undefined;
-  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChange: (event: SelectChangeEvent<string>) => void;
   options: string[];
 }
 
@@ -14,47 +23,39 @@ export const PartySelect: React.FC<PartySelectProps> = ({
   onChange,
   options,
 }) => (
-  <FormGroup>
-    <FormLabel>{label}</FormLabel>
-    <FormControl
-      as="select"
-      value={value || ""}
-      onChange={(event) =>
-        onChange(event as unknown as React.ChangeEvent<HTMLSelectElement>)
-      }
-    >
-      <option value="">
+  <FormControl fullWidth variant="outlined" margin="normal">
+    <InputLabel>{label}</InputLabel>
+    <Select value={value || ""} onChange={onChange} label={label}>
+      <MenuItem value="">
         <em>None</em>
-      </option>
+      </MenuItem>
       {options.map((option, index) => (
-        <option key={index} value={option}>
+        <MenuItem key={index} value={option}>
           {option}
-        </option>
+        </MenuItem>
       ))}
-    </FormControl>
-  </FormGroup>
+    </Select>
+  </FormControl>
 );
 
 interface PopularitySliderProps {
   value: number;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: Event, newValue: number | number[]) => void;
 }
 
 export const PopularitySlider: React.FC<PopularitySliderProps> = ({
   value,
   onChange,
 }) => (
-  <FormGroup>
-    <FormLabel>Popularity: {value}</FormLabel>
-    <FormControl
-      type="range"
+  <Box my={2}>
+    <Typography gutterBottom>Popularity: {value}</Typography>
+    <Slider
       value={value}
-      onChange={(event) =>
-        onChange(event as unknown as React.ChangeEvent<HTMLInputElement>)
-      }
-      min="0"
-      max="100"
-      step="1"
+      onChange={onChange}
+      min={0}
+      max={100}
+      step={1}
+      valueLabelDisplay="auto"
     />
-  </FormGroup>
+  </Box>
 );

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styles from "./PoliticianCard.module.css"; // Updated to import CSS module
-import { Button } from "react-bootstrap";
+import { Button } from "@mui/material";
 import { fetchRandomName } from "../../services/nameService";
 import { partyColors, partyNames } from "../../constants/PartyData";
 import { PartySelect, PopularitySlider } from "../Common/FormControls";
@@ -32,18 +32,20 @@ const EditablePoliticianCard: React.FC<EditablePoliticianCardProps> = ({
   ) => {
     const updatedPolitician = {
       ...currentPolitician,
-      [type === "major" ? "majorParty" : "minorParty"]: event.target.value,
+      [type === "major" ? "majorParty" : "minorParty"]: event.target
+        .value as string,
     };
     setCurrentPolitician(updatedPolitician);
     onUpdate(updatedPolitician);
   };
 
   const handlePopularityChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: Event,
+    newValue: number | number[]
   ) => {
     const updatedPolitician = {
       ...currentPolitician,
-      popularity: Number(event.target.value),
+      popularity: newValue as number,
     };
     setCurrentPolitician(updatedPolitician);
     onUpdate(updatedPolitician);
@@ -62,13 +64,21 @@ const EditablePoliticianCard: React.FC<EditablePoliticianCardProps> = ({
       <div className={styles.nameSection}>
         <h2>{`${currentPolitician.firstName} ${currentPolitician.lastName}`}</h2>
         {isEditing && (
-          <Button variant="primary" onClick={handleFetchNewName}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleFetchNewName}
+          >
             Reload Name
           </Button>
         )}
       </div>
       <div className={styles.toggleEditSection}>
-        <Button variant="primary" onClick={() => setIsEditing(!isEditing)}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setIsEditing(!isEditing)}
+        >
           {isEditing ? "Save" : "Edit"}
         </Button>
       </div>

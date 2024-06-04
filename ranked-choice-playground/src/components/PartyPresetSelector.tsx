@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Holder from "holderjs";
 import presetsData from "../config/party-presets.json";
-import { Row, Col } from "react-bootstrap";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import PartyPresetCard from "./PartyPresetCard";
 import { PartyPreset } from "../models/PartyPreset";
 
@@ -35,19 +36,21 @@ const PartyPresetSelector: React.FC<PresetSelectionProps> = ({
 
   return (
     <div>
-      <h3>Select a premade scenario</h3>
-      <Row className="mx-3">
+      <Typography variant="h5" component="h3" gutterBottom>
+        Select a premade scenario
+      </Typography>
+      <Grid container spacing={3}>
         {Object.entries(presets).map(([key, preset], idx) => (
-          <Col key={idx} xs={12} sm={6} md={4}>
+          <Grid item key={idx} xs={12} sm={6} md={4}>
             <PartyPresetCard
               preset={preset}
               isExpanded={expanded[key]}
               onToggleExpand={() => toggleExpanded(key)}
               onUsePreset={() => handlePresetClick(preset.interaction_file)}
             />
-          </Col>
+          </Grid>
         ))}
-      </Row>
+      </Grid>
     </div>
   );
 };

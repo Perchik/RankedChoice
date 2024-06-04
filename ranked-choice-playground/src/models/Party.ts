@@ -13,28 +13,15 @@ export class Party {
   status: PartyStatus;
   interactions: PartyInteraction[];
 
-  constructor(id: string, name: string, color: string, ordinal: number) {
+  constructor(id: string, name: string, color: string, status: PartyStatus) {
     this.id = id;
     this.name = name;
     this.color = color;
-    this.status = this.getStatusFromOrdinal(ordinal);
+    this.status = status;
     this.interactions = [];
   }
 
   addInteraction(toParty: Party, weight: number, opposition: boolean = false) {
     this.interactions.push({ toParty, weight, opposition });
-  }
-
-  private getStatusFromOrdinal(ordinal: number): PartyStatus {
-    switch (ordinal) {
-      case 1:
-        return PartyStatus.Major;
-      case 2:
-        return PartyStatus.Minor;
-      case 3:
-        return PartyStatus.Fringe;
-      default:
-        return PartyStatus.Independent;
-    }
   }
 }

@@ -1,0 +1,27 @@
+{
+  "multi_major_coalition": {
+    "description": "This setup includes several major parties with potential for coalition.",
+    "examples": "Example Countries: Netherlands, Germany, Sweden",
+    "file": "multi_major_coalition.txt"
+  },
+  "fragmented_coalition": {
+    "description": "This setup includes many minor and fringe parties with a fragmented coalition potential.",
+    "examples": "Example Countries: Israel, Italy, Belgium",
+    "file": "fragmented_coalition.txt"
+  },
+  "two_major_with_minors": {
+    "description": "This setup includes two major parties with several minor parties.",
+    "examples": "Example Countries: Australia, Canada, New Zealand",
+    "file": "two_major_with_minors.txt"
+  },
+  "two_major_oppositional": {
+    "description": "This setup includes two major parties that are in opposition to each other.",
+    "examples": "Example Countries: United States, Philippines, Mexico, South Korea",
+    "file": "two_major_oppositional.txt"
+  },
+  "balanced_major_minor": {
+    "description": "This setup includes a balanced system of major and minor parties with interactions.",
+    "examples": "Example Countries: United Kingdom, Canada, Australia, New Zealand, Germany",
+    "file": "balanced_major_minor.txt"
+  }
+}

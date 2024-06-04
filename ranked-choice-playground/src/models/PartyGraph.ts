@@ -1,34 +1,85 @@
 import { Party } from "./Party";
-import { Voter } from "./Voter";
-import { partyIds, parties } from "../constants/PartyData";
-import * as fs from "fs";
-import { Graph } from "graphlib";
-import { parse } from "graphlib-dot";
+import { PartyStatus } from "../constants/PartyStatus";
 
-interface Edge {
-  v: string; // ID of the source node
-  w: string; // ID of the target node
-}
-
-interface EdgeAttributes {
+interface Interaction {
+  from: string;
+  to: string;
   weight: number;
   opposition?: boolean;
 }
 
 class PartyGraph {
   parties: Party[];
+  interactions: Interaction[];
 
   constructor() {
     this.parties = [];
-    this.initializeParties();
+    this.interactions = [];
   }
 
-  // Initializes the parties using the data from partyData.ts
-  initializeParties() {
-    this.parties = partyIds.map((id) => {
-      const partyData = parties[id];
-      return new Party(id, partyData.name, partyData.color, partyData.ordinal);
+  // Initializes the parties and interactions from the simplified format
+  loadFromSimplifiedFormat(textData: string) {
+    const lines = textData
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line);
+
+    lines.forEach((line) => {
+      if (line.startsWith("major:")) {
+        this.parseParties(line, PartyStatus.Major);
+      } else if (line.startsWith("minor:")) {
+        this.parseParties(line, PartyStatus.Minor);
+      } else if (line.startsWith("fringe:")) {
+        this.parseParties(line, PartyStatus.Fringe);
+      } else if (line.includes("->")) {
+        this.parseInteraction(line);
+      }
     });
+
+    this.initializeInteractions();
+  }
+
+  parseParties(line: string, status: PartyStatus) {
+    const parts = line.split(":");
+    if (parts.length !== 2) return;
+
+    const partyIds = parts[1].split(",").map((id) => id.trim());
+    partyIds.forEach((id) => {
+      const party =
+        this.getPartyById(id) ||
+        new Party(
+          id,
+          `${id.charAt(0).toUpperCase() + id.slice(1)} Party`,
+          this.getColorById(id),
+          status
+        );
+      if (!this.getPartyById(id)) this.parties.push(party);
+    });
+  }
+
+  parseInteraction(line: string) {
+    const parts = line.split("->");
+    if (parts.length !== 2) return;
+
+    const from = parts[0].trim();
+    const [to, weight] = parts[1].trim().split(" ");
+    this.interactions.push({ from, to: to.trim(), weight: parseFloat(weight) });
+  }
+
+  getPartyById(id: string): Party | undefined {
+    return this.parties.find((party) => party.id === id);
+  }
+
+  getColorById(id: string): string {
+    const colors: { [key: string]: string } = {
+      red: "#FF0000",
+      blue: "#0000FF",
+      orange: "#FFA500",
+      green: "#008000",
+      purple: "#800080",
+      yellow: "#FFFF00",
+    };
+    return colors[id] || "#000000";
   }
 
   // Adds an interaction between two parties by their IDs
@@ -45,15 +96,15 @@ class PartyGraph {
     }
   }
 
-  // Adjusts the connectivity (coalition potential) between parties by modifying the weights of their interactions.
-  // Higher coalition potential increases the weights, indicating stronger alliances between parties.
-  adjustConnectivity(coalitionPotential: number) {
-    this.parties.forEach((party) => {
-      party.interactions.forEach((interaction) => {
-        if (!interaction.opposition) {
-          interaction.weight = interaction.weight * coalitionPotential;
-        }
-      });
+  // Initializes interactions based on loaded data
+  initializeInteractions() {
+    this.interactions.forEach((interaction) => {
+      this.addInteraction(
+        interaction.from,
+        interaction.to,
+        interaction.weight,
+        interaction.opposition || false
+      );
     });
   }
 
@@ -62,35 +113,12 @@ class PartyGraph {
     return this.parties;
   }
 
-  // Calculates the election results based on the voters' preferences
-  calculateResults(voters: Voter[]): { [partyName: string]: number } {
-    const results: { [partyName: string]: number } = {};
+  // Adjusts the connectivity (coalition potential) between parties by modifying the weights of their interactions
+  adjustConnectivity(coalitionPotential: number) {
     this.parties.forEach((party) => {
-      results[party.name] = 0;
-    });
-
-    voters.forEach((voter) => {
-      const preferredParty = voter.getPreferredParty();
-      if (preferredParty) {
-        results[preferredParty] += 1;
-      }
-    });
-
-    return results;
-  }
-
-  // Loads the party interactions from a DOT file
-  loadFromDot(filePath: string) {
-    const dotData = fs.readFileSync(filePath, "utf-8");
-    const g = parse(dotData) as Graph;
-
-    g.edges().forEach((edge: Edge) => {
-      const fromPartyId = g.node(edge.v).id;
-      const toPartyId = g.node(edge.w).id;
-      const edgeAttributes = g.edge(edge) as EdgeAttributes;
-      const weight = edgeAttributes.weight;
-      const opposition = edgeAttributes.opposition || false;
-      this.addInteraction(fromPartyId, toPartyId, weight, opposition);
+      party.interactions.forEach((interaction) => {
+        interaction.weight = interaction.weight * coalitionPotential;
+      });
     });
   }
 }

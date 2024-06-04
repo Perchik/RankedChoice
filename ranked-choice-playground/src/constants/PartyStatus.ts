@@ -1,6 +1,6 @@
 export enum PartyStatus {
-  Major = "major",
-  Minor = "minor",
-  Fringe = "fringe",
-  Independent = "independent",
+  Major = 1,
+  Minor = 2,
+  Fringe = 3,
+  Independent = 4,
 }

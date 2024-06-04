@@ -1,0 +1,10 @@
+major: red, blue
+minor: orange, green, purple
+
+red -> orange 0.4
+blue -> purple 0.4
+orange -> green 0.3
+green -> purple 0.3
+purple -> orange 0.3
+red -> green 0.1
+blue -> green 0.1

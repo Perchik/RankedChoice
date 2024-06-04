@@ -1,0 +1,13 @@
+major: red, blue
+minor: orange, green, purple
+fringe: scarlet, amber, chartreuse, teal, violet, magenta
+
+red -> orange 0.2
+blue -> purple 0.2
+green -> chartreuse 0.2
+scarlet -> red 0.1
+amber -> blue 0.1
+chartreuse -> green 0.1
+teal -> purple 0.1
+violet -> orange 0.1
+magenta -> yellow 0.1

@@ -1,0 +1,10 @@
+.card-body-fixed {
+  height: 200px;
+  overflow: hidden;
+  transition: height 0.3s ease-in-out;
+}
+
+.card-body-fixed.expanded {
+  height: auto;
+  overflow: visible;
+}

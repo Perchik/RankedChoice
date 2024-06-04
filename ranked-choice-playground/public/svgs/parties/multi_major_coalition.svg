@@ -1,0 +1,15 @@
+<svg width="256" height="256" viewBox="0 0 67.733 67.733" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker style="overflow:visible" id="a" refX="0" refY="0" orient="auto-start-reverse" markerWidth="3.324" markerHeight="3.843" viewBox="0 0 5.324 6.155" preserveAspectRatio="xMidYMid">
+      <path transform="scale(.5)" style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt" d="m5.77 0-8.65 5V-5Z"/>
+    </marker>
+  </defs>
+  <g transform="translate(17.311 -68.288)">
+    <circle style="color:#000;overflow:visible;fill:#d00000;fill-opacity:1;fill-rule:evenodd;stroke:#1a1a1a;stroke-width:.25;paint-order:fill markers stroke;stop-color:#000" cx="-2.688" cy="85.489" r="10"/>
+    <circle style="color:#000;overflow:visible;fill:#073983;fill-opacity:1;fill-rule:evenodd;stroke:#1a1a1a;stroke-width:.25;paint-order:fill markers stroke;stop-color:#000;font-variation-settings:normal;opacity:1;vector-effect:none;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-opacity:1" cx="35.799" cy="85.489" r="10"/>
+    <path style="fill:none;fill-rule:evenodd;stroke:#000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#a);marker-end:url(#a)" d="M10.18 85.489h12.75"/>
+    <circle style="color:#000;overflow:visible;fill:#ffff6b;fill-opacity:1;fill-rule:evenodd;stroke:#1a1a1a;stroke-width:.25;paint-order:fill markers stroke;stop-color:#000" cx="-111.179" cy="-45.072" r="10" transform="rotate(-120)"/>
+    <path style="fill:none;fill-rule:evenodd;stroke:#000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#a);marker-end:url(#a)" d="M10.122 107.676 3.746 96.633"/>
+    <path style="fill:none;fill-rule:evenodd;stroke:#000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#a);marker-end:url(#a)" d="m22.99 107.676 6.375-11.043"/>
+  </g>
+</svg>

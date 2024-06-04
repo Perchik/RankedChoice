@@ -1,0 +1,19 @@
+<svg width="256" height="256" viewBox="0 0 67.733 67.733" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker style="overflow:visible" id="a" refX="0" refY="0" orient="auto-start-reverse" markerWidth="2.324" markerHeight="2.687" viewBox="0 0 5.324 6.155" preserveAspectRatio="xMidYMid">
+      <path transform="scale(.5)" style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt" d="m5.77 0-8.65 5V-5Z"/>
+    </marker>
+  </defs>
+  <circle style="color:#000;overflow:visible;fill:#30a030;fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:.25;paint-order:fill markers stroke;stop-color:#000" cx="34.14" cy="58.512" r="5"/>
+  <circle style="color:#000;overflow:visible;fill:#073983;fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:.25;paint-order:fill markers stroke;stop-color:#000" cx="-55.104" cy="14.221" r="10" transform="scale(-1 1)"/>
+  <circle style="color:#000;overflow:visible;fill:#650065;fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:.25;paint-order:fill markers stroke;stop-color:#000" cx="-55.104" cy="42.033" r="5" transform="scale(-1 1)"/>
+  <path style="fill:none;fill-rule:evenodd;stroke:#000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#a)" d="M55.104 25.431v8.039"/>
+  <circle style="color:#000;overflow:visible;fill:#d00000;fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:.25;paint-order:fill markers stroke;stop-color:#000" cx="-12.63" cy="14.221" r="10" transform="scale(-1 1)"/>
+  <circle style="color:#000;overflow:visible;fill:#f80;fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:.25;paint-order:fill markers stroke;stop-color:#000" cx="-12.63" cy="42.033" r="5" transform="scale(-1 1)"/>
+  <path style="fill:none;fill-rule:evenodd;stroke:#000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#a)" d="M12.63 24.902v8.746"/>
+  <circle style="color:#000;overflow:visible;fill:#ffff6b;fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:.25;paint-order:fill markers stroke;stop-color:#000" cx="-34.14" cy="33.732" r="5.062" transform="scale(-1 1)"/>
+  <path style="fill:none;fill-rule:evenodd;stroke:#000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#a)" d="m29.862 28.83-6.315-6.587"/>
+  <path style="fill:none;fill-rule:evenodd;stroke:#000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#a)" d="m38.254 29.266 6.587-6.914"/>
+  <path style="fill:none;fill-rule:evenodd;stroke:#000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#a)" d="m41.56 55.407 6.706-5.324"/>
+  <path style="fill:none;fill-rule:evenodd;stroke:#000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#a)" d="m15.48 48.37 7.957 6.215"/>
+</svg>

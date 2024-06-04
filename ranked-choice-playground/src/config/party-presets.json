@@ -1,27 +1,42 @@
 {
   "multi_major_coalition": {
-    "description": "This setup includes several major parties with potential for coalition.",
+    "title": "Multi-Major Coalition",
+    "short_description": "Several major parties with potential for coalition.",
+    "long_description": "This configuration represents a political landscape where multiple major parties coexist with significant potential for coalition-building. This setup includes parties such as the Red Party, Yellow Party, and Blue Party, all of which hold substantial influence. The interactions between these parties reflect various levels of cooperation, with strong coalition potentials. This configuration simulates political environments like those in the Netherlands, Germany, and Sweden, where coalition governments are common and major parties must negotiate and cooperate to form stable administrations.",
     "examples": "Example Countries: Netherlands, Germany, Sweden",
-    "file": "multi_major_coalition.txt"
+    "interaction_file": "configs/multi_major_coalition.txt",
+    "image_file": "svgs/parties/multi_major_coalition.svg"
   },
   "fragmented_coalition": {
-    "description": "This setup includes many minor and fringe parties with a fragmented coalition potential.",
+    "title": "Fragmented Coalition",
+    "short_description": "Many minor and fringe parties with fragmented coalition potential.",
+    "long_description": "This configuration illustrates a highly fragmented political environment with numerous minor and fringe parties. In this setup, there are two major parties (Red and Blue), several minor parties (Orange, Green, and Purple), and a variety of fringe parties (Scarlet, Amber, Chartreuse, Teal, Violet, and Fuchsia). The interactions among these parties are characterized by weaker coalition potentials, reflecting the challenges in forming stable governments in a diverse landscape. This configuration simulates political systems like those in Israel, Italy, and Belgium, where coalition-building is complex and often results in unstable or short-lived governments.",
     "examples": "Example Countries: Israel, Italy, Belgium",
-    "file": "fragmented_coalition.txt"
+    "interaction_file": "configs/fragmented_coalition.txt",
+    "image_file": "svgs/parties/fragmented_coalition.svg"
   },
   "two_major_with_minors": {
-    "description": "This setup includes two major parties with several minor parties.",
+    "title": "Two Major with Minors",
+    "short_description": "Two major parties with several minor parties.",
+    "long_description": "This configuration depicts a political system dominated by two major parties with several influential minor parties. This setup includes the Red Party and Blue Party as the major players, while the Orange Party, Green Party, and Purple Party serve as minor parties. The interactions between major and minor parties reflect strong alliances, while minor parties also interact among themselves with moderate weights. This configuration is suitable for simulating countries like Australia, Canada, and New Zealand, where a few major parties dominate, but minor parties play a crucial role in the political process.",
     "examples": "Example Countries: Australia, Canada, New Zealand",
-    "file": "two_major_with_minors.txt"
+    "interaction_file": "configs/two_major_with_minors.txt",
+    "image_file": "svgs/parties/two_major_with_minors.svg"
   },
   "two_major_oppositional": {
-    "description": "This setup includes two major parties that are in opposition to each other.",
+    "title": "Two Major Oppositional",
+    "short_description": "Two major parties in opposition to each other.",
+    "long_description": "This configuration represents a political environment where two major parties are in strong opposition to each other. In this setup, the Red Party and Blue Party are the primary antagonists, each with their allied minor parties such as the Orange Party, Green Party, and Purple Party. The interactions between the opposing major parties are weak and marked by opposition. This configuration emulates political systems like those in the United States, the Philippines, Mexico, and South Korea, where two dominant parties are in a continual state of rivalry, leading to polarized and adversarial politics.",
     "examples": "Example Countries: United States, Philippines, Mexico, South Korea",
-    "file": "two_major_oppositional.txt"
+    "interaction_file": "configs/two_major_oppositional.txt",
+    "image_file": "svgs/parties/two_major_oppositional.svg"
   },
   "balanced_major_minor": {
-    "description": "This setup includes a balanced system of major and minor parties with interactions.",
+    "title": "Balanced Major-Minor",
+    "short_description": "A balanced system of major and minor parties.",
+    "long_description": "This configuration features a balanced mix of major and minor parties with significant interactions among them. This setup includes two major parties (Red and Blue) and four minor parties (Orange, Green, Purple, and Yellow). The interactions among these parties are relatively strong and evenly distributed, reflecting a balanced political landscape. This configuration is ideal for simulating political environments such as those in the United Kingdom, Canada, Australia, New Zealand, and Germany, where both major and minor parties have substantial roles in shaping political discourse and governance.",
     "examples": "Example Countries: United Kingdom, Canada, Australia, New Zealand, Germany",
-    "file": "balanced_major_minor.txt"
+    "interaction_file": "configs/balanced_major_minor.txt",
+    "image_file": "svgs/parties/balanced_major_minor.svg"
   }
 }

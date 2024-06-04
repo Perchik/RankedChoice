@@ -5,6 +5,7 @@ import { fetchRandomName } from "../../services/nameService";
 import { partyColors, partyNames } from "../../constants/PartyData";
 import { PartySelect, PopularitySlider } from "../Common/FormControls";
 import { Politician } from "../../types/types";
+import { SelectChangeEvent } from "@mui/material"; // Import SelectChangeEvent
 
 interface EditablePoliticianCardProps {
   politician: Politician;
@@ -27,7 +28,7 @@ const EditablePoliticianCard: React.FC<EditablePoliticianCardProps> = ({
   };
 
   const handlePartyChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
+    event: SelectChangeEvent,
     type: "major" | "minor"
   ) => {
     const updatedPolitician = {

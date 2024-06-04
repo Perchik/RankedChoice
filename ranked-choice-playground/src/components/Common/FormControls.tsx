@@ -13,7 +13,7 @@ import {
 interface PartySelectProps {
   label: string;
   value: string | undefined;
-  onChange: (event: SelectChangeEvent<string>) => void;
+  onChange: (event: SelectChangeEvent) => void;
   options: string[];
 }
 

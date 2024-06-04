@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Row, Col } from "react-bootstrap";
 
 interface ColorPaletteProps {
   colors: string[];
@@ -13,18 +13,22 @@ const ColorPalette: React.FC<ColorPaletteProps> = ({
   size = 20,
 }) => {
   return (
-    <Box display="flex" flexWrap="wrap" gap={1}>
+    <Row className="d-flex flex-wrap g-1">
       {colors.map((color) => (
-        <Box
+        <Col
           key={color}
-          width={size}
-          height={size}
-          bgcolor={color}
+          xs="auto"
+          style={{
+            width: size,
+            height: size,
+            backgroundColor: color,
+            cursor: "pointer",
+            border: "1px solid #000",
+          }}
           onClick={() => onClick(color)}
-          sx={{ cursor: "pointer", border: "1px solid #000" }}
         />
       ))}
-    </Box>
+    </Row>
   );
 };
 

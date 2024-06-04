@@ -1,17 +1,10 @@
 import React from "react";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Slider,
-  SelectChangeEvent,
-} from "@mui/material";
+import { Form, FormGroup, FormLabel, FormControl } from "react-bootstrap";
 
 interface PartySelectProps {
   label: string;
   value: string | undefined;
-  onChange: (event: SelectChangeEvent<string>) => void;
+  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   options: string[];
 }
 
@@ -21,40 +14,47 @@ export const PartySelect: React.FC<PartySelectProps> = ({
   onChange,
   options,
 }) => (
-  <FormControl fullWidth>
-    <InputLabel>{label}</InputLabel>
-    <Select value={value || ""} onChange={onChange}>
-      <MenuItem value="">
+  <FormGroup>
+    <FormLabel>{label}</FormLabel>
+    <FormControl
+      as="select"
+      value={value || ""}
+      onChange={(event) =>
+        onChange(event as unknown as React.ChangeEvent<HTMLSelectElement>)
+      }
+    >
+      <option value="">
         <em>None</em>
-      </MenuItem>
+      </option>
       {options.map((option, index) => (
-        <MenuItem key={index} value={option}>
+        <option key={index} value={option}>
           {option}
-        </MenuItem>
+        </option>
       ))}
-    </Select>
-  </FormControl>
+    </FormControl>
+  </FormGroup>
 );
 
 interface PopularitySliderProps {
   value: number;
-  onChange: (event: Event, newValue: number | number[]) => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const PopularitySlider: React.FC<PopularitySliderProps> = ({
   value,
   onChange,
 }) => (
-  <div className="popularity-section">
-    <p>Popularity: {value}</p>
-    <Slider
+  <FormGroup>
+    <FormLabel>Popularity: {value}</FormLabel>
+    <FormControl
+      type="range"
       value={value}
-      onChange={onChange}
-      aria-labelledby="popularity-slider"
-      valueLabelDisplay="auto"
-      step={1}
-      min={0}
-      max={100}
+      onChange={(event) =>
+        onChange(event as unknown as React.ChangeEvent<HTMLInputElement>)
+      }
+      min="0"
+      max="100"
+      step="1"
     />
-  </div>
+  </FormGroup>
 );

@@ -2,12 +2,16 @@ import React, { useEffect, useRef, createRef, useState, useMemo } from "react";
 import WordSpinner from "../Common/WordSpinner";
 import {
   Button,
-  TextField,
-  Switch,
-  FormControlLabel,
-  IconButton,
-} from "@mui/material";
-import { Refresh } from "@mui/icons-material";
+  Form,
+  Row,
+  Col,
+  FormGroup,
+  FormCheck,
+  FormControl,
+  FormLabel,
+} from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 import {
   titles,
   responsibilities,
@@ -107,21 +111,26 @@ const ElectionNameGenerator: React.FC<ElectionNameGeneratorProps> = ({
 
   return (
     <div className={styles.container}>
-      <FormControlLabel
-        control={<Switch checked={!isSingleMode} onChange={handleModeToggle} />}
-        label={isSingleMode ? "Single" : "Multiple"}
-      />
+      <FormGroup controlId="formBasicCheckbox">
+        <FormCheck
+          type="switch"
+          label={isSingleMode ? "Single" : "Multiple"}
+          checked={!isSingleMode}
+          onChange={handleModeToggle}
+        />
+      </FormGroup>
       <div className={styles.spinnerContainer}>
         {!isSingleMode && (
           <>
-            <TextField
-              className={styles.styledTextField}
-              type="number"
-              value={numberOfSeats}
-              onChange={(e) => setNumberOfSeats(Number(e.target.value))}
-              label="Seats"
-              inputProps={{ min: 1 }}
-            />
+            <FormGroup>
+              <FormLabel>Seats</FormLabel>
+              <FormControl
+                type="number"
+                value={numberOfSeats}
+                onChange={(e) => setNumberOfSeats(Number(e.target.value))}
+                min="1"
+              />
+            </FormGroup>
             <span className={styles.sentenceText}>seats on The</span>
           </>
         )}
@@ -139,13 +148,13 @@ const ElectionNameGenerator: React.FC<ElectionNameGeneratorProps> = ({
             )}
           </React.Fragment>
         ))}
-        <IconButton onClick={handleSpin}>
-          <Refresh />
-        </IconButton>
+        <Button onClick={handleSpin} variant="primary">
+          <FontAwesomeIcon icon={faRefresh} />
+        </Button>
       </div>
       <div className={styles.combinedName}>{combinedName}</div>
       <div>
-        <Button variant="contained" color="primary" onClick={handleNext}>
+        <Button variant="primary" onClick={handleNext}>
           Next
         </Button>
       </div>

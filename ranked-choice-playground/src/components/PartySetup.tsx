@@ -7,7 +7,6 @@ import {
   StepLabel,
   Button,
   Typography,
-  Slider,
 } from "@mui/material";
 import PartyPresetSelector from "./PartyPresetSelector";
 import PartyCustomization from "./PartyCustomization";

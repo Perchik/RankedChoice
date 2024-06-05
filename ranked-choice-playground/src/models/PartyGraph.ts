@@ -1,5 +1,6 @@
 import { Party } from "./Party";
 import { PartyStatus } from "../constants/PartyStatus";
+import { parties as partyData } from "../constants/PartyData";
 
 interface Interaction {
   from: string;
@@ -17,8 +18,9 @@ class PartyGraph {
     this.interactions = [];
   }
 
-  // Initializes the parties and interactions from the simplified format
-  loadFromSimplifiedFormat(textData: string) {
+  loadFromConfig(textData: string) {
+    this.parties = [];
+    this.interactions = [];
     const lines = textData
       .split("\n")
       .map((line) => line.trim())
@@ -45,15 +47,14 @@ class PartyGraph {
 
     const partyIds = parts[1].split(",").map((id) => id.trim());
     partyIds.forEach((id) => {
-      const party =
-        this.getPartyById(id) ||
-        new Party(
-          id,
-          `${id.charAt(0).toUpperCase() + id.slice(1)} Party`,
-          this.getColorById(id),
-          status
-        );
-      if (!this.getPartyById(id)) this.parties.push(party);
+      let party = this.getPartyById(id);
+      if (!party) {
+        const data = partyData[id];
+        if (data) {
+          party = new Party(id, data.name, data.color, status);
+          this.parties.push(party);
+        }
+      }
     });
   }
 
@@ -71,15 +72,7 @@ class PartyGraph {
   }
 
   getColorById(id: string): string {
-    const colors: { [key: string]: string } = {
-      red: "#FF0000",
-      blue: "#0000FF",
-      orange: "#FFA500",
-      green: "#008000",
-      purple: "#800080",
-      yellow: "#FFFF00",
-    };
-    return colors[id] || "#000000";
+    return partyData[id]?.color || "#000000";
   }
 
   // Adds an interaction between two parties by their IDs
@@ -110,7 +103,7 @@ class PartyGraph {
 
   // Returns the list of parties
   getParties() {
-    return this.parties;
+    return this.parties.filter((party) => party !== undefined);
   }
 
   // Adjusts the connectivity (coalition potential) between parties by modifying the weights of their interactions
@@ -120,6 +113,12 @@ class PartyGraph {
         interaction.weight = interaction.weight * coalitionPotential;
       });
     });
+  }
+
+  // Method to update the parties in the graph
+  updateParties(newParties: Party[]) {
+    this.parties = newParties.filter((party) => party !== undefined);
+    this.initializeInteractions();
   }
 }
 

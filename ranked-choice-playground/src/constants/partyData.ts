@@ -19,6 +19,21 @@ const parties: { [key: string]: PartyData } = {
   fuchsia: { name: "Fuchsia Party", color: "#d60a72", ordinal: 3 },
 };
 
+export const partyOrder: string[] = [
+  "red",
+  "scarlet",
+  "orange",
+  "amber",
+  "yellow",
+  "chartreuse",
+  "green",
+  "teal",
+  "blue",
+  "violet",
+  "purple",
+  "fuchsia",
+];
+
 export const partyIds = Object.keys(parties);
 export const partyNames = Object.values(parties).map((style) => style.name);
 export const partyColors = Object.fromEntries(

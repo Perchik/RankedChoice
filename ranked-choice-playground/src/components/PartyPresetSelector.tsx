@@ -3,11 +3,11 @@ import presetsData from "../config/party-presets.json";
 import {
   Container,
   Typography,
-  Button,
   Box,
   Modal,
   CardMedia,
   IconButton,
+  Button,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { PresetCard, PartyPresetCard } from "./PartyPresetCard";
@@ -19,13 +19,27 @@ import "./PartyPresetCard.css";
 const breakpoints = {
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
-    items: 3,
+    items: 2,
+  },
+  mobile: {
+    breakpoint: {
+      max: 464,
+      min: 0,
+    },
+    items: 1,
+  },
+  tablet: {
+    breakpoint: {
+      max: 1024,
+      min: 464,
+    },
+    items: 2,
   },
 };
 
 interface PresetSelectionProps {
   onPresetSelect: (fileContent: string) => void;
-  onCreateCustomScenario: () => void;
+  onCreateCustomScenario: (presetContent: string) => void;
 }
 
 const PartyPresetSelector: React.FC<PresetSelectionProps> = ({
@@ -50,6 +64,16 @@ const PartyPresetSelector: React.FC<PresetSelectionProps> = ({
       .catch((error) => console.error("Error loading text file:", error));
   };
 
+  const handleCustomScenarioClick = () => {
+    fetch(`${process.env.PUBLIC_URL}/configs/default_scenario.txt`)
+      .then((response) => response.text())
+      .then((data) => {
+        onPresetSelect(data);
+      })
+      .catch((error) =>
+        console.error("Error loading default scenario:", error)
+      );
+  };
   const handleMoreInfo = (
     title: string,
     description: string,
@@ -99,7 +123,7 @@ const PartyPresetSelector: React.FC<PresetSelectionProps> = ({
               examples=""
               image_file="svgs/parties/custom_scenario.svg"
               buttonTitle="Start customizing"
-              onUsePreset={onCreateCustomScenario}
+              onUsePreset={handleCustomScenarioClick}
               useSecondaryStyle
             />
           </Box>

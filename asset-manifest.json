@@ -1,14 +1,35 @@
 {
   "files": {
-    "main.css": "/RankedChoice/static/css/main.a4d7ef1b.css",
-    "main.js": "/RankedChoice/static/js/main.f10d7882.js",
-    "static/media/logo.svg": "/RankedChoice/static/media/logo.11717d76c872ad1ea27ed1d0a72a9627.svg",
+    "main.css": "/RankedChoice/static/css/main.0540b306.css",
+    "main.js": "/RankedChoice/static/js/main.54afc3a7.js",
+    "static/media/lexend-latin-400-normal.woff": "/RankedChoice/static/media/lexend-latin-400-normal.9a2c7d1d446478d88243.woff",
+    "static/media/manrope-latin-400-normal.woff": "/RankedChoice/static/media/manrope-latin-400-normal.82cf2a7ba70209a07253.woff",
+    "static/media/lexend-latin-ext-400-normal.woff": "/RankedChoice/static/media/lexend-latin-ext-400-normal.8e756ad848cf290cf99c.woff",
+    "static/media/lexend-latin-400-normal.woff2": "/RankedChoice/static/media/lexend-latin-400-normal.f9326258bd553843e3b9.woff2",
+    "static/media/manrope-latin-400-normal.woff2": "/RankedChoice/static/media/manrope-latin-400-normal.5b06bf94f857e4244b64.woff2",
+    "static/media/lexend-latin-ext-400-normal.woff2": "/RankedChoice/static/media/lexend-latin-ext-400-normal.7b7dbf43987fc57a0bb4.woff2",
+    "static/media/revicons.eot": "/RankedChoice/static/media/revicons.a77de540a38981833f9e.eot",
+    "static/media/revicons.ttf": "/RankedChoice/static/media/revicons.57fd05d4ae650374c8de.ttf",
+    "static/media/manrope-latin-ext-400-normal.woff": "/RankedChoice/static/media/manrope-latin-ext-400-normal.ce17703c728b617bc0ce.woff",
+    "static/media/manrope-cyrillic-400-normal.woff": "/RankedChoice/static/media/manrope-cyrillic-400-normal.fd1c94bdccab829f55f4.woff",
+    "static/media/manrope-latin-ext-400-normal.woff2": "/RankedChoice/static/media/manrope-latin-ext-400-normal.a7aef7eba7311a8c8c25.woff2",
+    "static/media/manrope-cyrillic-400-normal.woff2": "/RankedChoice/static/media/manrope-cyrillic-400-normal.d2885fac92544cf7f1be.woff2",
+    "static/media/revicons.woff": "/RankedChoice/static/media/revicons.e8746a624ed098489406.woff",
+    "static/media/lexend-vietnamese-400-normal.woff": "/RankedChoice/static/media/lexend-vietnamese-400-normal.4e8650cb08fbfec0ba58.woff",
+    "static/media/manrope-greek-400-normal.woff": "/RankedChoice/static/media/manrope-greek-400-normal.39a321d09a0172e81510.woff",
+    "static/media/manrope-vietnamese-400-normal.woff": "/RankedChoice/static/media/manrope-vietnamese-400-normal.37e16a4c823f3eaecb7e.woff",
+    "static/media/manrope-greek-400-normal.woff2": "/RankedChoice/static/media/manrope-greek-400-normal.f1ac6072d210cbdb9a47.woff2",
+    "static/media/lexend-vietnamese-400-normal.woff2": "/RankedChoice/static/media/lexend-vietnamese-400-normal.674964b431dfddb11928.woff2",
+    "static/media/manrope-vietnamese-400-normal.woff2": "/RankedChoice/static/media/manrope-vietnamese-400-normal.9221e5e7b086d4b2bac8.woff2",
+    "static/media/logo.svg": "/RankedChoice/static/media/logo.7e0bce4e520d46faeb2de7b48789c0e0.svg",
+    "static/media/manrope-cyrillic-ext-400-normal.woff": "/RankedChoice/static/media/manrope-cyrillic-ext-400-normal.03566edbfda34929f9fd.woff",
+    "static/media/manrope-cyrillic-ext-400-normal.woff2": "/RankedChoice/static/media/manrope-cyrillic-ext-400-normal.6ba15efc9d2f0b9ed4a8.woff2",
     "index.html": "/RankedChoice/index.html",
-    "main.a4d7ef1b.css.map": "/RankedChoice/static/css/main.a4d7ef1b.css.map",
-    "main.f10d7882.js.map": "/RankedChoice/static/js/main.f10d7882.js.map"
+    "main.0540b306.css.map": "/RankedChoice/static/css/main.0540b306.css.map",
+    "main.54afc3a7.js.map": "/RankedChoice/static/js/main.54afc3a7.js.map"
   },
   "entrypoints": [
-    "static/css/main.a4d7ef1b.css",
-    "static/js/main.f10d7882.js"
+    "static/css/main.0540b306.css",
+    "static/js/main.54afc3a7.js"
   ]
 }

@@ -1,0 +1,8 @@
+major: red, yellow, blue
+
+red -> blue 0.2
+red -> yellow 0.1
+blue -> red 0.2
+blue -> yellow 0.1
+yellow -> red 0.1
+yellow -> blue 0.3

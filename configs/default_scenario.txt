@@ -1,0 +1,3 @@
+major: red, blue, yellow
+minor: orange, green, purple
+fringe: scarlet, amber, chartreuse, teal, violet, fuchsia

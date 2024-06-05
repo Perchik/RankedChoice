@@ -1,0 +1,9 @@
+major: red, blue
+minor: orange, green, purple
+
+red -> orange 0.4
+blue -> purple 0.4
+red -> blue 0.1, opposition=true
+blue -> red 0.1, opposition=true
+green -> orange 0.3
+green -> purple 0.3

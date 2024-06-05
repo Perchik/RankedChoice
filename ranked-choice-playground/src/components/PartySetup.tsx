@@ -1,83 +1,97 @@
 import React, { useState } from "react";
-import PartyDisplay from "./PartyDisplay";
-import { PartyGraph } from "../models/PartyGraph";
+import {
+  Container,
+  Box,
+  Stepper,
+  Step,
+  StepLabel,
+  Button,
+  Typography,
+  Slider,
+} from "@mui/material";
 import PartyPresetSelector from "./PartyPresetSelector";
-import { PartyStatus } from "../constants/PartyStatus";
-import { Party } from "../models/Party";
+import PartyCustomization from "./PartyCustomization";
+
+const steps = ["Select a Scenario", "Customize Scenario"];
 
 const PartySetup: React.FC = () => {
-  const [partyGraph, setPartyGraph] = useState(new PartyGraph());
-  const [numberOfParties, setNumberOfParties] = useState(
-    partyGraph.getParties().length
-  );
+  const [activeStep, setActiveStep] = useState(0);
+  const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
+  const [numberOfParties, setNumberOfParties] = useState(5); // Default number of parties
 
-  const handlePresetSelect = (fileContent: string) => {
-    const newPartyGraph = new PartyGraph();
-    newPartyGraph.loadFromSimplifiedFormat(fileContent);
-    setPartyGraph(newPartyGraph);
-    setNumberOfParties(newPartyGraph.getParties().length);
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  const handleNumberOfPartiesChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setNumberOfParties(Number(event.target.value));
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleStatusChange = (id: string, newStatus: PartyStatus) => {
-    setPartyGraph((prevGraph) => {
-      const newGraph = new PartyGraph();
-      newGraph.parties = prevGraph.getParties().map((party) => {
-        if (party.id === id) {
-          return new Party(party.id, party.name, party.color, newStatus);
-        }
-        return party;
-      });
-      newGraph.interactions = prevGraph.interactions;
-      return newGraph;
-    });
+  const handleReset = () => {
+    setActiveStep(0);
+    setSelectedPreset(null);
+    setNumberOfParties(5);
   };
 
-  const parties = partyGraph.getParties().slice(0, numberOfParties);
+  const handlePresetSelect = (presetContent: string) => {
+    setSelectedPreset(presetContent);
+    handleNext();
+  };
+
+  const handleCreateCustomScenario = () => {
+    setSelectedPreset("custom");
+    handleNext();
+  };
 
   return (
-    <div>
-      <h2>Party Setup</h2>
-      <PartyPresetSelector onPresetSelect={handlePresetSelect} />
-      <div>
-        <label>Number of Parties: {numberOfParties}</label>
-        <input
-          type="range"
-          min="1"
-          max={partyGraph.getParties().length}
-          value={numberOfParties}
-          onChange={handleNumberOfPartiesChange}
-        />
-      </div>
-      <div style={{ display: "flex", flexWrap: "wrap" }}>
-        {parties.map((party) => (
-          <PartyDisplay
-            key={party.id}
-            id={party.id}
-            name={party.name}
-            color={party.color}
-            status={party.status}
-            onStatusChange={handleStatusChange}
-          />
-        ))}
-      </div>
-      <div>
-        <h3>Interactions</h3>
-        <ul>
-          {partyGraph.interactions.map((interaction, index) => (
-            <li key={index}>
-              {interaction.from} -&gt; {interaction.to} (Weight:{" "}
-              {interaction.weight})
-            </li>
+    <Container maxWidth="lg">
+      <Box sx={{ width: "100%", mt: 4 }}>
+        <Stepper activeStep={activeStep} alternativeLabel>
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
           ))}
-        </ul>
-      </div>
-    </div>
+        </Stepper>
+        {activeStep === steps.length ? (
+          <Box sx={{ mt: 2 }}>
+            <Typography>All steps completed - you're finished</Typography>
+            <Button onClick={handleReset}>Reset</Button>
+          </Box>
+        ) : (
+          <Box sx={{ mt: 2 }}>
+            {activeStep === 0 ? (
+              <PartyPresetSelector
+                onPresetSelect={handlePresetSelect}
+                onCreateCustomScenario={handleCreateCustomScenario}
+              />
+            ) : (
+              <PartyCustomization
+                preset={selectedPreset}
+                numberOfParties={numberOfParties}
+                setNumberOfParties={setNumberOfParties}
+              />
+            )}
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+              {activeStep !== 0 && (
+                <Button onClick={handleBack} sx={{ mr: 1 }}>
+                  Back
+                </Button>
+              )}
+              {activeStep !== steps.length - 1 && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleNext}
+                >
+                  Next
+                </Button>
+              )}
+            </Box>
+          </Box>
+        )}
+      </Box>
+    </Container>
   );
 };
 

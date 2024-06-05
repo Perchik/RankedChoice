@@ -1,4 +1,12 @@
 {
+  "two_major_oppositional": {
+    "title": "Two Major Oppositional",
+    "short_description": "Two major parties in opposition to each other.",
+    "long_description": "This configuration represents a political environment where two major parties are in strong opposition to each other. In this setup, the Red Party and Blue Party are the primary antagonists, each with their allied minor parties such as the Orange Party, Green Party, and Purple Party. The interactions between the opposing major parties are weak and marked by opposition. This configuration emulates political systems like those in the United States, the Philippines, Mexico, and South Korea, where two dominant parties are in a continual state of rivalry, leading to polarized and adversarial politics.",
+    "examples": "Example Countries: United States, Philippines, Mexico, South Korea",
+    "interaction_file": "configs/two_major_oppositional.txt",
+    "image_file": "svgs/parties/two_major_oppositional.svg"
+  },
   "multi_major_coalition": {
     "title": "Multi-Major Coalition",
     "short_description": "Several major parties with potential for coalition.",
@@ -10,7 +18,7 @@
   "fragmented_coalition": {
     "title": "Fragmented Coalition",
     "short_description": "Many minor and fringe parties with fragmented coalition potential.",
-    "long_description": "This configuration illustrates a highly fragmented political environment with numerous minor and fringe parties. In this setup, there are two major parties (Red and Blue), several minor parties (Orange, Green, and Purple), and a variety of fringe parties (Scarlet, Amber, Chartreuse, Teal, Violet, and Fuchsia). The interactions among these parties are characterized by weaker coalition potentials, reflecting the challenges in forming stable governments in a diverse landscape. This configuration simulates political systems like those in Israel, Italy, and Belgium, where coalition-building is complex and often results in unstable or short-lived governments.",
+    "long_description": "This configuration illustrates a highly fragmented political environment with numerous minor and fringe parties. In this setup, there are two major parties (Red and Blue), several minor parties (Orange, Green, and Purple), and a variety of fringe parties (Yellow, Scarlet, Amber, Chartreuse, Teal, Violet, and Fuchsia). The interactions among these parties are characterized by weaker coalition potentials, reflecting the challenges in forming stable governments in a diverse landscape. This configuration simulates political systems like those in Israel, Italy, and Belgium, where coalition-building is complex and often results in unstable or short-lived governments.",
     "examples": "Example Countries: Israel, Italy, Belgium",
     "interaction_file": "configs/fragmented_coalition.txt",
     "image_file": "svgs/parties/fragmented_coalition.svg"
@@ -22,14 +30,6 @@
     "examples": "Example Countries: Australia, Canada, New Zealand",
     "interaction_file": "configs/two_major_with_minors.txt",
     "image_file": "svgs/parties/two_major_with_minors.svg"
-  },
-  "two_major_oppositional": {
-    "title": "Two Major Oppositional",
-    "short_description": "Two major parties in opposition to each other.",
-    "long_description": "This configuration represents a political environment where two major parties are in strong opposition to each other. In this setup, the Red Party and Blue Party are the primary antagonists, each with their allied minor parties such as the Orange Party, Green Party, and Purple Party. The interactions between the opposing major parties are weak and marked by opposition. This configuration emulates political systems like those in the United States, the Philippines, Mexico, and South Korea, where two dominant parties are in a continual state of rivalry, leading to polarized and adversarial politics.",
-    "examples": "Example Countries: United States, Philippines, Mexico, South Korea",
-    "interaction_file": "configs/two_major_oppositional.txt",
-    "image_file": "svgs/parties/two_major_oppositional.svg"
   },
   "balanced_major_minor": {
     "title": "Balanced Major-Minor",

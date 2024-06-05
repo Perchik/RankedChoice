@@ -51,6 +51,24 @@ const theme = createTheme({
   shape: {
     borderRadius: 8,
   },
+  components: {
+    MuiContainer: {
+      styleOverrides: {
+        maxWidthLg: {
+          maxWidth: "90%",
+          "@media (min-width: 1280px)": {
+            maxWidth: 1600,
+          },
+        },
+        maxWidthXl: {
+          maxWidth: "95%",
+          "@media (min-width: 1920px)": {
+            maxWidth: 1800,
+          },
+        },
+      },
+    },
+  },
 });
 
 export default theme;

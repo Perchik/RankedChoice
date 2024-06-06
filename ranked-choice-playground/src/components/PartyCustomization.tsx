@@ -66,6 +66,7 @@ const Bin: React.FC<{
         flexWrap: "wrap",
         justifyContent: "center",
         alignItems: "start",
+        width: "100%", // Ensure bins fill the width
         boxSizing: "border-box",
       }}
     >
@@ -121,6 +122,7 @@ const PartyCustomization: React.FC<{
       updatedParties.filter((party) => party.status === PartyStatus.Fringe)
     );
   };
+
   // Handle changes in the slider for the number of parties
   const handleSliderChange = (event: any, newValue: number | number[]) => {
     const newPartyCount = newValue as number;
@@ -238,7 +240,7 @@ const PartyCustomization: React.FC<{
               </Box>
             </Grid>
             <Grid item xs={10}>
-              graph
+              Graph goes here.
             </Grid>
           </Grid>
         </DndProvider>

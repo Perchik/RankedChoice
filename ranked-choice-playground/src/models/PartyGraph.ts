@@ -64,7 +64,12 @@ class PartyGraph {
 
     const from = parts[0].trim();
     const [to, weight] = parts[1].trim().split(" ");
-    this.interactions.push({ from, to: to.trim(), weight: parseFloat(weight) });
+    this.interactions.push({
+      from,
+      to: to.trim(),
+      weight: parseFloat(weight),
+      opposition: false,
+    });
   }
 
   getPartyById(id: string): Party | undefined {
@@ -119,6 +124,32 @@ class PartyGraph {
   updateParties(newParties: Party[]) {
     this.parties = newParties.filter((party) => party !== undefined);
     this.initializeInteractions();
+  }
+
+  // Method to update an interaction between parties
+  updateInteraction(
+    fromPartyId: string,
+    toPartyId: string,
+    weight: number,
+    opposition: boolean
+  ) {
+    const interaction = this.interactions.find(
+      (i) => i.from === fromPartyId && i.to === toPartyId
+    );
+    if (interaction) {
+      interaction.weight = weight;
+      interaction.opposition = opposition;
+    } else {
+      this.interactions.push({
+        from: fromPartyId,
+        to: toPartyId,
+        weight,
+        opposition,
+      });
+    }
+
+    // Update interaction in party objects as well
+    this.addInteraction(fromPartyId, toPartyId, weight, opposition);
   }
 }
 

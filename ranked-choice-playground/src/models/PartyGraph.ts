@@ -51,7 +51,7 @@ class PartyGraph {
       if (!party) {
         const data = partyData[id];
         if (data) {
-          party = new Party(id, data.name, data.color, status);
+          party = new Party(id, data.name, data.color, data.fontColor, status);
           this.parties.push(party);
         }
       }
@@ -68,7 +68,7 @@ class PartyGraph {
       from,
       to: to.trim(),
       weight: parseFloat(weight),
-      opposition: false,
+      opposition: line.includes("opposition"),
     });
   }
 

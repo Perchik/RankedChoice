@@ -10,13 +10,21 @@ export class Party {
   id: string;
   name: string;
   color: string;
+  fontColor: string;
   status: PartyStatus;
   interactions: PartyInteraction[];
 
-  constructor(id: string, name: string, color: string, status: PartyStatus) {
+  constructor(
+    id: string,
+    name: string,
+    color: string,
+    fontColor: string,
+    status: PartyStatus
+  ) {
     this.id = id;
     this.name = name;
     this.color = color;
+    this.fontColor = fontColor;
     this.status = status;
     this.interactions = [];
   }

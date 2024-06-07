@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, Slider, Grid, Container } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Slider,
+  Grid,
+  Container,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import InteractivePartyGraph from "./InteractivePartyGraph";
@@ -8,16 +16,14 @@ import { PartyStatus } from "../constants/PartyStatus";
 import { Party } from "../models/Party";
 import { parties, partyOrder } from "../constants/PartyData";
 
-// Define item types
 const ItemTypes = {
   CIRCLE: "circle",
 };
 
-// Circle Component: Represents a draggable circle
-const Circle: React.FC<{ color: string }> = ({ color }) => {
+const Circle: React.FC<{ color: string; id: string }> = ({ color, id }) => {
   const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.CIRCLE,
-    item: { color },
+    item: { color, id },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -39,7 +45,6 @@ const Circle: React.FC<{ color: string }> = ({ color }) => {
   );
 };
 
-// Bin Component: Represents a drop zone for circles
 const Bin: React.FC<{
   label: string;
   onDrop: (item: any) => void;
@@ -66,7 +71,7 @@ const Bin: React.FC<{
         flexWrap: "wrap",
         justifyContent: "center",
         alignItems: "start",
-        width: "100%", // Ensure bins fill the width
+        width: "100%",
         boxSizing: "border-box",
       }}
     >
@@ -78,7 +83,6 @@ const Bin: React.FC<{
   );
 };
 
-// PartyCustomization Component: Main component for customizing party configurations
 const PartyCustomization: React.FC<{
   preset: string | null;
   numberOfParties: number;
@@ -88,8 +92,10 @@ const PartyCustomization: React.FC<{
   const [majorParties, setMajorParties] = useState<Party[]>([]);
   const [minorParties, setMinorParties] = useState<Party[]>([]);
   const [fringeParties, setFringeParties] = useState<Party[]>([]);
+  const [updateTrigger, setUpdateTrigger] = useState(0); // Use this to trigger re-render
+  const [nodesToRemove, setNodesToRemove] = useState<string[]>([]); // Track nodes to remove
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  // Initialize the party graph and set initial party states based on the preset
   useEffect(() => {
     const pg = new PartyGraph();
     if (preset) {
@@ -108,30 +114,31 @@ const PartyCustomization: React.FC<{
     setNumberOfParties(pg.getParties().length);
   }, [preset, setNumberOfParties]);
 
-  // Update the party states and refresh the party graph
   const updateParties = (updatedParties: Party[]) => {
-    partyGraph!.updateParties(updatedParties);
-    setPartyGraph(partyGraph!);
-    setMajorParties(
-      updatedParties.filter((party) => party.status === PartyStatus.Major)
-    );
-    setMinorParties(
-      updatedParties.filter((party) => party.status === PartyStatus.Minor)
-    );
-    setFringeParties(
-      updatedParties.filter((party) => party.status === PartyStatus.Fringe)
-    );
+    if (partyGraph) {
+      partyGraph.updateParties(updatedParties);
+      setUpdateTrigger((prev) => prev + 1); // Trigger a re-render
+      setMajorParties(
+        updatedParties.filter((party) => party.status === PartyStatus.Major)
+      );
+      setMinorParties(
+        updatedParties.filter((party) => party.status === PartyStatus.Minor)
+      );
+      setFringeParties(
+        updatedParties.filter((party) => party.status === PartyStatus.Fringe)
+      );
+    }
   };
 
-  // Handle changes in the slider for the number of parties
   const handleSliderChange = (event: any, newValue: number | number[]) => {
+    if (!partyGraph) return;
+
     const newPartyCount = newValue as number;
     const currentPartyCount = numberOfParties;
-    const updatedParties = [...partyGraph!.getParties()];
+    const updatedParties = [...partyGraph.getParties()];
 
     const currentPartyIds = new Set(updatedParties.map((party) => party.id));
 
-    // Add new parties if the new count is higher
     if (newPartyCount > currentPartyCount) {
       for (let i = 0; i < partyOrder.length; i++) {
         if (currentPartyIds.size >= newPartyCount) break;
@@ -149,6 +156,7 @@ const PartyCustomization: React.FC<{
               partyId,
               partyData.name,
               partyData.color,
+              partyData.fontColor,
               status
             );
             updatedParties.push(newParty);
@@ -157,30 +165,53 @@ const PartyCustomization: React.FC<{
         }
       }
     } else {
-      updatedParties.splice(newPartyCount);
+      const partiesToRemove = updatedParties.splice(newPartyCount);
+      setNodesToRemove(partiesToRemove.map((party) => party.id));
     }
 
     setNumberOfParties(newPartyCount);
     updateParties(updatedParties);
   };
 
-  // Handle dropping a party into a bin
   const handleDrop = (party: any, status: PartyStatus) => {
-    const updatedParties = [...partyGraph!.getParties()];
-    const targetParty = updatedParties.find((p) => p.color === party.color);
-    if (targetParty) {
+    if (!partyGraph) return;
+
+    const updatedParties = [...partyGraph.getParties()];
+    const targetParty = updatedParties.find((p) => p.id === party.id);
+      if (targetParty) {
       targetParty.status = status;
     }
     updateParties(updatedParties);
   };
 
-  // Handle dropping a party into the trash bin
   const handleTrashDrop = (party: any) => {
-    const updatedParties = [...partyGraph!.getParties()].filter(
-      (p) => p.color !== party.color
+    if (!partyGraph) return;
+
+    if (partyGraph.getParties().length === 1) {
+      setOpenSnackbar(true);
+      return;
+    }
+
+    const updatedParties = [...partyGraph.getParties()].filter(
+      (p) => p.id !== party.id
     );
     setNumberOfParties(updatedParties.length);
+    setNodesToRemove([party.id]); // Track node to remove
     updateParties(updatedParties);
+  };
+
+  const handleNodeAdded = (party: any) => {
+    console.log("Node added:", party);
+  };
+
+  const handleNodeDeleted = (partyId: string) => {
+    console.log("Node deleted:", partyId);
+    // Perform additional cleanup or updates if necessary
+    setNodesToRemove((prev) => prev.filter((id) => id !== partyId));
+  };
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -213,7 +244,7 @@ const PartyCustomization: React.FC<{
                   onDrop={(item) => handleDrop(item, PartyStatus.Major)}
                 >
                   {majorParties.map((party) => (
-                    <Circle key={party.id} color={party.color} />
+                    <Circle key={party.id} color={party.color} id={party.id} />
                   ))}
                 </Bin>
                 <Bin
@@ -221,7 +252,7 @@ const PartyCustomization: React.FC<{
                   onDrop={(item) => handleDrop(item, PartyStatus.Minor)}
                 >
                   {minorParties.map((party) => (
-                    <Circle key={party.id} color={party.color} />
+                    <Circle key={party.id} color={party.color} id={party.id} />
                   ))}
                 </Bin>
                 <Bin
@@ -229,10 +260,10 @@ const PartyCustomization: React.FC<{
                   onDrop={(item) => handleDrop(item, PartyStatus.Fringe)}
                 >
                   {fringeParties.map((party) => (
-                    <Circle key={party.id} color={party.color} />
+                    <Circle key={party.id} color={party.color} id={party.id} />
                   ))}
                 </Bin>
-                <Bin label="Trash" onDrop={handleTrashDrop}>
+                <Bin label="Trash" onDrop={(item) => handleTrashDrop(item)}>
                   <Typography variant="body1">
                     Drag a party here to remove it from the scenario.
                   </Typography>
@@ -240,10 +271,30 @@ const PartyCustomization: React.FC<{
               </Box>
             </Grid>
             <Grid item xs={10}>
-              Graph goes here.
+              {partyGraph && (
+                <InteractivePartyGraph
+                  partyGraph={partyGraph}
+                  onNodeAdded={handleNodeAdded}
+                  onNodeDeleted={handleNodeDeleted}
+                  nodesToRemove={nodesToRemove}
+                />
+              )}
             </Grid>
           </Grid>
         </DndProvider>
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+        >
+          <Alert
+            onClose={handleSnackbarClose}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            You cannot delete the last remaining party.
+          </Alert>
+        </Snackbar>
       </Box>
     </Container>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import presetsData from "../config/party-presets.json";
+import presetsData from "../../config/party-presets.json";
 import {
   Container,
   Typography,
@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { PresetCard, PartyPresetCard } from "./PartyPresetCard";
-import { PartyPreset } from "../models/PartyPreset";
+import { PartyPreset } from "../../models/PartyPreset";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import "./PartyPresetCard.css";

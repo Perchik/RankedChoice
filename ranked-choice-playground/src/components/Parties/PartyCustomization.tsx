@@ -11,10 +11,10 @@ import {
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import InteractivePartyGraph from "./InteractivePartyGraph";
-import { PartyGraph } from "../models/PartyGraph";
-import { PartyStatus } from "../constants/PartyStatus";
-import { Party } from "../models/Party";
-import { parties, partyOrder } from "../constants/PartyData";
+import { PartyGraph } from "../../models/PartyGraph";
+import { PartyStatus } from "../../constants/PartyStatus";
+import { Party } from "../../models/Party";
+import { parties, partyOrder } from "../../constants/PartyData";
 
 const ItemTypes = {
   CIRCLE: "circle",
@@ -178,7 +178,7 @@ const PartyCustomization: React.FC<{
 
     const updatedParties = [...partyGraph.getParties()];
     const targetParty = updatedParties.find((p) => p.id === party.id);
-      if (targetParty) {
+    if (targetParty) {
       targetParty.status = status;
     }
     updateParties(updatedParties);

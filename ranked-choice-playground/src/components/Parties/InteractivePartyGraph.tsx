@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import Cytoscape from "cytoscape";
 import fcose from "cytoscape-fcose";
 import gridGuide from "cytoscape-grid-guide";
-import { PartyGraph } from "../models/PartyGraph";
-import { PartyStatus } from "../constants/PartyStatus";
+import { PartyGraph } from "../../models/PartyGraph";
+import { PartyStatus } from "../../constants/PartyStatus";
 import {
   Box,
   Button,

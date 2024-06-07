@@ -1,6 +1,6 @@
 import React from "react";
 
-import PartySetup from "../components/PartySetup";
+import PartySetup from "../components/Parties/PartySetup";
 const Parties: React.FC = () => {
   return <PartySetup />;
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { PartyStatus } from "../constants/PartyStatus";
+import { PartyStatus } from "../../constants/PartyStatus";
 
 interface PartyDisplayProps {
   id: string;

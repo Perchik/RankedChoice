@@ -9,7 +9,7 @@ import {
   CardHeader,
   SxProps,
 } from "@mui/material";
-import { PartyPreset } from "../models/PartyPreset";
+import { PartyPreset } from "../../models/PartyPreset";
 
 interface PartyPresetCardProps {
   preset: PartyPreset;

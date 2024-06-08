@@ -5,17 +5,7 @@ import {
   setNumberOfSeats,
 } from "../../features/electionSlice";
 import WordSpinner from "../Common/WordSpinner";
-import {
-  Button,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
-  TextField,
-  Box,
-  Typography,
-} from "@mui/material";
+import { Button, Box, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -26,6 +16,10 @@ import {
 } from "./electionNameStrings";
 import styles from "./SetupElectionDetails.module.css";
 import { SetupWizardStepProps } from "../../interfaces/SetupWizardStep";
+import SelectableCard from "../Common/SelectableCard"; // Import the new SelectableCard component
+import PersonIcon from "@mui/icons-material/Person";
+import GroupIcon from "@mui/icons-material/Group";
+import NumericInput from "../Common/NumericInput"; // Import the new NumericInput component
 
 const SINGLE_MODE_TEMPLATE = "{0} of {1}";
 const MULTIPLE_MODE_TEMPLATE = "{0} seats on the {1} {2} {3}";
@@ -72,10 +66,21 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
   const currentRefs = isSingleMode ? singleModeRefs : multipleModeRefs;
   const wordLists = isSingleMode ? singleModeLists : multipleModeLists;
 
+  const handleSpin = () => {
+    if (!isSingleMode) {
+      const randomSeats = Math.floor(Math.random() * 9) + 2; // Random number between 2 and 10
+      dispatch(setNumberOfSeats(randomSeats));
+    }
+    setIsSpinnerDone(new Array(currentRefs.current.length).fill(false));
+    currentRefs.current.forEach((ref) => ref.current?.startSpinning());
+  };
+
   const handleFinish = (index: number) => {
-    const newIsSpinnerDone = [...isSpinnerDone];
-    newIsSpinnerDone[index] = true;
-    setIsSpinnerDone(newIsSpinnerDone);
+    setIsSpinnerDone((prev) => {
+      const newIsSpinnerDone = [...prev];
+      newIsSpinnerDone[index] = true;
+      return newIsSpinnerDone;
+    });
   };
 
   useEffect(() => {
@@ -110,60 +115,49 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
     });
   };
 
-  const startAllSpinners = () => {
-    if (!isSingleMode) {
-      const randomSeats = Math.floor(Math.random() * 9) + 2; // Random number between 2 and 10
-      dispatch(setNumberOfSeats(randomSeats));
-    }
-    const refsToSpin = isSingleMode
-      ? singleModeRefs.current
-      : multipleModeRefs.current;
-    refsToSpin.forEach((ref) => ref.current?.startSpinning());
-  };
-
-  // Use useEffect to call startAllSpinners when isSingleMode changes
   useEffect(() => {
     startAllSpinners();
   }, [isSingleMode]);
 
+  const startAllSpinners = () => {
+    currentRefs.current.forEach((ref) => ref.current?.startSpinning());
+  };
+
   return (
     <div className={styles.container}>
-      <FormControl component="fieldset">
-        <FormLabel component="legend">Mode</FormLabel>
-        <RadioGroup
-          row
-          aria-label="mode"
-          name="mode"
-          value={isSingleMode ? "single" : "multiple"}
-          onChange={handleModeToggle}
-        >
-          <FormControlLabel value="single" control={<Radio />} label="Single" />
-          <FormControlLabel
-            value="multiple"
-            control={<Radio />}
-            label="Multiple"
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          mt: 4,
+        }}
+      >
+        <Box sx={{ display: "flex", gap: 4 }}>
+          <SelectableCard
+            selected={isSingleMode}
+            onClick={handleModeToggle}
+            icon={<PersonIcon fontSize="large" />}
+            title="One"
           />
-        </RadioGroup>
-      </FormControl>
+          <SelectableCard
+            selected={!isSingleMode}
+            onClick={handleModeToggle}
+            icon={<GroupIcon fontSize="large" />}
+            title="Multiple"
+          >
+            <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
+              <NumericInput
+                value={numberOfSeats}
+                onChange={(value) => dispatch(setNumberOfSeats(value))}
+                min={1}
+                increment={1}
+              />
+            </Box>
+          </SelectableCard>
+        </Box>
+      </Box>
       <div className={styles.spinnerContainer}>
-        {!isSingleMode && (
-          <>
-            <TextField
-              label="Seats"
-              type="number"
-              value={numberOfSeats}
-              onChange={(e) =>
-                dispatch(setNumberOfSeats(Number(e.target.value)))
-              }
-              inputProps={{ min: 1 }}
-              variant="outlined"
-              margin="normal"
-            />
-            <Typography className={styles.sentenceText}>
-              seats on The
-            </Typography>
-          </>
-        )}
         {wordLists.map((words, index) => (
           <React.Fragment
             key={`${isSingleMode ? "single" : "multiple"}-${index}`}
@@ -178,7 +172,7 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
             )}
           </React.Fragment>
         ))}
-        <Button onClick={startAllSpinners} variant="contained" color="primary">
+        <Button onClick={handleSpin} variant="contained" color="primary">
           <FontAwesomeIcon icon={faRefresh} />
         </Button>
       </div>

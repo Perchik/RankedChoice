@@ -1,9 +1,7 @@
 import logo from "../assets/logo.svg";
 import "../App.css";
 import React from "react";
-import ElectionNameGenerator from "../components/ElectionNameGenerator/ElectionNameGenerator";
-import EditablePoliticianList from "../components/Politicians/EditablePoliticianList";
-
+import SetupWizard from "../components/SetupWizard";
 const Home: React.FC = () => {
   const handleNext = (name: string) => {
     console.log("Generated or entered name:", name);
@@ -12,9 +10,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="App">
-      <img src={logo} className="App-logo" alt="logo" />
-      <ElectionNameGenerator onNext={handleNext} />
-      <EditablePoliticianList numberOfPoliticians={5} />{" "}
+      <SetupWizard />
     </div>
   );
 };

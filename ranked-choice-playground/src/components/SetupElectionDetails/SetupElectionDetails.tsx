@@ -1,4 +1,9 @@
 import React, { useEffect, useRef, createRef, useState, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setElectionTitle,
+  setNumberOfSeats,
+} from "../../features/electionSlice";
 import WordSpinner from "../Common/WordSpinner";
 import {
   Button,
@@ -19,17 +24,21 @@ import {
   orgs,
   orgJoiners,
 } from "./electionNameStrings";
-import styles from "./ElectionNameGenerator.module.css";
+import styles from "./SetupElectionDetails.module.css";
+import { SetupWizardStepProps } from "../../interfaces/SetupWizardStep";
 
-interface ElectionNameGeneratorProps {
-  onNext: (name: string) => void;
-}
+const SINGLE_MODE_TEMPLATE = "{0} of {1}";
+const MULTIPLE_MODE_TEMPLATE = "{0} seats on the {1} {2} {3}";
 
-const ElectionNameGenerator: React.FC<ElectionNameGeneratorProps> = ({
-  onNext,
+interface SetupElectionProps extends SetupWizardStepProps {}
+
+const SetupElectionDetails: React.FC<SetupElectionProps> = ({
+  setFormComplete,
 }) => {
+  const dispatch = useDispatch();
+  const { title, numberOfSeats } = useSelector((state: any) => state.election);
+
   const [isSingleMode, setIsSingleMode] = useState(true);
-  const [numberOfSeats, setNumberOfSeats] = useState(1);
 
   const singleModeLists = useMemo(() => [titles, responsibilities], []);
   const multipleModeLists = useMemo(
@@ -63,14 +72,6 @@ const ElectionNameGenerator: React.FC<ElectionNameGeneratorProps> = ({
   const currentRefs = isSingleMode ? singleModeRefs : multipleModeRefs;
   const wordLists = isSingleMode ? singleModeLists : multipleModeLists;
 
-  const handleSpin = () => {
-    if (!isSingleMode) {
-      setNumberOfSeats(Math.floor(Math.random() * 9) + 2); // Random number between 2 and 10
-    }
-    setIsSpinnerDone(new Array(currentRefs.current.length).fill(false));
-    currentRefs.current.forEach((ref) => ref.current?.startSpinning());
-  };
-
   const handleFinish = (index: number) => {
     const newIsSpinnerDone = [...isSpinnerDone];
     newIsSpinnerDone[index] = true;
@@ -83,32 +84,47 @@ const ElectionNameGenerator: React.FC<ElectionNameGeneratorProps> = ({
         (ref) => ref.current?.getGeneratedWord() || ""
       );
       const combinedName = isSingleMode
-        ? `${generatedWords[0]} of ${generatedWords[1]}`
-        : `${numberOfSeats} seats on the ${generatedWords[0]} ${generatedWords[1]} ${generatedWords[2]}`;
+        ? SINGLE_MODE_TEMPLATE.replace("{0}", generatedWords[0]).replace(
+            "{1}",
+            generatedWords[1]
+          )
+        : MULTIPLE_MODE_TEMPLATE.replace("{0}", numberOfSeats.toString())
+            .replace("{1}", generatedWords[0])
+            .replace("{2}", generatedWords[1])
+            .replace("{3}", generatedWords[2]);
       setCombinedName(combinedName);
+      dispatch(setElectionTitle(combinedName));
     }
-  }, [isSpinnerDone, isSingleMode, numberOfSeats, currentRefs]);
-
-  const handleNext = () => {
-    onNext(combinedName);
-  };
+  }, [isSpinnerDone, isSingleMode, numberOfSeats, currentRefs, dispatch]);
 
   const handleModeToggle = () => {
-    setIsSingleMode((prevMode) => !prevMode);
-    setCombinedName(""); // Reset the name when mode changes
-    setIsSpinnerDone(
-      new Array(
-        !isSingleMode ? multipleModeLists.length : singleModeLists.length
-      ).fill(false)
-    ); // Reset spinner states
-
-    // Force the spinner refs to update
-    if (!isSingleMode) {
-      multipleModeRefs.current.forEach((ref) => ref.current?.startSpinning());
-    } else {
-      singleModeRefs.current.forEach((ref) => ref.current?.startSpinning());
-    }
+    setIsSingleMode((prevMode) => {
+      const newMode = !prevMode;
+      setCombinedName(""); // Reset the name when mode changes
+      setIsSpinnerDone(
+        new Array(
+          newMode ? singleModeLists.length : multipleModeLists.length
+        ).fill(false)
+      ); // Reset spinner states
+      return newMode;
+    });
   };
+
+  const startAllSpinners = () => {
+    if (!isSingleMode) {
+      const randomSeats = Math.floor(Math.random() * 9) + 2; // Random number between 2 and 10
+      dispatch(setNumberOfSeats(randomSeats));
+    }
+    const refsToSpin = isSingleMode
+      ? singleModeRefs.current
+      : multipleModeRefs.current;
+    refsToSpin.forEach((ref) => ref.current?.startSpinning());
+  };
+
+  // Use useEffect to call startAllSpinners when isSingleMode changes
+  useEffect(() => {
+    startAllSpinners();
+  }, [isSingleMode]);
 
   return (
     <div className={styles.container}>
@@ -136,7 +152,9 @@ const ElectionNameGenerator: React.FC<ElectionNameGeneratorProps> = ({
               label="Seats"
               type="number"
               value={numberOfSeats}
-              onChange={(e) => setNumberOfSeats(Number(e.target.value))}
+              onChange={(e) =>
+                dispatch(setNumberOfSeats(Number(e.target.value)))
+              }
               inputProps={{ min: 1 }}
               variant="outlined"
               margin="normal"
@@ -160,18 +178,13 @@ const ElectionNameGenerator: React.FC<ElectionNameGeneratorProps> = ({
             )}
           </React.Fragment>
         ))}
-        <Button onClick={handleSpin} variant="contained" color="primary">
+        <Button onClick={startAllSpinners} variant="contained" color="primary">
           <FontAwesomeIcon icon={faRefresh} />
         </Button>
       </div>
       <div className={styles.combinedName}>{combinedName}</div>
-      <div>
-        <Button variant="contained" color="primary" onClick={handleNext}>
-          Next
-        </Button>
-      </div>
     </div>
   );
 };
 
-export default ElectionNameGenerator;
+export default SetupElectionDetails;

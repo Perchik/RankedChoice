@@ -3,12 +3,12 @@ import { createSlice } from "@reduxjs/toolkit";
 const electionSlice = createSlice({
   name: "election",
   initialState: {
-    details: "",
+    title: "",
     numberOfSeats: 0,
   },
   reducers: {
-    setElectionDetails: (state, action) => {
-      state.details = action.payload;
+    setElectionTitle: (state, action) => {
+      state.title = action.payload;
     },
     setNumberOfSeats: (state, action) => {
       state.numberOfSeats = action.payload;
@@ -16,5 +16,5 @@ const electionSlice = createSlice({
   },
 });
 
-export const { setElectionDetails, setNumberOfSeats } = electionSlice.actions;
+export const { setElectionTitle, setNumberOfSeats } = electionSlice.actions;
 export default electionSlice.reducer;

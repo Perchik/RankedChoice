@@ -1,5 +1,5 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import electionReducer from "../features/election/electionSlice";
+import electionReducer from "../features/electionSlice";
 
 const rootReducer = combineReducers({
   election: electionReducer,

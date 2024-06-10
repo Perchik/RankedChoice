@@ -6,45 +6,7 @@ import React, {
   useRef,
   useCallback,
 } from "react";
-import styled from "@emotion/styled";
-
-const WORD_HEIGHT = 2; // height of each word in em units
-
-const SpinContainer = styled.div`
-  align-items: flex-start;
-  border: 1px solid #ccc;
-  display: flex;
-  height: ${WORD_HEIGHT}em;
-  overflow: hidden;
-  position: relative;
-  width: 200px;
-`;
-
-const SpinningText = styled.div<{
-  animationDuration: number;
-  finalIndex: number;
-}>`
-  display: inline-block;
-  will-change: transform;
-
-  &.is-animating {
-    transition: transform ${({ animationDuration }) => animationDuration}s
-      ease-in-out;
-    transform: ${({ finalIndex }) =>
-      `translateY(calc(${finalIndex} * -${WORD_HEIGHT}em))`};
-  }
-
-  &.is-resetting {
-    transition: none;
-    transform: translateY(0);
-  }
-`;
-
-const TextItem = styled.div`
-  height: ${WORD_HEIGHT}em;
-  line-height: ${WORD_HEIGHT}em;
-  text-align: center;
-`;
+import { Box, Typography, useTheme } from "@mui/material";
 
 const shuffleAndConcatList = (baseList: string[], currentItem: string) => {
   const filteredList = baseList.filter((item) => item !== currentItem);
@@ -58,10 +20,11 @@ const shuffleAndConcatList = (baseList: string[], currentItem: string) => {
 interface WordSpinnerProps {
   words: string[];
   onFinish?: (finalWord: string) => void;
+  alignment?: "left" | "center" | "right";
 }
 
 const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
-  ({ words, onFinish }, ref) => {
+  ({ words, onFinish, alignment = "center" }, ref) => {
     const [shiftedList, setShiftedList] = useState<string[]>(() =>
       shuffleAndConcatList(words, words[0])
     );
@@ -71,6 +34,9 @@ const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
     const [isResetting, setIsResetting] = useState<boolean>(false);
     const spinningTextRef = useRef<HTMLDivElement>(null);
     const generatedWordRef = useRef<string | null>(null);
+    const theme = useTheme();
+    const textRef = useRef<HTMLDivElement>(null);
+    const [wordHeight, setWordHeight] = useState<number>(2); // default height
 
     const resetSpinner = useCallback(() => {
       setIsAnimating(false);
@@ -106,6 +72,13 @@ const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
       };
     }, [finalIndex, onFinish, resetSpinner, shiftedList]);
 
+    useEffect(() => {
+      if (textRef.current) {
+        const fontSize = window.getComputedStyle(textRef.current).fontSize;
+        setWordHeight(parseFloat(fontSize) + 14);
+      }
+    }, []);
+
     const startSpinning = () => {
       const randomIndex = Math.floor(Math.random() * words.length);
       const newFinalIndex = randomIndex + words.length; // We loop through once before settling on a random entry, so we add words.length here.
@@ -122,23 +95,50 @@ const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
     }));
 
     return (
-      <SpinContainer>
-        <SpinningText
+      <Box
+        sx={{
+          alignItems: "flex-start",
+          display: "flex",
+          height: `${wordHeight}px`,
+          overflow: "hidden",
+          position: "relative",
+          px: 1,
+        }}
+      >
+        <Box
           ref={spinningTextRef}
           className={`${isAnimating ? "is-animating" : ""} ${
             isResetting ? "is-resetting" : ""
           }`}
-          animationDuration={animationDuration}
-          finalIndex={finalIndex}
+          sx={{
+            display: "inline-block",
+            willChange: "transform",
+            transition: isAnimating
+              ? `transform ${animationDuration}s ease-in-out`
+              : "none",
+            transform: isAnimating
+              ? `translateY(calc(${finalIndex} * -${wordHeight}px))`
+              : "translateY(0)",
+          }}
           data-testid="spinning-text"
         >
           {shiftedList.map((word, index) => (
-            <TextItem key={index} data-testid={`text-item-${index}`}>
+            <Typography
+              key={index}
+              ref={index === 0 ? textRef : null}
+              variant="h6"
+              sx={{
+                height: `${wordHeight}px`,
+                lineHeight: `${wordHeight}px`,
+                textAlign: alignment,
+              }}
+              data-testid={`text-item-${index}`}
+            >
               {word}
-            </TextItem>
+            </Typography>
           ))}
-        </SpinningText>
-      </SpinContainer>
+        </Box>
+      </Box>
     );
   }
 );

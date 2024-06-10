@@ -5,9 +5,17 @@ import {
   setNumberOfSeats,
 } from "../../features/electionSlice";
 import WordSpinner from "../Common/WordSpinner";
-import { Button, Box, Typography } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRefresh } from "@fortawesome/free-solid-svg-icons";
+import {
+  Button,
+  Box,
+  Typography,
+  TextField,
+  Tooltip,
+  Paper,
+  IconButton,
+} from "@mui/material";
+
+import RefreshIcon from "@mui/icons-material/Refresh";
 import {
   titles,
   responsibilities,
@@ -16,10 +24,9 @@ import {
 } from "./electionNameStrings";
 import styles from "./SetupElectionDetails.module.css";
 import { SetupWizardStepProps } from "../../interfaces/SetupWizardStep";
-import SelectableCard from "../Common/SelectableCard"; // Import the new SelectableCard component
+import SelectableCard from "../Common/SelectableCard";
 import PersonIcon from "@mui/icons-material/Person";
 import GroupIcon from "@mui/icons-material/Group";
-import NumericInput from "../Common/NumericInput"; // Import the new NumericInput component
 
 const SINGLE_MODE_TEMPLATE = "{0} of {1}";
 const MULTIPLE_MODE_TEMPLATE = "{0} seats on the {1} {2} {3}";
@@ -99,20 +106,27 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
             .replace("{3}", generatedWords[2]);
       setCombinedName(combinedName);
       dispatch(setElectionTitle(combinedName));
+      setFormComplete(true);
     }
-  }, [isSpinnerDone, isSingleMode, numberOfSeats, currentRefs, dispatch]);
+  }, [
+    isSpinnerDone,
+    setFormComplete,
+    isSingleMode,
+    numberOfSeats,
+    currentRefs,
+    dispatch,
+  ]);
 
-  const handleModeToggle = () => {
-    setIsSingleMode((prevMode) => {
-      const newMode = !prevMode;
+  const handleModeToggle = (mode: boolean) => {
+    if (mode !== isSingleMode) {
+      setIsSingleMode(mode);
       setCombinedName(""); // Reset the name when mode changes
       setIsSpinnerDone(
         new Array(
-          newMode ? singleModeLists.length : multipleModeLists.length
+          mode ? singleModeLists.length : multipleModeLists.length
         ).fill(false)
       ); // Reset spinner states
-      return newMode;
-    });
+    }
   };
 
   useEffect(() => {
@@ -125,39 +139,65 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
 
   return (
     <div className={styles.container}>
+      <Typography variant="h4">
+        How many seats are open in this election?
+      </Typography>
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          mt: 4,
+          mt: 2,
         }}
       >
-        <Box sx={{ display: "flex", gap: 4 }}>
+        <Box sx={{ display: "flex", gap: 2, mb: 4 }}>
           <SelectableCard
             selected={isSingleMode}
-            onClick={handleModeToggle}
+            onClick={() => handleModeToggle(true)}
             icon={<PersonIcon fontSize="large" />}
             title="One"
           />
           <SelectableCard
             selected={!isSingleMode}
-            onClick={handleModeToggle}
+            onClick={() => handleModeToggle(false)}
             icon={<GroupIcon fontSize="large" />}
             title="Multiple"
           >
-            <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-              <NumericInput
+            <Box
+              sx={{ display: "flex", alignItems: "center", mt: 2 }}
+              onClick={(e) => e.stopPropagation()} // Prevent event propagation
+            >
+              <TextField
+                type="number"
                 value={numberOfSeats}
-                onChange={(value) => dispatch(setNumberOfSeats(value))}
-                min={1}
-                increment={1}
+                onChange={(e) =>
+                  dispatch(setNumberOfSeats(Number(e.target.value)))
+                }
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+                inputProps={{ min: 2, max: 10 }}
+                sx={{ width: "80px", ml: 2 }}
               />
             </Box>
           </SelectableCard>
         </Box>
       </Box>
-      <div className={styles.spinnerContainer}>
+      <Typography variant="h4" sx={{ py: 2 }}>
+        {`This election will be for ${isSingleMode ? "the position of" : `${numberOfSeats} seats on the`}`}
+      </Typography>
+      <Box
+        display="flex"
+        flexDirection="row"
+        sx={{
+          backgroundColor: "#0000000b",
+          borderBottom: "solid 1px grey",
+          borderTopLeftRadius: "8px",
+          borderTopRightRadius: "8px",
+          pt: 1,
+        }}
+      >
         {wordLists.map((words, index) => (
           <React.Fragment
             key={`${isSingleMode ? "single" : "multiple"}-${index}`}
@@ -166,17 +206,33 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
               ref={currentRefs.current[index]}
               words={words}
               onFinish={() => handleFinish(index)}
+              alignment={
+                index === 0
+                  ? "right"
+                  : index === wordLists.length - 1
+                    ? "left"
+                    : "center"
+              }
             />
             {isSingleMode && index === 0 && (
-              <Typography className={styles.sentenceText}>of</Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  px: 1,
+                  height: "34px",
+                }}
+              >
+                of
+              </Typography>
             )}
           </React.Fragment>
         ))}
-        <Button onClick={handleSpin} variant="contained" color="primary">
-          <FontAwesomeIcon icon={faRefresh} />
-        </Button>
-      </div>
-      <div className={styles.combinedName}>{combinedName}</div>
+        <Tooltip title="Regenerate">
+          <IconButton onClick={handleSpin} color="primary" sx={{ ml: 2 }}>
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
+      </Box>
     </div>
   );
 };

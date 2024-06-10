@@ -5,13 +5,14 @@ import {
   StepLabel,
   Button,
   Box,
+  Divider,
   Typography,
   Tabs,
   Paper,
   Tab,
 } from "@mui/material";
-
 import SetupElectionDetails from "./SetupElectionDetails/SetupElectionDetails";
+
 const steps = [
   "Setup Election",
   "Setup Political Parties",
@@ -22,19 +23,33 @@ const steps = [
 function getStepContent(
   stepIndex: number,
   mode: string,
-  setFormComplete: (complete: boolean) => void
+  setFormComplete: (complete: boolean) => void,
+  setPartySetupMode: (mode: "simple" | "advanced") => void
 ) {
   switch (stepIndex) {
     case 0:
       return <SetupElectionDetails setFormComplete={setFormComplete} />;
     case 1:
-      return mode === "simple"
-        ? "setup parties simple"
-        : "setup parties advanced";
+      return (
+        <Box>
+          <Tabs
+            value={mode}
+            onChange={(e, newValue) => setPartySetupMode(newValue)}
+          >
+            <Tab label="Simple Mode" value="simple" />
+            <Tab label="Advanced Mode" value="advanced" />
+          </Tabs>
+          <Box sx={{ mt: 2 }}>
+            {mode === "simple"
+              ? "Setup parties in simple mode"
+              : "Setup parties in advanced mode"}
+          </Box>
+        </Box>
+      );
     case 2:
-      return "setup candidates";
+      return "Setup candidates";
     case 3:
-      return "setup voters";
+      return "Setup voters";
     default:
       return "Unknown step";
   }
@@ -62,58 +77,50 @@ const ElectionSetupStepper = () => {
   };
 
   return (
-    <Paper sx={{ mx: 2, my: 3, p: 2 }}>
-      <Typography component="h1" variant="h4" align="center">
-        Create Scenario
-      </Typography>
-      <Stepper sx={{ pt: 3, px: 0, pb: 5 }} activeStep={activeStep}>
+    <>
+      <Stepper sx={{ p: 2 }} activeStep={activeStep}>
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
           </Step>
         ))}
       </Stepper>
-
-      {activeStep === steps.length ? (
-        <Box sx={{ mt: 2 }}>
-          <Typography>All steps completed - you&apos;re finished</Typography>
-          <Button onClick={handleReset}>Reset</Button>
-        </Box>
-      ) : (
-        <Box sx={{ mt: 2 }}>
-          {activeStep === 1 ? (
-            <Box>
-              <Tabs
-                value={partySetupMode}
-                onChange={(e, newValue) => setPartySetupMode(newValue)}
-              >
-                <Tab label="Simple Mode" value="simple" />
-                <Tab label="Advanced Mode" value="advanced" />
-              </Tabs>
-              {getStepContent(activeStep, partySetupMode, setIsFormComplete)}
-            </Box>
-          ) : (
-            getStepContent(activeStep, partySetupMode, setIsFormComplete)
-          )}
+      <Paper sx={{ mx: 2, mb: 2, p: 2, width: "90%" }}>
+        {activeStep === steps.length ? (
           <Box sx={{ mt: 2 }}>
-            <Button
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              sx={{ mr: 1 }}
-            >
-              Back
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleNext}
-              disabled={!isFormComplete}
-            >
-              {activeStep === steps.length - 1 ? "Finish" : "Next"}
-            </Button>
+            <Typography>All steps completed - you&apos;re finished</Typography>
+            <Button onClick={handleReset}>Reset</Button>
           </Box>
-        </Box>
-      )}
-    </Paper>
+        ) : (
+          <Box sx={{ mt: 2 }}>
+            {getStepContent(
+              activeStep,
+              partySetupMode,
+              setIsFormComplete,
+              setPartySetupMode
+            )}
+            <Box
+              sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}
+            >
+              <Button
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                sx={{ mr: 1 }}
+              >
+                Back
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleNext}
+                disabled={!isFormComplete}
+              >
+                {activeStep === steps.length - 1 ? "Finish" : "Next"}
+              </Button>
+            </Box>
+          </Box>
+        )}
+      </Paper>
+    </>
   );
 };
 

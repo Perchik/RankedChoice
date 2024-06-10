@@ -27,7 +27,7 @@ import SelectableCard from "../Common/SelectableCard";
 import { SinglePersonIcon, MultiplePeopleIcon } from "../../assets/Icons";
 
 const SINGLE_MODE_TEMPLATE = "{0} of {1}";
-const MULTIPLE_MODE_TEMPLATE = "{0} seats on the {1} {2} {3}";
+const MULTIPLE_MODE_TEMPLATE = "{0} {1} {2}";
 
 interface SetupElectionProps extends SetupWizardStepProps {}
 
@@ -35,7 +35,7 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
   setFormComplete,
 }) => {
   const dispatch = useDispatch();
-  const { numberOfSeats } = useSelector((state: any) => state.election);
+  const { numberOfSeats, title } = useSelector((state: any) => state.election);
 
   const [isSingleMode, setIsSingleMode] = useState(true);
 
@@ -93,10 +93,10 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
             "{1}",
             generatedWords[1]
           )
-        : MULTIPLE_MODE_TEMPLATE.replace("{0}", numberOfSeats.toString())
-            .replace("{1}", generatedWords[0])
-            .replace("{2}", generatedWords[1])
-            .replace("{3}", generatedWords[2]);
+        : MULTIPLE_MODE_TEMPLATE.replace("{0}", generatedWords[0])
+            .replace("{1}", generatedWords[1])
+            .replace("{2}", generatedWords[2]);
+      if (isSingleMode) dispatch(setNumberOfSeats(1));
       dispatch(setElectionTitle(combinedName));
       setFormComplete(true);
     }
@@ -109,14 +109,16 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
     dispatch,
   ]);
 
-  const handleModeToggle = (mode: boolean) => {
-    if (mode !== isSingleMode) {
-      setIsSingleMode(mode);
+  const handleModeToggle = (isSingle: boolean) => {
+    if (isSingle !== isSingleMode) {
+      // If the mode changed
+      setIsSingleMode(isSingle);
       setIsSpinnerDone(
         new Array(
-          mode ? singleModeLists.length : multipleModeLists.length
+          isSingle ? singleModeLists.length : multipleModeLists.length
         ).fill(false)
-      ); // Reset spinner states
+      );
+      dispatch(setNumberOfSeats(isSingle ? 1 : 2));
     }
   };
 
@@ -176,7 +178,7 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
         </Box>
       </Box>
       <Typography variant="h4" sx={{ py: 2 }}>
-        {`This election will be for ${isSingleMode ? "the position of" : `${numberOfSeats} seats at the`}`}
+        {`This election will be for ${isSingleMode ? "the position of" : `${numberOfSeats} seats on the`}`}
       </Typography>
       <Box
         display="flex"

@@ -85,7 +85,7 @@ const ElectionSetupStepper = () => {
           </Step>
         ))}
       </Stepper>
-      <Paper sx={{ mx: 2, mb: 2, p: 2, width: "90%" }}>
+      <Paper sx={{ mx: 2, mb: 2, p: 2 }}>
         {activeStep === steps.length ? (
           <Box sx={{ mt: 2 }}>
             <Typography>All steps completed - you&apos;re finished</Typography>

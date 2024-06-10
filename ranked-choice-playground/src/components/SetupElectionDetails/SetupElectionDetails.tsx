@@ -1,21 +1,27 @@
-import React, { useEffect, useRef, createRef, useState, useMemo } from "react";
+import React, {
+  useEffect,
+  useRef,
+  createRef,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setElectionTitle,
-  setNumberOfSeats,
-} from "../../features/electionSlice";
-import WordSpinner from "../Common/WordSpinner";
 import {
   Button,
   Box,
   Typography,
   TextField,
   Tooltip,
-  Paper,
   IconButton,
 } from "@mui/material";
-
 import RefreshIcon from "@mui/icons-material/Refresh";
+
+import {
+  setElectionTitle,
+  setNumberOfSeats,
+} from "../../features/electionSlice";
+import WordSpinner from "../Common/WordSpinner";
 import {
   titles,
   responsibilities,
@@ -25,8 +31,7 @@ import {
 import styles from "./SetupElectionDetails.module.css";
 import { SetupWizardStepProps } from "../../interfaces/SetupWizardStep";
 import SelectableCard from "../Common/SelectableCard";
-import PersonIcon from "@mui/icons-material/Person";
-import GroupIcon from "@mui/icons-material/Group";
+import { SinglePersonIcon, MultiplePeopleIcon } from "../../assets/Icons";
 
 const SINGLE_MODE_TEMPLATE = "{0} of {1}";
 const MULTIPLE_MODE_TEMPLATE = "{0} seats on the {1} {2} {3}";
@@ -37,7 +42,7 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
   setFormComplete,
 }) => {
   const dispatch = useDispatch();
-  const { title, numberOfSeats } = useSelector((state: any) => state.election);
+  const { numberOfSeats } = useSelector((state: any) => state.election);
 
   const [isSingleMode, setIsSingleMode] = useState(true);
 
@@ -68,7 +73,6 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
   const [isSpinnerDone, setIsSpinnerDone] = useState<boolean[]>(
     new Array(singleModeLists.length).fill(false)
   );
-  const [combinedName, setCombinedName] = useState<string>("");
 
   const currentRefs = isSingleMode ? singleModeRefs : multipleModeRefs;
   const wordLists = isSingleMode ? singleModeLists : multipleModeLists;
@@ -104,7 +108,6 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
             .replace("{1}", generatedWords[0])
             .replace("{2}", generatedWords[1])
             .replace("{3}", generatedWords[2]);
-      setCombinedName(combinedName);
       dispatch(setElectionTitle(combinedName));
       setFormComplete(true);
     }
@@ -120,7 +123,6 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
   const handleModeToggle = (mode: boolean) => {
     if (mode !== isSingleMode) {
       setIsSingleMode(mode);
-      setCombinedName(""); // Reset the name when mode changes
       setIsSpinnerDone(
         new Array(
           mode ? singleModeLists.length : multipleModeLists.length
@@ -129,13 +131,13 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
     }
   };
 
+  const startAllSpinners = useCallback(() => {
+    currentRefs.current.forEach((ref) => ref.current?.startSpinning());
+  }, [currentRefs]);
+
   useEffect(() => {
     startAllSpinners();
-  }, [isSingleMode]);
-
-  const startAllSpinners = () => {
-    currentRefs.current.forEach((ref) => ref.current?.startSpinning());
-  };
+  }, [isSingleMode, startAllSpinners]);
 
   return (
     <div className={styles.container}>
@@ -154,13 +156,13 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
           <SelectableCard
             selected={isSingleMode}
             onClick={() => handleModeToggle(true)}
-            icon={<PersonIcon fontSize="large" />}
+            icon={<SinglePersonIcon sx={{ fontSize: "60px" }} />}
             title="One"
           />
           <SelectableCard
             selected={!isSingleMode}
             onClick={() => handleModeToggle(false)}
-            icon={<GroupIcon fontSize="large" />}
+            icon={<MultiplePeopleIcon sx={{ fontSize: "60px" }} />}
             title="Multiple"
           >
             <Box

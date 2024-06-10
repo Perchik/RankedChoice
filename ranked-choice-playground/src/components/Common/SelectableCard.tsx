@@ -36,6 +36,7 @@ const StyledCard = styled(Card, {
   cursor: "pointer",
   position: "relative",
   animation: selected ? `${scaleUp} 0.3s ease-in-out forwards` : "none",
+  transformOrigin: "center",
 }));
 
 interface SelectableCardProps {

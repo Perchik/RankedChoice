@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme, Theme } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
@@ -64,6 +64,18 @@ const theme = createTheme({
           maxWidth: "95%",
           "@media (min-width: 1920px)": {
             maxWidth: 1800,
+          },
+        },
+      },
+    },
+    MuiStepIcon: {
+      styleOverrides: {
+        root: {
+          "&.Mui-active": {
+            color: (theme: Theme) => theme.palette.secondary.main, // Reference secondary color
+          },
+          "&.Mui-completed": {
+            color: (theme: Theme) => theme.palette.secondary.main, // Reference secondary color
           },
         },
       },

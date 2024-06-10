@@ -4,7 +4,7 @@ const electionSlice = createSlice({
   name: "election",
   initialState: {
     title: "",
-    numberOfSeats: 0,
+    numberOfSeats: 2,
   },
   reducers: {
     setElectionTitle: (state, action) => {

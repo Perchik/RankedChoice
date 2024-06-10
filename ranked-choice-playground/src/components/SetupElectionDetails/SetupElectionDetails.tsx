@@ -7,14 +7,7 @@ import React, {
   useCallback,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Button,
-  Box,
-  Typography,
-  TextField,
-  Tooltip,
-  IconButton,
-} from "@mui/material";
+import { Box, Typography, TextField, Tooltip, IconButton } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
 import {
@@ -78,10 +71,6 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
   const wordLists = isSingleMode ? singleModeLists : multipleModeLists;
 
   const handleSpin = () => {
-    if (!isSingleMode) {
-      const randomSeats = Math.floor(Math.random() * 9) + 2; // Random number between 2 and 10
-      dispatch(setNumberOfSeats(randomSeats));
-    }
     setIsSpinnerDone(new Array(currentRefs.current.length).fill(false));
     currentRefs.current.forEach((ref) => ref.current?.startSpinning());
   };
@@ -187,7 +176,7 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
         </Box>
       </Box>
       <Typography variant="h4" sx={{ py: 2 }}>
-        {`This election will be for ${isSingleMode ? "the position of" : `${numberOfSeats} seats on the`}`}
+        {`This election will be for ${isSingleMode ? "the position of" : `${numberOfSeats} seats at the`}`}
       </Typography>
       <Box
         display="flex"

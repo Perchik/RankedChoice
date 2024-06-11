@@ -127,17 +127,6 @@ const PartyPresetSelector: React.FC<PresetSelectionProps> = ({
               useSecondaryStyle
             />
           </Box>
-          <Typography
-            sx={{
-              p: "1",
-              flexGrow: "1",
-              textAlign: "center",
-              minWidth: "120px",
-            }}
-            variant="h6"
-          >
-            -- or --
-          </Typography>
         </Box>
         {Object.entries(presets).map(([key, preset]) => (
           <PartyPresetCard

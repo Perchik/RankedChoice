@@ -1,7 +1,7 @@
 import logo from "../assets/logo.svg";
 import "../App.css";
 import React from "react";
-import SetupWizard from "../components/SetupWizard";
+import SetupWizard from "../components/SetupWizard/SetupWizard";
 const Home: React.FC = () => {
   const handleNext = (name: string) => {
     console.log("Generated or entered name:", name);

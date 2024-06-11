@@ -1,9 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import Home from "./pages/Home";
-import EditBody from "./pages/EditBody";
-import Parties from "./pages/Parties";
-import logo from "./assets/logo.svg";
+
 import {
   AppBar,
   Toolbar,
@@ -13,10 +10,16 @@ import {
   Box,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-
-import "./App.css";
 import "@fontsource/lexend";
 import "@fontsource/manrope";
+
+import Home from "./pages/Home";
+import EditBody from "./pages/EditBody";
+import Parties from "./pages/Parties";
+import Glossary from "./pages/Glossary";
+import logo from "./assets/logo.svg";
+
+import "./App.css";
 
 const App: React.FC = () => {
   return (
@@ -43,6 +46,9 @@ const App: React.FC = () => {
           <Button color="inherit" component={Link} to="/parties">
             Parties
           </Button>
+          <Button color="inherit" component={Link} to="/glossary">
+            Glossary
+          </Button>
         </Toolbar>
       </AppBar>
       <Box>
@@ -50,6 +56,7 @@ const App: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="/edit-body" element={<EditBody />} />
           <Route path="/parties" element={<Parties />} />
+          <Route path="/glossary" element={<Glossary />} />
         </Routes>
       </Box>
     </Router>

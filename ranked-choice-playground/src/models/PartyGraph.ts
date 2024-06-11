@@ -1,5 +1,5 @@
 import { Party } from "./Party";
-import { PartyStatus } from "../constants/PartyStatus";
+import { PartyStatus } from "../models/Party";
 import { parties as partyData } from "../constants/PartyData";
 
 interface Interaction {

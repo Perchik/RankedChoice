@@ -3,9 +3,8 @@ import Cytoscape from "cytoscape";
 import fcose from "cytoscape-fcose";
 import gridGuide from "cytoscape-grid-guide";
 import { PartyGraph } from "../../models/PartyGraph";
-import { PartyStatus } from "../../constants/PartyStatus";
+import { PartyStatus } from "../../models/Party";
 import {
-  Box,
   Button,
   Checkbox,
   Dialog,
@@ -244,9 +243,12 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
   };
 
   return (
-    <div>
+    <div style={{ backgroundColor: "pink" }}>
       <div style={{ position: "relative", width: "100%", height: "600px" }}>
-        <div ref={cyRef} style={{ width: "100%", height: "100%" }} />
+        <div
+          ref={cyRef}
+          style={{ width: "100%", height: "100%", position: "absolute" }}
+        />
       </div>
       <Button
         variant="contained"

@@ -10,17 +10,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { Box, Typography, TextField, Tooltip, IconButton } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
-import {
-  setElectionTitle,
-  setNumberOfSeats,
-} from "../../features/electionSlice";
+import { setElectionTitle, setNumberOfSeats } from "../../slices/electionSlice";
 import WordSpinner from "../Common/WordSpinner";
 import {
   titles,
   responsibilities,
   orgs,
   orgJoiners,
-} from "./electionNameStrings";
+} from "../SetupWizard/electionNameStrings";
 import styles from "./SetupElectionDetails.module.css";
 import { SetupWizardStepProps } from "../../interfaces/SetupWizardStep";
 import SelectableCard from "../Common/SelectableCard";
@@ -35,7 +32,7 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
   setFormComplete,
 }) => {
   const dispatch = useDispatch();
-  const { numberOfSeats, title } = useSelector((state: any) => state.election);
+  const { numberOfSeats } = useSelector((state: any) => state.election);
 
   const [isSingleMode, setIsSingleMode] = useState(true);
 

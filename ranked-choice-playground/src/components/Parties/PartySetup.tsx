@@ -43,7 +43,15 @@ const PartySetup: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="lg">
+    <Container
+      maxWidth="lg"
+      sx={{
+        backgroundColor: "#0000000b",
+        borderRadius: 2,
+        pt: 2,
+        border: "solid thin grey",
+      }}
+    >
       <Box sx={{ width: "100%", mt: 4 }}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (

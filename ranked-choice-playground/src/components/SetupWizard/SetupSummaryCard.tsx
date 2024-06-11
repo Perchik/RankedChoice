@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Card, Typography } from "@mui/material";
-import { RootState } from "../app/store";
+import { RootState } from "../../store";
 
 const SetupSummary: React.FC = () => {
   const electionDetails = useSelector((state: RootState) => state.election);
@@ -9,9 +9,7 @@ const SetupSummary: React.FC = () => {
   return (
     <Card
       sx={{
-        width: "250px",
         p: 2,
-        ml: 2,
         textAlign: "left",
       }}
     >

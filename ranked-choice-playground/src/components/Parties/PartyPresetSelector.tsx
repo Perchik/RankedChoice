@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import presetsData from "../../config/party-presets.json";
 import {
   Container,
@@ -147,20 +147,20 @@ const PartyPresetSelector: React.FC<PresetSelectionProps> = ({
         <Modal open={Boolean(moreInfo)} onClose={handleClose}>
           <Box
             sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "80%",
-              maxWidth: 800,
-              maxHeight: "90vh",
               bgcolor: "background.paper",
-              boxShadow: 24,
               borderRadius: 1,
-              outline: 0,
+              boxShadow: 24,
               display: "flex",
               flexDirection: "column",
+              left: "50%",
+              maxHeight: "90vh",
+              maxWidth: 800,
+              outline: 0,
               overflow: "hidden",
+              position: "absolute",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "80%",
             }}
           >
             <Box

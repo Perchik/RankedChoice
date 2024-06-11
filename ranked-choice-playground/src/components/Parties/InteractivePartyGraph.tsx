@@ -1,12 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import Cytoscape from "cytoscape";
 import fcose from "cytoscape-fcose";
+import CytoscapeComponent from "react-cytoscapejs";
 import gridGuide from "cytoscape-grid-guide";
 import { PartyGraph } from "../../models/PartyGraph";
 import { PartyStatus } from "../../models/Party";
 import {
   Button,
   Checkbox,
+  Box,
   Dialog,
   DialogActions,
   DialogContent,
@@ -19,10 +21,12 @@ import {
   Slider,
   Typography,
 } from "@mui/material";
+import cytoscapeStylesheet from "./cytoscapeStylesheet";
 
-// Register the fcose layout and grid-guide extension
 Cytoscape.use(fcose);
 Cytoscape.use(gridGuide as any);
+
+const LAYOUT = "fcose";
 
 interface InteractivePartyGraphProps {
   partyGraph: PartyGraph;
@@ -37,124 +41,38 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
   onNodeDeleted,
   nodesToRemove,
 }) => {
-  const cyRef = useRef<HTMLDivElement>(null);
-  const cyInstance = useRef<Cytoscape.Core | null>(null);
-
+  const cyRef = useRef<cytoscape.Core | undefined>(undefined);
   const [sourceNode, setSourceNode] = useState<string>("");
   const [targetNode, setTargetNode] = useState<string>("");
   const [isOpposition, setIsOpposition] = useState<boolean>(false);
   const [weight, setWeight] = useState<number>(0.5);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (cyRef.current) {
-      const cy = Cytoscape({
-        container: cyRef.current,
-        style: [
-          {
-            selector: "node",
-            style: {
-              "background-color": "data(color)",
-              label: "data(label)",
-              width: "data(size)",
-              height: "data(size)",
-              "text-valign": "center",
-              color: "data(fontColor)",
-              "font-size": "data(fontSize)",
-            },
-          },
-          {
-            selector: "edge",
-            style: {
-              width: "data(weight)",
-              "line-color": "#000",
-              "target-arrow-color": "#000",
-              "target-arrow-shape": "triangle",
-              "curve-style": "bezier",
-              label: "data(label)",
-              "font-size": 10,
-              color: "#000",
-              "text-margin-x": 10,
-              "text-margin-y": 10,
-              "text-background-opacity": 1,
-              "text-background-color": "#ffffff",
-              "text-background-shape": "roundrectangle",
-            },
-          },
-          {
-            selector: "edge[opposition = 'true']",
-            style: {
-              "line-color": "#F00",
-              "target-arrow-color": "#F00",
-              "text-background-color": "#ffffff",
-              color: "#F00",
-              label: "X",
-              "text-margin-y": 0,
-              "text-margin-x": 0,
-              "text-background-padding": "5",
-              "line-style": "dashed",
-              "line-dash-pattern": [6, 3],
-            },
-          },
-        ],
-        layout: {
-          name: "fcose",
-        },
-      });
+  const layoutOptions = useCallback(
+    () => ({
+      name: LAYOUT,
+      fit: true,
+    }),
+    []
+  );
 
-      // Initialize and configure the grid-guide plugin
-      (cy as any).gridGuide({
-        snapToGridOnRelease: true,
-        snapToAlignmentLocationOnRelease: true,
-        guidelines: true,
-        guidelinesTolerance: 2.0,
-        guidelinesStyle: {
-          strokeStyle: "#8b7d6b",
-          horizontalDistColor: "#ff0000",
-          verticalDistColor: "#00ff00",
-          initPosAlignmentColor: "#0000ff",
-          lineDash: [0, 0],
-        },
-      });
-
-      // Store the Cytoscape instance
-      cyInstance.current = cy;
-
-      // Enable dragging nodes around
-      cy.userPanningEnabled(true);
-      cy.nodes().grabify();
-    }
-
-    return () => {
-      if (cyInstance.current) {
-        cyInstance.current.destroy();
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (cyInstance.current) {
-      const cy = cyInstance.current;
-
-      // Add new nodes
+  const addElementsToCytoscape = useCallback(
+    (cy: cytoscape.Core) => {
       const existingNodes = new Set(cy.nodes().map((node) => node.id()));
-
-      const newNodes = partyGraph
+      const newNodes: cytoscape.ElementDefinition[] = partyGraph
         .getParties()
-        .filter((party) => !existingNodes.has(party.id));
-
-      newNodes.forEach((party) => {
-        cy.add({
-          group: "nodes",
+        .filter((party) => !existingNodes.has(party.id))
+        .map((party) => ({
+          group: "nodes" as cytoscape.ElementGroup,
           data: {
             id: party.id,
             label: party.name,
             color: party.color,
             size:
               party.status === PartyStatus.Major
-                ? 100
+                ? 80
                 : party.status === PartyStatus.Minor
-                  ? 50
+                  ? 40
                   : 20,
             fontColor: party.fontColor,
             fontSize:
@@ -164,27 +82,22 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
                   ? 10
                   : 5,
           },
-        });
-        onNodeAdded(party);
-      });
+        }));
 
-      // Add new edges
-      const newEdges = partyGraph.interactions.filter(
-        (interaction) =>
-          cy.getElementById(interaction.from).length > 0 &&
-          cy.getElementById(interaction.to).length > 0 &&
-          !cy
-            .edges()
-            .some(
-              (edge) =>
-                edge.data("source") === interaction.from &&
-                edge.data("target") === interaction.to
-            )
+      const existingEdges = new Set(
+        cy
+          .edges()
+          .map((edge) => `${edge.data("source")}-${edge.data("target")}`)
       );
-
-      newEdges.forEach((interaction) => {
-        cy.add({
-          group: "edges",
+      const newEdges: cytoscape.ElementDefinition[] = partyGraph.interactions
+        .filter(
+          (interaction) =>
+            cy.getElementById(interaction.from).length > 0 &&
+            cy.getElementById(interaction.to).length > 0 &&
+            !existingEdges.has(`${interaction.from}-${interaction.to}`)
+        )
+        .map((interaction) => ({
+          group: "edges" as cytoscape.ElementGroup,
           data: {
             source: interaction.from,
             target: interaction.to,
@@ -192,38 +105,54 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
             opposition: interaction.opposition ? "true" : "false",
             label: interaction.weight.toString(),
           },
-        });
-      });
+        }));
 
-      cy.layout({ name: "fcose" }).run();
-    }
-  }, [partyGraph, onNodeAdded]);
+      cy.add([...newNodes, ...newEdges]);
+
+      // Only run layout if new nodes or edges were added
+      if (newNodes.length > 0 || newEdges.length > 0) {
+        setTimeout(() => {
+          if (!cy.destroyed()) {
+            cy.layout(layoutOptions()).run();
+          }
+        }, 100); // Adding a small delay before the initial layout
+      }
+
+      newNodes.forEach((node) => onNodeAdded(node.data));
+    },
+    [partyGraph, onNodeAdded, layoutOptions]
+  );
 
   useEffect(() => {
-    if (cyInstance.current && nodesToRemove.length > 0) {
-      const cy = cyInstance.current;
+    if (cyRef.current) {
+      addElementsToCytoscape(cyRef.current);
+    }
+  }, [partyGraph, addElementsToCytoscape]);
+
+  useEffect(() => {
+    if (cyRef.current && nodesToRemove.length > 0) {
+      const cy = cyRef.current;
 
       nodesToRemove.forEach((nodeId) => {
-        // Remove all edges connected to the node
         const connectedEdges = cy.getElementById(nodeId).connectedEdges();
         cy.remove(connectedEdges);
-
-        // Remove the node itself
         cy.getElementById(nodeId).remove();
         onNodeDeleted(nodeId);
       });
 
-      // Run layout after nodes and edges have been removed
-      cy.layout({ name: "fcose" }).run();
+      // Only run layout if nodes were removed
+      if (nodesToRemove.length > 0) {
+        cy.layout(layoutOptions()).run();
+      }
     }
-  }, [nodesToRemove, onNodeDeleted]);
+  }, [nodesToRemove, onNodeDeleted, layoutOptions]);
 
   const handleAddEdge = () => {
-    if (cyInstance.current) {
-      const cy = cyInstance.current;
+    if (cyRef.current) {
+      const cy = cyRef.current;
 
       cy.add({
-        group: "edges",
+        group: "edges" as cytoscape.ElementGroup,
         data: {
           source: sourceNode,
           target: targetNode,
@@ -233,7 +162,7 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
         },
       });
 
-      cy.layout({ name: "fcose" }).run();
+      cy.layout(layoutOptions()).run();
       setOpenDialog(false);
     }
   };
@@ -243,11 +172,28 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
   };
 
   return (
-    <div style={{ backgroundColor: "pink" }}>
-      <div style={{ position: "relative", width: "100%", height: "600px" }}>
-        <div
-          ref={cyRef}
+    <Box>
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          height: "600px",
+        }}
+      >
+        <CytoscapeComponent
+          elements={[]} // Provide an empty array as the initial value
           style={{ width: "100%", height: "100%", position: "absolute" }}
+          layout={{ name: LAYOUT }}
+          cy={(cy: cytoscape.Core) => {
+            cyRef.current = cy;
+            (cy as any).gridGuide({
+              snapToGridOnRelease: true,
+              snapToAlignmentLocationOnRelease: true,
+              gridColor: "#ADD8e6",
+            });
+            addElementsToCytoscape(cy);
+          }}
+          stylesheet={cytoscapeStylesheet}
         />
       </div>
       <Button
@@ -317,7 +263,7 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </Box>
   );
 };
 

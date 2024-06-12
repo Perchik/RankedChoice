@@ -6,6 +6,9 @@ import App from "./App";
 import theme from "./styles/theme";
 import { Provider } from "react-redux";
 import store from "./store";
+import { enableMapSet } from "immer";
+
+enableMapSet();
 
 const root = createRoot(document.getElementById("root") as HTMLElement);
 root.render(

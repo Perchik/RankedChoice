@@ -41,6 +41,7 @@
     "graphlib": "^2.1.8",
     "graphlib-dot": "^0.6.4",
     "holderjs": "^2.9.9",
+    "immer": "^10.1.1",
     "jest-environment-jsdom": "^29.7.0",
     "json-schema-to-typescript": "^14.0.4",
     "react": "^18.3.1",

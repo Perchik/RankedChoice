@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Box,
   Typography,
@@ -8,80 +8,14 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import InteractivePartyGraph from "./InteractivePartyGraph";
+import PartyBins from "./PartyBins";
 import { PartyGraph } from "../../models/PartyGraph";
 import { PartyStatus } from "../../models/Party";
 import { Party } from "../../models/Party";
 import { parties, partyOrder } from "../../constants/PartyData";
-
-const ItemTypes = {
-  CIRCLE: "circle",
-};
-
-const Circle: React.FC<{ color: string; id: string }> = ({ color, id }) => {
-  const [{ isDragging }, drag] = useDrag({
-    type: ItemTypes.CIRCLE,
-    item: { color, id },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  });
-
-  return (
-    <div
-      ref={drag}
-      style={{
-        backgroundColor: color,
-        width: "30px",
-        height: "30px",
-        borderRadius: "50%",
-        margin: "2px",
-        opacity: isDragging ? 0.5 : 1,
-        cursor: "move",
-      }}
-    />
-  );
-};
-
-const Bin: React.FC<{
-  label: string;
-  onDrop: (item: any) => void;
-  children?: React.ReactNode;
-}> = ({ label, onDrop, children }) => {
-  const [{ isOver }, drop] = useDrop({
-    accept: ItemTypes.CIRCLE,
-    drop: (item) => onDrop(item),
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
-  });
-
-  return (
-    <div
-      ref={drop}
-      style={{
-        border: "2px dashed gray",
-        padding: "10px",
-        margin: "4px",
-        textAlign: "center",
-        backgroundColor: isOver ? "lightyellow" : "white",
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "center",
-        alignItems: "start",
-        width: "100%",
-        boxSizing: "border-box",
-      }}
-    >
-      <Typography variant="h6" style={{ width: "100%" }}>
-        {label}
-      </Typography>
-      {children}
-    </div>
-  );
-};
 
 const PartyCustomization: React.FC<{
   preset: string | null;
@@ -92,32 +26,35 @@ const PartyCustomization: React.FC<{
   const [majorParties, setMajorParties] = useState<Party[]>([]);
   const [minorParties, setMinorParties] = useState<Party[]>([]);
   const [fringeParties, setFringeParties] = useState<Party[]>([]);
-  const [updateTrigger, setUpdateTrigger] = useState(0); // Use this to trigger re-render
-  const [nodesToRemove, setNodesToRemove] = useState<string[]>([]); // Track nodes to remove
+  const [nodesToRemove, setNodesToRemove] = useState<string[]>([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const isLoaded = useRef(false);
 
   useEffect(() => {
-    const pg = new PartyGraph();
-    if (preset) {
-      pg.loadFromConfig(preset);
+    if (!isLoaded.current) {
+      const pg = new PartyGraph();
+      if (preset) {
+        pg.loadFromConfig(preset);
+      }
+      setPartyGraph(pg);
+      const allParties = pg.getParties();
+      setMajorParties(
+        allParties.filter((party) => party.status === PartyStatus.Major)
+      );
+      setMinorParties(
+        allParties.filter((party) => party.status === PartyStatus.Minor)
+      );
+      setFringeParties(
+        allParties.filter((party) => party.status === PartyStatus.Fringe)
+      );
+      setNumberOfParties(allParties.length);
+      isLoaded.current = true;
     }
-    setPartyGraph(pg);
-    setMajorParties(
-      pg.getParties().filter((party) => party.status === PartyStatus.Major)
-    );
-    setMinorParties(
-      pg.getParties().filter((party) => party.status === PartyStatus.Minor)
-    );
-    setFringeParties(
-      pg.getParties().filter((party) => party.status === PartyStatus.Fringe)
-    );
-    setNumberOfParties(pg.getParties().length);
   }, [preset, setNumberOfParties]);
 
   const updateParties = (updatedParties: Party[]) => {
     if (partyGraph) {
       partyGraph.updateParties(updatedParties);
-      setUpdateTrigger((prev) => prev + 1); // Trigger a re-render
       setMajorParties(
         updatedParties.filter((party) => party.status === PartyStatus.Major)
       );
@@ -160,6 +97,7 @@ const PartyCustomization: React.FC<{
               status
             );
             updatedParties.push(newParty);
+            partyGraph.addInteraction(newParty.id, newParty.id, 0);
             currentPartyIds.add(partyId);
           }
         }
@@ -167,6 +105,7 @@ const PartyCustomization: React.FC<{
     } else {
       const partiesToRemove = updatedParties.splice(newPartyCount);
       setNodesToRemove(partiesToRemove.map((party) => party.id));
+      partiesToRemove.forEach((party) => partyGraph.removeParty(party.id));
     }
 
     setNumberOfParties(newPartyCount);
@@ -180,6 +119,7 @@ const PartyCustomization: React.FC<{
     const targetParty = updatedParties.find((p) => p.id === party.id);
     if (targetParty) {
       targetParty.status = status;
+      partyGraph.updatePartyStatus(targetParty.id, status);
     }
     updateParties(updatedParties);
   };
@@ -197,17 +137,17 @@ const PartyCustomization: React.FC<{
     );
     setNumberOfParties(updatedParties.length);
     setNodesToRemove([party.id]); // Track node to remove
+    partyGraph.removeParty(party.id);
     updateParties(updatedParties);
-  };
-
-  const handleNodeAdded = (party: any) => {
-    console.log("Node added:", party);
   };
 
   const handleNodeDeleted = (partyId: string) => {
     console.log("Node deleted:", partyId);
     // Perform additional cleanup or updates if necessary
     setNodesToRemove((prev) => prev.filter((id) => id !== partyId));
+    if (partyGraph) {
+      partyGraph.removeParty(partyId);
+    }
   };
 
   const handleSnackbarClose = () => {
@@ -231,50 +171,18 @@ const PartyCustomization: React.FC<{
         <DndProvider backend={HTML5Backend}>
           <Grid container spacing={2}>
             <Grid item xs={2}>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  height: "100%",
-                  gap: 2,
-                }}
-              >
-                <Bin
-                  label="Major Parties"
-                  onDrop={(item) => handleDrop(item, PartyStatus.Major)}
-                >
-                  {majorParties.map((party) => (
-                    <Circle key={party.id} color={party.color} id={party.id} />
-                  ))}
-                </Bin>
-                <Bin
-                  label="Minor Parties"
-                  onDrop={(item) => handleDrop(item, PartyStatus.Minor)}
-                >
-                  {minorParties.map((party) => (
-                    <Circle key={party.id} color={party.color} id={party.id} />
-                  ))}
-                </Bin>
-                <Bin
-                  label="Fringe Parties"
-                  onDrop={(item) => handleDrop(item, PartyStatus.Fringe)}
-                >
-                  {fringeParties.map((party) => (
-                    <Circle key={party.id} color={party.color} id={party.id} />
-                  ))}
-                </Bin>
-                <Bin label="Trash" onDrop={(item) => handleTrashDrop(item)}>
-                  <Typography variant="body1">
-                    Drag a party here to remove it from the scenario.
-                  </Typography>
-                </Bin>
-              </Box>
+              <PartyBins
+                majorParties={majorParties}
+                minorParties={minorParties}
+                fringeParties={fringeParties}
+                handleDrop={handleDrop}
+                handleTrashDrop={handleTrashDrop}
+              />
             </Grid>
             <Grid item xs={10}>
               {partyGraph && (
                 <InteractivePartyGraph
                   partyGraph={partyGraph}
-                  onNodeAdded={handleNodeAdded}
                   onNodeDeleted={handleNodeDeleted}
                   nodesToRemove={nodesToRemove}
                 />

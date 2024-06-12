@@ -1,12 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Party, PartyInteraction } from "../models/Party";
-import { PartyStatus } from "../models/Party";
+import { PartyStatus, PartyInteraction } from "../models/Party";
 
 interface PartyState {
-  parties: Party[];
+  id: string;
+  name: string;
+  color: string;
+  fontColor: string;
+  status: PartyStatus;
+  interactions: { [key: string]: PartyInteraction };
 }
 
-const initialState: PartyState = {
+interface PartySliceState {
+  parties: PartyState[];
+}
+
+const initialState: PartySliceState = {
   parties: [],
 };
 
@@ -14,7 +22,7 @@ const partiesSlice = createSlice({
   name: "parties",
   initialState,
   reducers: {
-    addParty: (state, action: PayloadAction<Party>) => {
+    addParty: (state, action: PayloadAction<PartyState>) => {
       state.parties.push(action.payload);
     },
     removeParty: (state, action: PayloadAction<string>) => {
@@ -43,15 +51,12 @@ const partiesSlice = createSlice({
       const fromParty = state.parties.find(
         (p) => p.id === action.payload.fromPartyId
       );
-      const toParty = state.parties.find(
-        (p) => p.id === action.payload.toPartyId
-      );
-      if (fromParty && toParty) {
-        fromParty.addInteraction(
-          toParty,
-          action.payload.weight,
-          action.payload.opposition
-        );
+      if (fromParty) {
+        fromParty.interactions[action.payload.toPartyId] = {
+          toPartyId: action.payload.toPartyId,
+          weight: action.payload.weight,
+          opposition: action.payload.opposition,
+        };
       }
     },
     updateInteraction: (
@@ -63,30 +68,26 @@ const partiesSlice = createSlice({
         opposition: boolean;
       }>
     ) => {
-      const party = state.parties.find(
+      const fromParty = state.parties.find(
         (p) => p.id === action.payload.fromPartyId
       );
-      if (party) {
-        const interaction = party.interactions.find(
-          (i) => i.toParty.id === action.payload.toPartyId
-        );
-        if (interaction) {
-          interaction.weight = action.payload.weight;
-          interaction.opposition = action.payload.opposition;
-        }
+      if (fromParty) {
+        fromParty.interactions[action.payload.toPartyId] = {
+          toPartyId: action.payload.toPartyId,
+          weight: action.payload.weight,
+          opposition: action.payload.opposition,
+        };
       }
     },
     removeInteraction: (
       state,
       action: PayloadAction<{ fromPartyId: string; toPartyId: string }>
     ) => {
-      const party = state.parties.find(
+      const fromParty = state.parties.find(
         (p) => p.id === action.payload.fromPartyId
       );
-      if (party) {
-        party.interactions = party.interactions.filter(
-          (i) => i.toParty.id !== action.payload.toPartyId
-        );
+      if (fromParty) {
+        delete fromParty.interactions[action.payload.toPartyId];
       }
     },
   },

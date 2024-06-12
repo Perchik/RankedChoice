@@ -7,6 +7,8 @@ const store = configureStore({
     parties: partiesReducer,
     election: electionReducer,
   },
+  // Enable Redux DevTools Extension
+  devTools: process.env.NODE_ENV !== "production",
 });
 
 export type RootState = ReturnType<typeof store.getState>;

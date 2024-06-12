@@ -30,14 +30,12 @@ const LAYOUT = "fcose";
 
 interface InteractivePartyGraphProps {
   partyGraph: PartyGraph;
-  onNodeAdded: (party: any) => void;
   onNodeDeleted: (partyId: string) => void;
   nodesToRemove: string[]; // List of nodes to be removed
 }
 
 const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
   partyGraph,
-  onNodeAdded,
   onNodeDeleted,
   nodesToRemove,
 }) => {
@@ -89,23 +87,25 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
           .edges()
           .map((edge) => `${edge.data("source")}-${edge.data("target")}`)
       );
-      const newEdges: cytoscape.ElementDefinition[] = partyGraph.interactions
-        .filter(
-          (interaction) =>
-            cy.getElementById(interaction.from).length > 0 &&
-            cy.getElementById(interaction.to).length > 0 &&
-            !existingEdges.has(`${interaction.from}-${interaction.to}`)
-        )
-        .map((interaction) => ({
-          group: "edges" as cytoscape.ElementGroup,
-          data: {
-            source: interaction.from,
-            target: interaction.to,
-            weight: interaction.weight * 16,
-            opposition: interaction.opposition ? "true" : "false",
-            label: interaction.weight.toString(),
-          },
-        }));
+      const newEdges: cytoscape.ElementDefinition[] = [];
+      partyGraph.getParties().forEach((party) => {
+        party.interactions.forEach((interaction) => {
+          const edgeId = `${party.id}-${interaction.toPartyId}`;
+          if (!existingEdges.has(edgeId)) {
+            newEdges.push({
+              group: "edges" as cytoscape.ElementGroup,
+              data: {
+                source: party.id,
+                target: interaction.toPartyId,
+                weight: interaction.weight * 16,
+                opposition: interaction.opposition ? "true" : "false",
+                label: interaction.weight.toString(),
+              },
+            });
+            existingEdges.add(edgeId);
+          }
+        });
+      });
 
       cy.add([...newNodes, ...newEdges]);
 
@@ -118,9 +118,8 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
         }, 100); // Adding a small delay before the initial layout
       }
 
-      newNodes.forEach((node) => onNodeAdded(node.data));
     },
-    [partyGraph, onNodeAdded, layoutOptions]
+    [partyGraph, layoutOptions]
   );
 
   useEffect(() => {

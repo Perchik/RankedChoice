@@ -32,12 +32,14 @@ interface InteractivePartyGraphProps {
   partyGraph: PartyGraph;
   onNodeDeleted: (partyId: string) => void;
   nodesToRemove: string[]; // List of nodes to be removed
+  updateTrigger: number; // Add this to trigger updates
 }
 
 const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
   partyGraph,
   onNodeDeleted,
   nodesToRemove,
+  updateTrigger, // Add this to trigger updates
 }) => {
   const cyRef = useRef<cytoscape.Core | undefined>(undefined);
   const [sourceNode, setSourceNode] = useState<string>("");
@@ -117,9 +119,35 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
           }
         }, 100); // Adding a small delay before the initial layout
       }
-
     },
     [partyGraph, layoutOptions]
+  );
+
+  const updateNodeSize = useCallback(
+    (cy: cytoscape.Core) => {
+      partyGraph.getParties().forEach((party) => {
+        const node = cy.getElementById(party.id);
+        if (node) {
+          const newSize =
+            party.status === PartyStatus.Major
+              ? 80
+              : party.status === PartyStatus.Minor
+                ? 40
+                : 20;
+          node.data("size", newSize);
+          const newFontSize =
+            party.status === PartyStatus.Major
+              ? 20
+              : party.status === PartyStatus.Minor
+                ? 10
+                : 5;
+          node.data("fontSize", newFontSize);
+        }
+      });
+
+      cy.style().update();
+    },
+    [partyGraph]
   );
 
   useEffect(() => {
@@ -145,6 +173,12 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
       }
     }
   }, [nodesToRemove, onNodeDeleted, layoutOptions]);
+
+  useEffect(() => {
+    if (cyRef.current) {
+      updateNodeSize(cyRef.current);
+    }
+  }, [updateTrigger, updateNodeSize]); // Add updateNodeSize as dependency to update node sizes
 
   const handleAddEdge = () => {
     if (cyRef.current) {

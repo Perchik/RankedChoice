@@ -13,9 +13,14 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import InteractivePartyGraph from "./InteractivePartyGraph";
 import PartyBins from "./PartyBins";
 import { PartyGraph } from "../../models/PartyGraph";
-import { PartyStatus } from "../../models/Party";
-import { Party } from "../../models/Party";
+import { Party, PartyStatus, PartyInteraction } from "../../models/Party";
 import { parties, partyOrder } from "../../constants/PartyData";
+import store from "../../store";
+import {
+  addParty,
+  removeParty,
+  updatePartyStatus,
+} from "../../slices/partiesSlice";
 
 const PartyCustomization: React.FC<{
   preset: string | null;
@@ -28,6 +33,7 @@ const PartyCustomization: React.FC<{
   const [fringeParties, setFringeParties] = useState<Party[]>([]);
   const [nodesToRemove, setNodesToRemove] = useState<string[]>([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [updateTrigger, setUpdateTrigger] = useState(0);
   const isLoaded = useRef(false);
 
   useEffect(() => {
@@ -55,6 +61,7 @@ const PartyCustomization: React.FC<{
   const updateParties = (updatedParties: Party[]) => {
     if (partyGraph) {
       partyGraph.updateParties(updatedParties);
+      setUpdateTrigger((prev) => prev + 1); // Trigger a re-render
       setMajorParties(
         updatedParties.filter((party) => party.status === PartyStatus.Major)
       );
@@ -99,13 +106,33 @@ const PartyCustomization: React.FC<{
             updatedParties.push(newParty);
             partyGraph.addInteraction(newParty.id, newParty.id, 0);
             currentPartyIds.add(partyId);
+
+            // Add new party to Redux state
+            store.dispatch(
+              addParty({
+                ...newParty.toPlainObject(),
+                interactions: Array.from(
+                  newParty.interactions.entries()
+                ).reduce(
+                  (obj, [key, value]) => {
+                    obj[key] = value;
+                    return obj;
+                  },
+                  {} as { [key: string]: PartyInteraction }
+                ),
+              })
+            );
           }
         }
       }
     } else {
       const partiesToRemove = updatedParties.splice(newPartyCount);
       setNodesToRemove(partiesToRemove.map((party) => party.id));
-      partiesToRemove.forEach((party) => partyGraph.removeParty(party.id));
+      partiesToRemove.forEach((party) => {
+        partyGraph.removeParty(party.id);
+        // Remove party from Redux state
+        store.dispatch(removeParty(party.id));
+      });
     }
 
     setNumberOfParties(newPartyCount);
@@ -120,6 +147,8 @@ const PartyCustomization: React.FC<{
     if (targetParty) {
       targetParty.status = status;
       partyGraph.updatePartyStatus(targetParty.id, status);
+      // Update party status in Redux state
+      store.dispatch(updatePartyStatus({ partyId: targetParty.id, status }));
     }
     updateParties(updatedParties);
   };
@@ -138,6 +167,8 @@ const PartyCustomization: React.FC<{
     setNumberOfParties(updatedParties.length);
     setNodesToRemove([party.id]); // Track node to remove
     partyGraph.removeParty(party.id);
+    // Remove party from Redux state
+    store.dispatch(removeParty(party.id));
     updateParties(updatedParties);
   };
 
@@ -147,6 +178,8 @@ const PartyCustomization: React.FC<{
     setNodesToRemove((prev) => prev.filter((id) => id !== partyId));
     if (partyGraph) {
       partyGraph.removeParty(partyId);
+      // Remove party from Redux state
+      store.dispatch(removeParty(partyId));
     }
   };
 
@@ -185,6 +218,7 @@ const PartyCustomization: React.FC<{
                   partyGraph={partyGraph}
                   onNodeDeleted={handleNodeDeleted}
                   nodesToRemove={nodesToRemove}
+                  updateTrigger={updateTrigger} // Pass updateTrigger to InteractivePartyGraph
                 />
               )}
             </Grid>

@@ -27,7 +27,7 @@ const cytoscapeStylesheet: Stylesheet[] = [
       "text-margin-x": 10,
       "text-margin-y": 10,
       "text-background-opacity": 1,
-      "text-background-color": "#ffffff",
+      "text-background-color": "#edebec",
       "text-background-shape": "roundrectangle",
     },
   },
@@ -36,7 +36,7 @@ const cytoscapeStylesheet: Stylesheet[] = [
     style: {
       "line-color": "#F00",
       "target-arrow-color": "#F00",
-      "text-background-color": "#ffffff",
+      "text-background-color": "#edebec",
       color: "#F00",
       label: "X",
       "text-margin-y": 0,

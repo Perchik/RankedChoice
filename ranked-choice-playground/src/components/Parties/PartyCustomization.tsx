@@ -104,7 +104,6 @@ const PartyCustomization: React.FC<{
               status
             );
             updatedParties.push(newParty);
-            partyGraph.addInteraction(newParty.id, newParty.id, 0);
             currentPartyIds.add(partyId);
 
             // Add new party to Redux state

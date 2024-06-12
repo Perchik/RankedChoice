@@ -9,6 +9,7 @@ import {
   updateInteraction,
   removeInteraction,
 } from "../slices/partiesSlice";
+import { parseConfig } from "../utils/partyGraphParser";
 
 class PartyGraph {
   parties: Party[];
@@ -17,132 +18,40 @@ class PartyGraph {
     this.parties = [];
   }
 
+  // Load configuration from a text string
   loadFromConfig(textData: string) {
     this.parties = [];
-    const lines = textData
-      .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => line);
-
-    lines.forEach((line) => {
-      if (line.startsWith("major:")) {
-        this.parseParties(line, PartyStatus.Major);
-      } else if (line.startsWith("minor:")) {
-        this.parseParties(line, PartyStatus.Minor);
-      } else if (line.startsWith("fringe:")) {
-        this.parseParties(line, PartyStatus.Fringe);
-      } else if (line.includes("->")) {
-        this.parseInteraction(line);
-      }
-    });
-
-    this.initializeInteractions();
+    parseConfig(textData, this);
   }
 
-  parseParties(line: string, status: PartyStatus) {
-    const parts = line.split(":");
-    if (parts.length !== 2) return;
-
-    const partyIds = parts[1].split(",").map((id) => id.trim());
-    partyIds.forEach((id) => {
-      let party = this.getPartyById(id);
-      if (!party) {
-        const data = partyData[id];
-        if (data) {
-          party = new Party(id, data.name, data.color, data.fontColor, status);
-          this.parties.push(party);
-          store.dispatch(
-            addParty({
-              ...party.toPlainObject(),
-              interactions: Array.from(party.interactions.entries()).reduce(
-                (obj, [key, value]) => {
-                  obj[key] = value;
-                  return obj;
-                },
-                {} as { [key: string]: PartyInteraction }
-              ),
-            })
-          );
-        }
-      }
-    });
-  }
-
-  parseInteraction(line: string) {
-    const parts = line.split("->");
-    if (parts.length !== 2) return;
-
-    const from = parts[0].trim();
-    const [to, weight] = parts[1].trim().split(" ");
-    const fromParty = this.getPartyById(from);
-    if (fromParty) {
-      fromParty.addInteraction(
-        to.trim(),
-        parseFloat(weight),
-        line.includes("opposition")
-      );
-      store.dispatch(
-        addInteraction({
-          fromPartyId: from,
-          toPartyId: to.trim(),
-          weight: parseFloat(weight),
-          opposition: line.includes("opposition"),
-        })
-      );
-    }
-  }
-
-  getPartyById(id: string): Party | undefined {
-    return this.parties.find((party) => party.id === id);
-  }
-
-  getColorById(id: string): string {
-    return partyData[id]?.color || "#000000";
-  }
-
-  initializeInteractions() {
-    this.parties.forEach((party) => {
-      party.interactions.forEach((interaction) => {
-        this.addInteraction(
-          party.id,
-          interaction.toPartyId,
-          interaction.weight,
-          interaction.opposition
+  // Add a party to the graph and dispatch to Redux
+  addParty(id: string, status: PartyStatus) {
+    let party = this.getPartyById(id);
+    if (!party) {
+      const data = partyData[id];
+      if (data) {
+        party = new Party(id, data.name, data.color, data.fontColor, status);
+        this.parties.push(party);
+        store.dispatch(
+          addParty({
+            ...party.toPlainObject(),
+            interactions: this.convertMapToObject(party.interactions),
+          })
         );
-      });
-    });
-  }
-
-  addInteraction(
-    fromPartyId: string,
-    toPartyId: string,
-    weight: number,
-    opposition: boolean = false
-  ) {
-    const fromParty = this.getPartyById(fromPartyId);
-    if (fromParty) {
-      fromParty.addInteraction(toPartyId, weight, opposition);
-      store.dispatch(
-        addInteraction({ fromPartyId, toPartyId, weight, opposition })
-      );
+      }
     }
   }
 
-  updateInteraction(
-    fromPartyId: string,
-    toPartyId: string,
-    weight: number,
-    opposition: boolean = false
-  ) {
-    const fromParty = this.getPartyById(fromPartyId);
-    if (fromParty) {
-      fromParty.addInteraction(toPartyId, weight, opposition);
-      store.dispatch(
-        updateInteraction({ fromPartyId, toPartyId, weight, opposition })
-      );
+  // Update the status of a party
+  updatePartyStatus(partyId: string, status: PartyStatus) {
+    const party = this.getPartyById(partyId);
+    if (party) {
+      party.status = status;
+      store.dispatch(updatePartyStatus({ partyId, status }));
     }
   }
 
+  // Remove a party and its interactions
   removeParty(partyId: string) {
     this.parties = this.parties.filter((party) => party.id !== partyId);
 
@@ -160,37 +69,88 @@ class PartyGraph {
     store.dispatch(removeParty(partyId));
   }
 
-  updatePartyStatus(partyId: string, status: PartyStatus) {
-    const party = this.getPartyById(partyId);
-    if (party) {
-      party.status = status;
-      store.dispatch(updatePartyStatus({ partyId, status }));
+  // Get a party by ID
+  getPartyById(id: string): Party | undefined {
+    return this.parties.find((party) => party.id === id);
+  }
+
+  // Add an interaction between parties
+  addInteraction(
+    fromPartyId: string,
+    toPartyId: string,
+    weight: number,
+    opposition: boolean = false
+  ) {
+    if (fromPartyId === toPartyId) return; // Prevent self-interaction
+
+    const fromParty = this.getPartyById(fromPartyId);
+    if (fromParty) {
+      fromParty.addInteraction(toPartyId, weight, opposition);
+      store.dispatch(
+        addInteraction({ fromPartyId, toPartyId, weight, opposition })
+      );
     }
   }
 
-  adjustConnectivity(coalitionPotential: number) {
-    this.parties.forEach((party) => {
-      party.interactions.forEach((interaction) => {
-        interaction.weight *= coalitionPotential;
-        store.dispatch(
-          updateInteraction({
-            fromPartyId: party.id,
-            toPartyId: interaction.toPartyId,
-            weight: interaction.weight,
-            opposition: interaction.opposition,
-          })
-        );
-      });
-    });
+  // Update an interaction between parties
+  updateInteraction(
+    fromPartyId: string,
+    toPartyId: string,
+    weight: number,
+    opposition: boolean = false
+  ) {
+    if (fromPartyId === toPartyId) return; // Prevent self-interaction
+
+    const fromParty = this.getPartyById(fromPartyId);
+    if (fromParty) {
+      fromParty.addInteraction(toPartyId, weight, opposition);
+      store.dispatch(
+        updateInteraction({ fromPartyId, toPartyId, weight, opposition })
+      );
+    }
   }
 
+  // Remove an interaction between parties
+  removeInteraction(fromPartyId: string, toPartyId: string) {
+    const fromParty = this.getPartyById(fromPartyId);
+    if (fromParty && fromParty.interactions.get(toPartyId)) {
+      fromParty.interactions.delete(toPartyId);
+      store.dispatch(removeInteraction({ fromPartyId, toPartyId }));
+    }
+  }
+
+  // Check if an interaction exists between parties
+  hasInteraction(fromPartyId: string, toPartyId: string): boolean {
+    const fromParty = this.getPartyById(fromPartyId);
+    return fromParty ? fromParty.interactions.has(toPartyId) : false;
+  }
+
+  // Get color by party ID
+  getColorById(id: string): string {
+    return partyData[id]?.color || "#000000";
+  }
+
+  // Convert Map to Object
+  private convertMapToObject(map: Map<string, PartyInteraction>): {
+    [key: string]: PartyInteraction;
+  } {
+    return Array.from(map.entries()).reduce(
+      (obj, [key, value]) => {
+        obj[key] = value;
+        return obj;
+      },
+      {} as { [key: string]: PartyInteraction }
+    );
+  }
+
+  // Get all parties
   getParties() {
     return this.parties.filter((party) => party !== undefined);
   }
 
+  // Update the parties in the graph
   updateParties(newParties: Party[]) {
     this.parties = newParties.filter((party) => party !== undefined);
-    this.initializeInteractions();
   }
 }
 

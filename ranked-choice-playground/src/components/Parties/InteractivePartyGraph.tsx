@@ -195,6 +195,7 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
         },
       });
 
+      partyGraph.addInteraction(sourceNode, targetNode, weight, isOpposition);
       cy.layout(layoutOptions()).run();
       setOpenDialog(false);
     }
@@ -203,6 +204,17 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
   const handleSliderChange = (event: any, newValue: number | number[]) => {
     setWeight(newValue as number);
   };
+
+  const availableTargets = partyGraph
+    .getParties()
+    .filter(
+      (party) => sourceNode && !partyGraph.hasInteraction(sourceNode, party.id)
+    )
+    .map((party) => (
+      <MenuItem key={party.id} value={party.id}>
+        {party.name}
+      </MenuItem>
+    ));
 
   return (
     <Box>
@@ -258,12 +270,9 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
             <Select
               value={targetNode}
               onChange={(e) => setTargetNode(e.target.value as string)}
+              disabled={!sourceNode}
             >
-              {partyGraph.getParties().map((party) => (
-                <MenuItem key={party.id} value={party.id}>
-                  {party.name}
-                </MenuItem>
-              ))}
+              {availableTargets}
             </Select>
           </FormControl>
           <FormControlLabel

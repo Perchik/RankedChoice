@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "./EditableCandidateCard.module.css";
 import { Box, Typography, IconButton, Tooltip } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { generateRandomCandidate } from "../../services/candidateService";
+import { fetchRandomName } from "../../services/nameService";
 import { Candidate } from "../../models/Candidate";
 import PopularitySlider from "../Common/PopularitySlider";
 
@@ -22,9 +22,20 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
   );
 
   const handleFetchNewName = async () => {
-    const newCandidate = await generateRandomCandidate();
-    setCurrentCandidate(newCandidate);
-    onUpdate(newCandidate);
+    const { title, firstName, lastName, suffix } = await fetchRandomName();
+    const newFullName = `${title ? title + " " : ""}${firstName} ${lastName}${suffix ? ", " + suffix : ""}`;
+    const newShortName = `${firstName.charAt(0)}. ${lastName}`;
+
+    const updatedCandidate = new Candidate(
+      newFullName,
+      newShortName,
+      currentCandidate.popularity,
+      currentCandidate.inPartyPopularity,
+      currentCandidate.color
+    );
+
+    setCurrentCandidate(updatedCandidate);
+    onUpdate(updatedCandidate);
   };
 
   const regenerateAvatar = () => {

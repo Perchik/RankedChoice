@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PartyState, PartyStatus, PartyInteraction } from "../models/Party";
+import { PartyState, PartyStatus } from "../models/Party";
 
 interface PartiesState {
   parties: PartyState[];

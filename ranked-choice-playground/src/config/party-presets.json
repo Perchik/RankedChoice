@@ -28,8 +28,8 @@
     "short_description": "Two major parties with several minor parties.",
     "long_description": "This configuration depicts a political system dominated by two major parties with several influential minor parties. This setup includes the Red Party and Blue Party as the major players, while the Orange Party, Green Party, and Purple Party serve as minor parties. The interactions between major and minor parties reflect strong alliances, while minor parties also interact among themselves with moderate weights. This configuration is suitable for simulating countries like Australia, Canada, and New Zealand, where a few major parties dominate, but minor parties play a crucial role in the political process.",
     "examples": "Example Countries: Australia, Canada, New Zealand",
-    "interaction_file": "configs/two_major_with_minors.txt",
-    "image_file": "svgs/parties/two_major_with_minors.svg"
+    "interaction_file": "configs/two_majors_with_minors.txt",
+    "image_file": "svgs/parties/two_majors_with_minors.svg"
   },
   "balanced_major_minor": {
     "title": "Balanced Major-Minor",

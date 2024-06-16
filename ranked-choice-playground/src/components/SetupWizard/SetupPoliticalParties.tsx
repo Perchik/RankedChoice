@@ -1,9 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  Tabs,
-  Tab,
-  Paper,
-  Box,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -12,7 +8,6 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import theme from "../../styles/theme";
 import PartyPresetSelector from "../Parties/PartyPresetSelector";
 
 const SetupPoliticalParties: React.FC = () => {

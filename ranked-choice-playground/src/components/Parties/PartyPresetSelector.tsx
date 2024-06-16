@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import presetsData from "../../config/party-presets.json";
-import { Container, Typography, Box } from "@mui/material";
+import { Container, Typography } from "@mui/material";
 import { PartyPresetCard } from "./PartyPresetCard";
 import { PartyPreset } from "../../models/PartyPreset";
 import Carousel from "react-multi-carousel";

@@ -3,8 +3,7 @@ import Cytoscape from "cytoscape";
 import fcose from "cytoscape-fcose";
 import CytoscapeComponent from "react-cytoscapejs";
 import gridGuide from "cytoscape-grid-guide";
-import { PartyGraph } from "../../models/PartyGraph";
-import { PartyStatus } from "../../models/Party";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
   Checkbox,
@@ -22,6 +21,9 @@ import {
   Typography,
 } from "@mui/material";
 import cytoscapeStylesheet from "./cytoscapeStylesheet";
+import { addInteractionToStore } from "../../utils/partyUtils";
+import { RootState } from "../../store";
+import { PartyStatus } from "../../models/Party";
 
 Cytoscape.use(fcose);
 Cytoscape.use(gridGuide as any);
@@ -29,19 +31,19 @@ Cytoscape.use(gridGuide as any);
 const LAYOUT = "fcose";
 
 interface InteractivePartyGraphProps {
-  partyGraph: PartyGraph;
   onNodeDeleted: (partyId: string) => void;
   nodesToRemove: string[]; // List of nodes to be removed
   updateTrigger: number; // Add this to trigger updates
 }
 
 const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
-  partyGraph,
   onNodeDeleted,
   nodesToRemove,
-  updateTrigger, // Add this to trigger updates
+  updateTrigger,
 }) => {
   const cyRef = useRef<cytoscape.Core | undefined>(undefined);
+  const dispatch = useDispatch();
+  const parties = useSelector((state: RootState) => state.parties.parties);
   const [sourceNode, setSourceNode] = useState<string>("");
   const [targetNode, setTargetNode] = useState<string>("");
   const [isOpposition, setIsOpposition] = useState<boolean>(false);
@@ -59,8 +61,7 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
   const addElementsToCytoscape = useCallback(
     (cy: cytoscape.Core) => {
       const existingNodes = new Set(cy.nodes().map((node) => node.id()));
-      const newNodes: cytoscape.ElementDefinition[] = partyGraph
-        .getParties()
+      const newNodes: cytoscape.ElementDefinition[] = parties
         .filter((party) => !existingNodes.has(party.id))
         .map((party) => ({
           group: "nodes" as cytoscape.ElementGroup,
@@ -90,8 +91,8 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
           .map((edge) => `${edge.data("source")}-${edge.data("target")}`)
       );
       const newEdges: cytoscape.ElementDefinition[] = [];
-      partyGraph.getParties().forEach((party) => {
-        party.interactions.forEach((interaction) => {
+      parties.forEach((party) => {
+        Object.values(party.interactions).forEach((interaction) => {
           const edgeId = `${party.id}-${interaction.toPartyId}`;
           if (!existingEdges.has(edgeId)) {
             newEdges.push({
@@ -120,12 +121,12 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
         }, 100); // Adding a small delay before the initial layout
       }
     },
-    [partyGraph, layoutOptions]
+    [parties, layoutOptions]
   );
 
   const updateNodeSize = useCallback(
     (cy: cytoscape.Core) => {
-      partyGraph.getParties().forEach((party) => {
+      parties.forEach((party) => {
         const node = cy.getElementById(party.id);
         if (node) {
           const newSize =
@@ -147,14 +148,14 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
 
       cy.style().update();
     },
-    [partyGraph]
+    [parties]
   );
 
   useEffect(() => {
     if (cyRef.current) {
       addElementsToCytoscape(cyRef.current);
     }
-  }, [partyGraph, addElementsToCytoscape]);
+  }, [parties, addElementsToCytoscape]);
 
   useEffect(() => {
     if (cyRef.current && nodesToRemove.length > 0) {
@@ -195,7 +196,9 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
         },
       });
 
-      partyGraph.addInteraction(sourceNode, targetNode, weight, isOpposition);
+      dispatch(
+        addInteractionToStore(sourceNode, targetNode, weight, isOpposition)
+      );
       cy.layout(layoutOptions()).run();
       setOpenDialog(false);
     }
@@ -205,10 +208,11 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
     setWeight(newValue as number);
   };
 
-  const availableTargets = partyGraph
-    .getParties()
+  const availableTargets = parties
     .filter(
-      (party) => sourceNode && !partyGraph.hasInteraction(sourceNode, party.id)
+      (party) =>
+        sourceNode &&
+        !parties.find((p) => p.id === sourceNode)?.interactions[targetNode]
     )
     .map((party) => (
       <MenuItem key={party.id} value={party.id}>
@@ -258,7 +262,7 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
               value={sourceNode}
               onChange={(e) => setSourceNode(e.target.value as string)}
             >
-              {partyGraph.getParties().map((party) => (
+              {parties.map((party) => (
                 <MenuItem key={party.id} value={party.id}>
                   {party.name}
                 </MenuItem>

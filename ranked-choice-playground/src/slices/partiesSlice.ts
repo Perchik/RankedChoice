@@ -1,20 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PartyStatus, PartyInteraction } from "../models/Party";
+import { PartyState, PartyStatus, PartyInteraction } from "../models/Party";
 
-interface PartyState {
-  id: string;
-  name: string;
-  color: string;
-  fontColor: string;
-  status: PartyStatus;
-  interactions: { [key: string]: PartyInteraction };
-}
-
-interface PartySliceState {
+interface PartiesState {
   parties: PartyState[];
 }
 
-const initialState: PartySliceState = {
+const initialState: PartiesState = {
   parties: [],
 };
 
@@ -90,6 +81,9 @@ const partiesSlice = createSlice({
         delete fromParty.interactions[action.payload.toPartyId];
       }
     },
+    setPartyConfiguration: (state, action: PayloadAction<PartyState[]>) => {
+      state.parties = action.payload;
+    },
   },
 });
 
@@ -100,6 +94,7 @@ export const {
   addInteraction,
   updateInteraction,
   removeInteraction,
+  setPartyConfiguration,
 } = partiesSlice.actions;
 
 export default partiesSlice.reducer;

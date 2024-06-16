@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { useState, forwardRef } from "react";
 import {
   Card,
   CardContent,
@@ -8,92 +8,94 @@ import {
   Box,
   CardHeader,
   SxProps,
+  Modal,
+  IconButton,
 } from "@mui/material";
+import { styled, keyframes } from "@mui/system";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CloseIcon from "@mui/icons-material/Close";
 import { PartyPreset } from "../../models/PartyPreset";
+import palette from "../../styles/palette";
+
+const scaleUp = keyframes`
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+`;
+
+const StyledCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== "selected",
+})<{ selected: boolean }>(({ theme, selected }) => ({
+  border: selected
+    ? `2px solid ${theme.palette.primary.main}`
+    : "1px solid grey",
+  backgroundColor: selected
+    ? palette.primary[50]
+    : theme.palette.background.paper,
+  boxShadow: selected
+    ? "rgba(0, 0, 0, 0.2) 0px 2px 1px -1px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px"
+    : "none",
+  transition: "background-color 0.3s, border 0.3s, box-shadow 0.3s",
+  "&:hover": {
+    backgroundColor: selected
+      ? theme.palette.action.hover
+      : palette.primary[200],
+  },
+  padding: theme.spacing(2),
+  width: 350,
+  cursor: "pointer",
+  position: "relative",
+  animation: selected ? `${scaleUp} 0.3s ease-in-out forwards` : "none",
+  transformOrigin: "center",
+}));
 
 interface PartyPresetCardProps {
   preset: PartyPreset;
-  onMoreInfo?: () => void;
+  selected: boolean;
+  onClick: () => void;
   onUsePreset: () => void;
   buttonTitle?: string;
 }
 
 const PartyPresetCard = forwardRef<HTMLDivElement, PartyPresetCardProps>(
   (
-    { preset, onMoreInfo, onUsePreset, buttonTitle = "Use this scenario" },
-    ref
-  ) => {
-    const { title, short_description, examples, image_file } = preset;
-
-    return (
-      <PresetCard
-        ref={ref}
-        title={title}
-        short_description={short_description}
-        description={short_description}
-        examples={examples}
-        image_file={image_file}
-        buttonTitle={buttonTitle}
-        useSecondaryStyle={false}
-        onMoreInfo={onMoreInfo}
-        onUsePreset={onUsePreset}
-        sx={{}}
-      />
-    );
-  }
-);
-
-interface CardProps {
-  title: string;
-  short_description: string;
-  description: string;
-  examples: string;
-  image_file: string;
-  buttonTitle: string;
-  useSecondaryStyle: boolean;
-  onMoreInfo?: () => void;
-  onUsePreset: () => void;
-  sx?: SxProps;
-}
-
-const PresetCard = forwardRef<HTMLDivElement, CardProps>(
-  (
     {
-      title,
-      short_description,
-      description,
-      examples,
-      image_file,
-      buttonTitle,
-      useSecondaryStyle,
-      onMoreInfo,
+      preset,
+      selected,
+      onClick,
       onUsePreset,
-      sx,
+      buttonTitle = "Use this scenario",
     },
     ref
   ) => {
+    const { title, short_description, examples, image_file, long_description } =
+      preset;
+
+    const [moreInfo, setMoreInfo] = useState(false);
+
+    const handleMoreInfoOpen = () => setMoreInfo(true);
+    const handleMoreInfoClose = () => setMoreInfo(false);
+
+    const handleUsePresetClick = () => {
+      onClick();
+      onUsePreset();
+    };
+
     return (
-      <div
+      <Box
         ref={ref}
-        style={{ padding: 2, boxSizing: "border-box", width: "100%" }}
+        sx={{ p: 2, boxSizing: "border-box", width: "100$" }}
+        onClick={onClick}
       >
-        <Card
-          className="mb-4 w-100 h-100"
-          sx={{
-            cursor: "pointer",
-            display: "flex",
-            flexDirection: "column",
-            maxWidth: "350px",
-            ...sx,
-          }}
-        >
+        <StyledCard selected={selected}>
           <CardHeader
             title={title}
             sx={{
-              color: useSecondaryStyle
-                ? "secondary.contrastText"
-                : "primary.contrastText",
-              bgcolor: useSecondaryStyle ? "secondary.main" : "primary.main",
+              color: "primary.contrastText",
+              bgcolor: "primary.main",
             }}
           />
           <CardMedia
@@ -107,30 +109,149 @@ const PresetCard = forwardRef<HTMLDivElement, CardProps>(
             <Typography variant="body2" color="text.secondary" align="center">
               {short_description}
             </Typography>
-            {onMoreInfo && (
-              <Box display="flex" justifyContent="center" my={1}>
-                <Button onClick={onMoreInfo} variant="text">
-                  More Info
-                </Button>
-              </Box>
-            )}
+            <Box display="flex" justifyContent="center" my={1}>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleMoreInfoOpen();
+                }}
+                variant="text"
+              >
+                More Info
+              </Button>
+            </Box>
             <Typography variant="body2" color="text.secondary" align="center">
               <i>{examples}</i>
             </Typography>
           </CardContent>
           <Box display="flex" justifyContent="center" pb={2}>
             <Button
-              onClick={onUsePreset}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleUsePresetClick();
+              }}
               variant="contained"
-              color={useSecondaryStyle ? "secondary" : "primary"}
+              color="primary"
             >
               {buttonTitle}
             </Button>
           </Box>
-        </Card>
-      </div>
+          {selected && (
+            <Box
+              sx={{
+                display: "block",
+                position: "absolute",
+                top: 8,
+                height: "40px",
+                width: "40px",
+                right: 8,
+                padding: 0,
+                backgroundColor: "white", // Set the background color
+                borderRadius: "50%", // To make the background color a circle
+              }}
+            >
+              <CheckCircleIcon
+                color="primary"
+                sx={{
+                  fontSize: "40px",
+                }}
+              />
+            </Box>
+          )}
+        </StyledCard>
+
+        {moreInfo && (
+          <Modal open={moreInfo} onClose={handleMoreInfoClose}>
+            <Box
+              sx={{
+                bgcolor: "background.paper",
+                borderRadius: 1,
+                boxShadow: 24,
+                display: "flex",
+                flexDirection: "column",
+                left: "50%",
+                maxHeight: "90vh",
+                maxWidth: 800,
+                outline: 0,
+                overflow: "hidden",
+                position: "absolute",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+                width: "80%",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  p: 2,
+                  borderBottom: "1px solid #ddd",
+                }}
+              >
+                <Typography variant="h5" component="h2">
+                  {title}
+                </Typography>
+                <IconButton onClick={handleMoreInfoClose}>
+                  <CloseIcon />
+                </IconButton>
+              </Box>
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  overflowY: "auto",
+                }}
+              >
+                <Box sx={{ flexShrink: 0, p: 2 }}>
+                  <Typography variant="body1" component="p">
+                    {long_description}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    flexGrow: 1,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    p: 2,
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    image={`${process.env.PUBLIC_URL}/${image_file}`}
+                    alt={`${title} image`}
+                    sx={{
+                      width: "400px",
+                      maxHeight: "30%",
+                      objectFit: "contain",
+                    }}
+                  />
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  p: 2,
+                  borderTop: "1px solid #ddd",
+                }}
+              >
+                <Button
+                  onClick={handleMoreInfoClose}
+                  variant="contained"
+                  color="primary"
+                >
+                  Close
+                </Button>
+              </Box>
+            </Box>
+          </Modal>
+        )}
+      </Box>
     );
   }
 );
 
-export { PartyPresetCard, PresetCard };
+export { PartyPresetCard };

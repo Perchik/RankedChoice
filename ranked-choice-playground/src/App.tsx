@@ -15,7 +15,6 @@ import "@fontsource/manrope";
 
 import Home from "./pages/Home";
 import EditBody from "./pages/EditBody";
-import Parties from "./pages/Parties";
 import Glossary from "./pages/Glossary";
 import logo from "./assets/logo.svg";
 
@@ -43,9 +42,7 @@ const App: React.FC = () => {
           <Button color="inherit" component={Link} to="/edit-body">
             Edit Body SVG
           </Button>
-          <Button color="inherit" component={Link} to="/parties">
-            Parties
-          </Button>
+
           <Button color="inherit" component={Link} to="/glossary">
             Glossary
           </Button>
@@ -55,7 +52,6 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/edit-body" element={<EditBody />} />
-          <Route path="/parties" element={<Parties />} />
           <Route path="/glossary" element={<Glossary />} />
         </Routes>
       </Box>

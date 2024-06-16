@@ -8,82 +8,63 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 import InteractivePartyGraph from "./InteractivePartyGraph";
 import PartyBins from "./PartyBins";
-import { PartyGraph } from "../../models/PartyGraph";
-import { Party, PartyStatus, PartyInteraction } from "../../models/Party";
-import { parties, partyOrder } from "../../constants/PartyData";
-import store from "../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
 import {
-  addParty,
-  removeParty,
-  updatePartyStatus,
-} from "../../slices/partiesSlice";
+  addPartyToStore,
+  removePartyFromStore,
+  updatePartyStatusInStore,
+} from "../../utils/partyUtils";
+import { parseConfig } from "../../utils/partyGraphParser";
+import { PartyStatus, PartyState } from "../../models/Party";
+import { parties, partyOrder } from "../../constants/PartyData";
 
 const PartyCustomization: React.FC<{
   preset: string | null;
   numberOfParties: number;
   setNumberOfParties: (count: number) => void;
 }> = ({ preset, numberOfParties, setNumberOfParties }) => {
-  const [partyGraph, setPartyGraph] = useState<PartyGraph | null>(null);
-  const [majorParties, setMajorParties] = useState<Party[]>([]);
-  const [minorParties, setMinorParties] = useState<Party[]>([]);
-  const [fringeParties, setFringeParties] = useState<Party[]>([]);
+  const dispatch = useDispatch();
+  const partyStates = useSelector((state: RootState) => state.parties.parties);
+  const [majorParties, setMajorParties] = useState<PartyState[]>([]);
+  const [minorParties, setMinorParties] = useState<PartyState[]>([]);
+  const [fringeParties, setFringeParties] = useState<PartyState[]>([]);
   const [nodesToRemove, setNodesToRemove] = useState<string[]>([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [updateTrigger, setUpdateTrigger] = useState(0);
   const isLoaded = useRef(false);
 
   useEffect(() => {
-    if (!isLoaded.current) {
-      const pg = new PartyGraph();
+    if (!isLoaded.current && preset !== null) {
       if (preset) {
-        pg.loadFromConfig(preset);
+        parseConfig(preset);
       }
-      setPartyGraph(pg);
-      const allParties = pg.getParties();
-      setMajorParties(
-        allParties.filter((party) => party.status === PartyStatus.Major)
-      );
-      setMinorParties(
-        allParties.filter((party) => party.status === PartyStatus.Minor)
-      );
-      setFringeParties(
-        allParties.filter((party) => party.status === PartyStatus.Fringe)
-      );
-      setNumberOfParties(allParties.length);
       isLoaded.current = true;
     }
-  }, [preset, setNumberOfParties]);
+  }, [preset]);
 
-  const updateParties = (updatedParties: Party[]) => {
-    if (partyGraph) {
-      partyGraph.updateParties(updatedParties);
-      setUpdateTrigger((prev) => prev + 1); // Trigger a re-render
-      setMajorParties(
-        updatedParties.filter((party) => party.status === PartyStatus.Major)
-      );
-      setMinorParties(
-        updatedParties.filter((party) => party.status === PartyStatus.Minor)
-      );
-      setFringeParties(
-        updatedParties.filter((party) => party.status === PartyStatus.Fringe)
-      );
-    }
-  };
+  useEffect(() => {
+    setMajorParties(
+      partyStates.filter((party) => party.status === PartyStatus.Major)
+    );
+    setMinorParties(
+      partyStates.filter((party) => party.status === PartyStatus.Minor)
+    );
+    setFringeParties(
+      partyStates.filter((party) => party.status === PartyStatus.Fringe)
+    );
+    setNumberOfParties(partyStates.length);
+  }, [partyStates, setNumberOfParties]);
 
   const handleSliderChange = (event: any, newValue: number | number[]) => {
-    if (!partyGraph) return;
-
     const newPartyCount = newValue as number;
     const currentPartyCount = numberOfParties;
-    const updatedParties = [...partyGraph.getParties()];
-
-    const currentPartyIds = new Set(updatedParties.map((party) => party.id));
 
     if (newPartyCount > currentPartyCount) {
+      const currentPartyIds = new Set(partyStates.map((party) => party.id));
+
       for (let i = 0; i < partyOrder.length; i++) {
         if (currentPartyIds.size >= newPartyCount) break;
         const partyId = partyOrder[i];
@@ -96,90 +77,48 @@ const PartyCustomization: React.FC<{
                 : partyData.ordinal === 2
                   ? PartyStatus.Minor
                   : PartyStatus.Fringe;
-            const newParty = new Party(
-              partyId,
-              partyData.name,
-              partyData.color,
-              partyData.fontColor,
-              status
-            );
-            updatedParties.push(newParty);
-            currentPartyIds.add(partyId);
-
-            // Add new party to Redux state
-            store.dispatch(
-              addParty({
-                ...newParty.toPlainObject(),
-                interactions: Array.from(
-                  newParty.interactions.entries()
-                ).reduce(
-                  (obj, [key, value]) => {
-                    obj[key] = value;
-                    return obj;
-                  },
-                  {} as { [key: string]: PartyInteraction }
-                ),
-              })
-            );
+            try {
+              const action = addPartyToStore(partyId, status);
+              dispatch(action);
+              currentPartyIds.add(partyId);
+            } catch (error) {
+              console.error(error);
+            }
           }
         }
       }
     } else {
-      const partiesToRemove = updatedParties.splice(newPartyCount);
+      const partiesToRemove = partyStates.slice(newPartyCount);
       setNodesToRemove(partiesToRemove.map((party) => party.id));
       partiesToRemove.forEach((party) => {
-        partyGraph.removeParty(party.id);
-        // Remove party from Redux state
-        store.dispatch(removeParty(party.id));
+        dispatch(removePartyFromStore(party.id));
       });
     }
 
     setNumberOfParties(newPartyCount);
-    updateParties(updatedParties);
+    setUpdateTrigger((prev) => prev + 1); // Trigger a re-render
   };
 
-  const handleDrop = (party: any, status: PartyStatus) => {
-    if (!partyGraph) return;
-
-    const updatedParties = [...partyGraph.getParties()];
-    const targetParty = updatedParties.find((p) => p.id === party.id);
-    if (targetParty) {
-      targetParty.status = status;
-      partyGraph.updatePartyStatus(targetParty.id, status);
-      // Update party status in Redux state
-      store.dispatch(updatePartyStatus({ partyId: targetParty.id, status }));
-    }
-    updateParties(updatedParties);
+  const handleDrop = (party: PartyState, status: PartyStatus) => {
+    dispatch(updatePartyStatusInStore(party.id, status));
+    setUpdateTrigger((prev) => prev + 1); // Trigger a re-render
   };
 
-  const handleTrashDrop = (party: any) => {
-    if (!partyGraph) return;
-
-    if (partyGraph.getParties().length === 1) {
+  const handleTrashDrop = (party: PartyState) => {
+    if (partyStates.length === 1) {
       setOpenSnackbar(true);
       return;
     }
 
-    const updatedParties = [...partyGraph.getParties()].filter(
-      (p) => p.id !== party.id
-    );
-    setNumberOfParties(updatedParties.length);
+    dispatch(removePartyFromStore(party.id));
     setNodesToRemove([party.id]); // Track node to remove
-    partyGraph.removeParty(party.id);
-    // Remove party from Redux state
-    store.dispatch(removeParty(party.id));
-    updateParties(updatedParties);
+    setUpdateTrigger((prev) => prev + 1); // Trigger a re-render
   };
 
   const handleNodeDeleted = (partyId: string) => {
     console.log("Node deleted:", partyId);
-    // Perform additional cleanup or updates if necessary
     setNodesToRemove((prev) => prev.filter((id) => id !== partyId));
-    if (partyGraph) {
-      partyGraph.removeParty(partyId);
-      // Remove party from Redux state
-      store.dispatch(removeParty(partyId));
-    }
+    dispatch(removePartyFromStore(partyId));
   };
 
   const handleSnackbarClose = () => {
@@ -200,29 +139,24 @@ const PartyCustomization: React.FC<{
           valueLabelDisplay="auto"
           sx={{ mb: 4 }}
         />
-        <DndProvider backend={HTML5Backend}>
-          <Grid container spacing={2}>
-            <Grid item xs={2}>
-              <PartyBins
-                majorParties={majorParties}
-                minorParties={minorParties}
-                fringeParties={fringeParties}
-                handleDrop={handleDrop}
-                handleTrashDrop={handleTrashDrop}
-              />
-            </Grid>
-            <Grid item xs={10}>
-              {partyGraph && (
-                <InteractivePartyGraph
-                  partyGraph={partyGraph}
-                  onNodeDeleted={handleNodeDeleted}
-                  nodesToRemove={nodesToRemove}
-                  updateTrigger={updateTrigger} // Pass updateTrigger to InteractivePartyGraph
-                />
-              )}
-            </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={2}>
+            <PartyBins
+              majorParties={majorParties}
+              minorParties={minorParties}
+              fringeParties={fringeParties}
+              handleDrop={handleDrop}
+              handleTrashDrop={handleTrashDrop}
+            />
           </Grid>
-        </DndProvider>
+          <Grid item xs={10}>
+            <InteractivePartyGraph
+              onNodeDeleted={handleNodeDeleted}
+              nodesToRemove={nodesToRemove}
+              updateTrigger={updateTrigger}
+            />
+          </Grid>
+        </Grid>
         <Snackbar
           open={openSnackbar}
           autoHideDuration={6000}

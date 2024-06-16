@@ -1,7 +1,10 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import { useDrag, useDrop } from "react-dnd";
-import { Party, PartyStatus } from "../../models/Party";
+import { PartyState, PartyStatus } from "../../models/Party";
+
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const ItemTypes = {
   CIRCLE: "circle",
@@ -71,9 +74,9 @@ const Bin: React.FC<{
 };
 
 interface PartyBinsProps {
-  majorParties: Party[];
-  minorParties: Party[];
-  fringeParties: Party[];
+  majorParties: PartyState[];
+  minorParties: PartyState[];
+  fringeParties: PartyState[];
   handleDrop: (party: any, status: PartyStatus) => void;
   handleTrashDrop: (party: any) => void;
 }
@@ -94,24 +97,37 @@ const PartyBins: React.FC<PartyBinsProps> = ({
         gap: 2,
       }}
     >
-      <Bin label="Major Parties" onDrop={(item) => handleDrop(item, PartyStatus.Major)}>
-        {majorParties.map((party) => (
-          <Circle key={party.id} color={party.color} id={party.id} />
-        ))}
-      </Bin>
-      <Bin label="Minor Parties" onDrop={(item) => handleDrop(item, PartyStatus.Minor)}>
-        {minorParties.map((party) => (
-          <Circle key={party.id} color={party.color} id={party.id} />
-        ))}
-      </Bin>
-      <Bin label="Fringe Parties" onDrop={(item) => handleDrop(item, PartyStatus.Fringe)}>
-        {fringeParties.map((party) => (
-          <Circle key={party.id} color={party.color} id={party.id} />
-        ))}
-      </Bin>
-      <Bin label="Trash" onDrop={handleTrashDrop}>
-        <Typography variant="body1">Drag a party here to remove it from the scenario.</Typography>
-      </Bin>
+      <DndProvider backend={HTML5Backend}>
+        <Bin
+          label="Major Parties"
+          onDrop={(item) => handleDrop(item, PartyStatus.Major)}
+        >
+          {majorParties.map((party) => (
+            <Circle key={party.id} color={party.color} id={party.id} />
+          ))}
+        </Bin>
+        <Bin
+          label="Minor Parties"
+          onDrop={(item) => handleDrop(item, PartyStatus.Minor)}
+        >
+          {minorParties.map((party) => (
+            <Circle key={party.id} color={party.color} id={party.id} />
+          ))}
+        </Bin>
+        <Bin
+          label="Fringe Parties"
+          onDrop={(item) => handleDrop(item, PartyStatus.Fringe)}
+        >
+          {fringeParties.map((party) => (
+            <Circle key={party.id} color={party.color} id={party.id} />
+          ))}
+        </Bin>
+        <Bin label="Trash" onDrop={handleTrashDrop}>
+          <Typography variant="body1">
+            Drag a party here to remove it from the scenario.
+          </Typography>
+        </Bin>
+      </DndProvider>
     </Box>
   );
 };

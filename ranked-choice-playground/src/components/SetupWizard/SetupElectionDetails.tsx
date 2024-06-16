@@ -19,18 +19,15 @@ import {
   orgJoiners,
 } from "../SetupWizard/electionNameStrings";
 import styles from "./SetupElectionDetails.module.css";
-import { SetupWizardStepProps } from "../../interfaces/SetupWizardStep";
 import SelectableCard from "../Common/SelectableCard";
 import { SinglePersonIcon, MultiplePeopleIcon } from "../../assets/Icons";
 
 const SINGLE_MODE_TEMPLATE = "{0} of {1}";
 const MULTIPLE_MODE_TEMPLATE = "{0} {1} {2}";
 
-interface SetupElectionProps extends SetupWizardStepProps {}
+interface SetupElectionProps {}
 
-const SetupElectionDetails: React.FC<SetupElectionProps> = ({
-  setFormComplete,
-}) => {
+const SetupElectionDetails: React.FC<SetupElectionProps> = ({}) => {
   const dispatch = useDispatch();
   const { numberOfSeats } = useSelector((state: any) => state.election);
 
@@ -95,16 +92,8 @@ const SetupElectionDetails: React.FC<SetupElectionProps> = ({
             .replace("{2}", generatedWords[2]);
       if (isSingleMode) dispatch(setNumberOfSeats(1));
       dispatch(setElectionTitle(combinedName));
-      setFormComplete(true);
     }
-  }, [
-    isSpinnerDone,
-    setFormComplete,
-    isSingleMode,
-    numberOfSeats,
-    currentRefs,
-    dispatch,
-  ]);
+  }, [isSpinnerDone, isSingleMode, numberOfSeats, currentRefs, dispatch]);
 
   const handleModeToggle = (isSingle: boolean) => {
     if (isSingle !== isSingleMode) {

@@ -1,21 +1,31 @@
 export class Candidate {
-  name: string;
-  primaryParty: string;
-  endorsements: string[]; // List of party endorsements. Currently unused.
+  title: string;
+  firstName: string;
+  lastName: string;
+  party: string;
   popularity: number;
-  partyPopularity: number;
+  inPartyPopularity: number;
+  color: string;
 
   constructor(
-    name: string,
-    primaryParty: string,
-    endorsements: string[],
+    title: string = "",
+    firstName: string,
+    lastName: string,
+    party: string,
     popularity: number,
-    partyPopularity: number
+    inPartyPopularity: number,
+    color: string
   ) {
-    this.name = name;
-    this.primaryParty = primaryParty;
-    this.endorsements = endorsements;
+    this.title = title;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.party = party;
     this.popularity = popularity;
-    this.partyPopularity = partyPopularity;
+    this.inPartyPopularity = inPartyPopularity;
+    this.color = color;
+  }
+
+  getFullName(): string {
+    return `${this.title ? this.title + " " : ""}${this.firstName} ${this.lastName}`;
   }
 }

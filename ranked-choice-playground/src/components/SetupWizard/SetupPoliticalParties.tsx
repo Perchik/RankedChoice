@@ -1,44 +1,65 @@
 import React, { useState } from "react";
-import { Tabs, Tab, Paper, Box } from "@mui/material";
-import { SetupWizardStepProps } from "../../interfaces/SetupWizardStep";
-import TabPanel from "../Common/TabPanel";
-import PartySetupOverview from "./PartySetupOverview";
-import PartySetup from "../Parties/PartySetup";
+import {
+  Tabs,
+  Tab,
+  Paper,
+  Box,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  Container,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 import theme from "../../styles/theme";
-interface SetupPartiesProps extends SetupWizardStepProps {}
+import PartyPresetSelector from "../Parties/PartyPresetSelector";
 
-const SetupPoliticalParties: React.FC<SetupPartiesProps> = ({
-  setFormComplete,
-}) => {
-  const [value, setValue] = useState(0);
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
-
+const SetupPoliticalParties: React.FC = () => {
   return (
     <>
-      <Box borderBottom="solid thin grey">
-        <Tabs
-          value={value}
-          onChange={handleTabChange}
-          centered
-          indicatorColor="secondary"
+      <PartyPresetSelector
+        onPresetSelect={() => {}}
+        onCreateCustomScenario={() => {}}
+      />
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
         >
-          <Tab label="Overview" />
-          <Tab label="Simple Mode" />
-          <Tab label="Advanced Mode" />
-        </Tabs>
-      </Box>
-      <TabPanel value={value} index={0}>
-        <PartySetupOverview />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        Setup parties in simple mode
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <PartySetup />
-      </TabPanel>
+          <Typography>More Info</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Container>
+            <Typography variant="h6" gutterBottom>
+              Detailed Information
+            </Typography>
+            <Typography variant="h5" gutterBottom>
+              Understanding Coalitions and Relationships
+            </Typography>
+            <Typography variant="body1" paragraph>
+              In ranked choice voting (RCV), voters rank candidates in order of
+              preference. Since RCV requires multiple choices, party coalitions
+              and relationships play a critical role in guiding how a voter
+              might make their choices. These relationships help simulate
+              realistic voting behavior by influencing the order in which voters
+              rank candidates, especially in scenarios where their preferred
+              candidate is eliminated.
+            </Typography>
+            <Typography variant="body1" paragraph>
+              <strong>Coalitions</strong>: Represent alliances where parties
+              support each other, influencing voters to rank candidates from
+              allied parties higher.
+            </Typography>
+            <Typography variant="body1" paragraph>
+              <strong>Oppositions</strong>: Represent adversarial relationships
+              where parties oppose each other, leading voters to rank candidates
+              from opposing parties lower or not at all.
+            </Typography>
+          </Container>
+        </AccordionDetails>
+      </Accordion>
     </>
   );
 };

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+
 import {
   Box,
   Button,
@@ -14,24 +16,20 @@ import {
 import SetupElectionDetails from "./SetupElectionDetails";
 import SetupSummary from "./SetupSummaryCard";
 import SetupPoliticalParties from "./SetupPoliticalParties";
+import { RootState } from "../../store";
 const steps = [
   "Setup Election",
-  "Setup Political Parties",
+  "Select Political Parties",
   "Setup Candidates",
   "Setup Voters",
 ];
 
-function getStepContent(
-  stepIndex: number,
-  mode: string,
-  setFormComplete: (complete: boolean) => void,
-  setPartySetupMode: (mode: "simple" | "advanced") => void
-) {
+function getStepContent(stepIndex: number) {
   switch (stepIndex) {
     case 0:
-      return <SetupElectionDetails setFormComplete={setFormComplete} />;
+      return <SetupElectionDetails />;
     case 1:
-      return <SetupPoliticalParties setFormComplete={setFormComplete} />;
+      return <SetupPoliticalParties />;
     case 2:
       return "Setup candidates";
     case 3:
@@ -44,14 +42,23 @@ function getStepContent(
 const ElectionSetupStepper = () => {
   const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
-  const [partySetupMode, setPartySetupMode] = useState<"simple" | "advanced">(
-    "simple"
-  );
-  const [isFormComplete, setIsFormComplete] = useState(false);
+
+  const electionTitle = useSelector((state: RootState) => state.election.title);
+  const parties = useSelector((state: RootState) => state.parties.parties);
+
+  const isFormComplete = (() => {
+    switch (activeStep) {
+      case 0:
+        return Boolean(electionTitle);
+      case 1:
+        return parties.length > 0;
+      default:
+        return false;
+    }
+  })();
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setIsFormComplete(false); // Reset form completion state for next step
   };
 
   const handleBack = () => {
@@ -60,7 +67,6 @@ const ElectionSetupStepper = () => {
 
   const handleReset = () => {
     setActiveStep(0);
-    setIsFormComplete(false);
   };
 
   return (
@@ -105,12 +111,7 @@ const ElectionSetupStepper = () => {
               </Box>
             ) : (
               <Box sx={{ mt: 2 }}>
-                {getStepContent(
-                  activeStep,
-                  partySetupMode,
-                  setIsFormComplete,
-                  setPartySetupMode
-                )}
+                {getStepContent(activeStep)}
                 <Box
                   sx={{
                     mt: 2,

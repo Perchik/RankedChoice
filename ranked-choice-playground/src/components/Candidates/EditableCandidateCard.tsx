@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import styles from "./CandidateCard.module.css"; // Updated to import CSS module
-import { Button } from "@mui/material";
-import { fetchRandomName } from "../../services/nameService";
-import { partyColors, partyNames } from "../../constants/PartyData";
-import { PartySelect, PopularitySlider } from "../Common/FormControls";
-import { Candidate } from "../../types/types";
-import { SelectChangeEvent } from "@mui/material"; // Import SelectChangeEvent
+import styles from "./EditableCandidateCard.module.css";
+import { Box, Typography, IconButton, Tooltip } from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import { generateRandomCandidate } from "../../services/candidateService";
+import { Candidate } from "../../models/Candidate";
+import PopularitySlider from "../Common/PopularitySlider";
 
 interface EditableCandidateCardProps {
   candidate: Candidate;
@@ -18,100 +17,110 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
 }) => {
   const [currentCandidate, setCurrentCandidate] =
     useState<Candidate>(candidate);
-  const [isEditing, setIsEditing] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState(
+    `https://api.adorable.io/avatars/285/${candidate.shortName}.png`
+  );
 
   const handleFetchNewName = async () => {
-    const newName = await fetchRandomName();
-    const updatedCandidate = { ...currentCandidate, ...newName };
-    setCurrentCandidate(updatedCandidate);
-    onUpdate(updatedCandidate);
+    const newCandidate = await generateRandomCandidate();
+    setCurrentCandidate(newCandidate);
+    onUpdate(newCandidate);
   };
 
-  const handlePartyChange = (
-    event: SelectChangeEvent,
-    type: "major" | "minor"
-  ) => {
-    const updatedCandidate = {
-      ...currentCandidate,
-      [type === "major" ? "majorParty" : "minorParty"]: event.target
-        .value as string,
-    };
-    setCurrentCandidate(updatedCandidate);
-    onUpdate(updatedCandidate);
+  const regenerateAvatar = () => {
+    setAvatarUrl(`https://api.adorable.io/avatars/285/${Math.random()}.png`);
   };
 
   const handlePopularityChange = (
     event: Event,
-    newValue: number | number[]
+    newValue: number | number[],
+    type: "popularity" | "inPartyPopularity"
   ) => {
-    const updatedCandidate = {
-      ...currentCandidate,
-      popularity: newValue as number,
-    };
+    const updatedCandidate = new Candidate(
+      currentCandidate.fullName,
+      currentCandidate.shortName,
+      type === "popularity"
+        ? (newValue as number)
+        : currentCandidate.popularity,
+      type === "inPartyPopularity"
+        ? (newValue as number)
+        : currentCandidate.inPartyPopularity,
+      currentCandidate.color
+    );
     setCurrentCandidate(updatedCandidate);
     onUpdate(updatedCandidate);
   };
 
-  const frameColor = partyColors[currentCandidate.majorParty];
-
   return (
-    <div className={styles.candidateCard}>
-      <div className={styles.avatarFrame} style={{ borderColor: frameColor }}>
-        <div
-          className={styles.candidatePhoto}
-          dangerouslySetInnerHTML={{ __html: candidate.photoSvg }}
-        />
-      </div>
-      <div className={styles.nameSection}>
-        <h2>{`${currentCandidate.firstName} ${currentCandidate.lastName}`}</h2>
-        {isEditing && (
-          <Button
-            variant="contained"
-            color="primary"
+    <Box className={styles.candidateCard}>
+      <Box className={styles.leftSection}>
+        <Tooltip title="Regenerate Avatar">
+          <Box position="relative" className={styles.avatarWrapper}>
+            <img
+              src={avatarUrl}
+              alt="Candidate Avatar"
+              className={styles.candidatePhoto}
+            />
+            <Box className={styles.avatarReloadIconBox}>
+              <IconButton
+                size="small"
+                className={styles.reloadIcon}
+                onClick={regenerateAvatar}
+              >
+                <RefreshIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          </Box>
+        </Tooltip>
+      </Box>
+      <Box className={styles.rightSection}>
+        <Box className={styles.nameWrapper}>
+          <Box
+            display="flex"
+            alignItems="center"
+            position="relative"
             onClick={handleFetchNewName}
+            className={styles.nameContainer}
           >
-            Reload Name
-          </Button>
-        )}
-      </div>
-      <div className={styles.toggleEditSection}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setIsEditing(!isEditing)}
-        >
-          {isEditing ? "Save" : "Edit"}
-        </Button>
-      </div>
-      {isEditing ? (
-        <div className={styles.editSection}>
-          <PartySelect
-            label="Major Party"
-            value={currentCandidate.majorParty}
-            onChange={(e) => handlePartyChange(e, "major")}
-            options={partyNames}
-          />
-          <PartySelect
-            label="Minor Party"
-            value={currentCandidate.minorParty}
-            onChange={(e) => handlePartyChange(e, "minor")}
-            options={partyNames}
-          />
-          <PopularitySlider
-            value={currentCandidate.popularity}
-            onChange={handlePopularityChange}
-          />
-        </div>
-      ) : (
-        <div className={styles.viewSection}>
-          <p>Major Party: {currentCandidate.majorParty}</p>
-          {currentCandidate.minorParty && (
-            <p>Minor Party: {currentCandidate.minorParty}</p>
-          )}
-          <p>Popularity: {currentCandidate.popularity}</p>
-        </div>
-      )}
-    </div>
+            <Typography variant="h5" className={styles.candidateName}>
+              {currentCandidate.fullName}
+            </Typography>
+            <Box className={styles.nameReloadIconBox}>
+              <RefreshIcon fontSize="small" className={styles.reloadIcon} />
+            </Box>
+          </Box>
+          <Box display="flex" alignItems="center">
+            <Box
+              className={styles.partyColor}
+              style={{ backgroundColor: currentCandidate.color }}
+            ></Box>
+            <Typography variant="subtitle1" className={styles.partyName}>
+              {currentCandidate.color} Party
+            </Typography>
+          </Box>
+        </Box>
+        <Box mt={2}>
+          <Box className={styles.popularityContainer}>
+            <Typography variant="subtitle2">Overall popularity</Typography>
+            <PopularitySlider
+              value={currentCandidate.popularity}
+              onChange={(event, newValue) =>
+                handlePopularityChange(event, newValue, "popularity")
+              }
+            />
+          </Box>
+          <Box className={styles.popularityContainer}>
+            <Typography variant="subtitle2">In-party popularity</Typography>
+            <PopularitySlider
+              value={currentCandidate.inPartyPopularity}
+              onChange={(event, newValue) =>
+                handlePopularityChange(event, newValue, "inPartyPopularity")
+              }
+            />
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

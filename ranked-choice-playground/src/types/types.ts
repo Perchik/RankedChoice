@@ -1,4 +1,4 @@
-export interface Politician {
+export interface Candidate {
   firstName: string;
   lastName: string;
   majorParty: string;

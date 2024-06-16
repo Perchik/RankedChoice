@@ -1,69 +1,69 @@
 import React, { useState } from "react";
-import styles from "./PoliticianCard.module.css"; // Updated to import CSS module
+import styles from "./CandidateCard.module.css"; // Updated to import CSS module
 import { Button } from "@mui/material";
 import { fetchRandomName } from "../../services/nameService";
 import { partyColors, partyNames } from "../../constants/PartyData";
 import { PartySelect, PopularitySlider } from "../Common/FormControls";
-import { Politician } from "../../types/types";
+import { Candidate } from "../../types/types";
 import { SelectChangeEvent } from "@mui/material"; // Import SelectChangeEvent
 
-interface EditablePoliticianCardProps {
-  politician: Politician;
-  onUpdate: (politician: Politician) => void;
+interface EditableCandidateCardProps {
+  candidate: Candidate;
+  onUpdate: (candidate: Candidate) => void;
 }
 
-const EditablePoliticianCard: React.FC<EditablePoliticianCardProps> = ({
-  politician,
+const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
+  candidate,
   onUpdate,
 }) => {
-  const [currentPolitician, setCurrentPolitician] =
-    useState<Politician>(politician);
+  const [currentCandidate, setCurrentCandidate] =
+    useState<Candidate>(candidate);
   const [isEditing, setIsEditing] = useState(false);
 
   const handleFetchNewName = async () => {
     const newName = await fetchRandomName();
-    const updatedPolitician = { ...currentPolitician, ...newName };
-    setCurrentPolitician(updatedPolitician);
-    onUpdate(updatedPolitician);
+    const updatedCandidate = { ...currentCandidate, ...newName };
+    setCurrentCandidate(updatedCandidate);
+    onUpdate(updatedCandidate);
   };
 
   const handlePartyChange = (
     event: SelectChangeEvent,
     type: "major" | "minor"
   ) => {
-    const updatedPolitician = {
-      ...currentPolitician,
+    const updatedCandidate = {
+      ...currentCandidate,
       [type === "major" ? "majorParty" : "minorParty"]: event.target
         .value as string,
     };
-    setCurrentPolitician(updatedPolitician);
-    onUpdate(updatedPolitician);
+    setCurrentCandidate(updatedCandidate);
+    onUpdate(updatedCandidate);
   };
 
   const handlePopularityChange = (
     event: Event,
     newValue: number | number[]
   ) => {
-    const updatedPolitician = {
-      ...currentPolitician,
+    const updatedCandidate = {
+      ...currentCandidate,
       popularity: newValue as number,
     };
-    setCurrentPolitician(updatedPolitician);
-    onUpdate(updatedPolitician);
+    setCurrentCandidate(updatedCandidate);
+    onUpdate(updatedCandidate);
   };
 
-  const frameColor = partyColors[currentPolitician.majorParty];
+  const frameColor = partyColors[currentCandidate.majorParty];
 
   return (
-    <div className={styles.politicianCard}>
+    <div className={styles.candidateCard}>
       <div className={styles.avatarFrame} style={{ borderColor: frameColor }}>
         <div
-          className={styles.politicianPhoto}
-          dangerouslySetInnerHTML={{ __html: politician.photoSvg }}
+          className={styles.candidatePhoto}
+          dangerouslySetInnerHTML={{ __html: candidate.photoSvg }}
         />
       </div>
       <div className={styles.nameSection}>
-        <h2>{`${currentPolitician.firstName} ${currentPolitician.lastName}`}</h2>
+        <h2>{`${currentCandidate.firstName} ${currentCandidate.lastName}`}</h2>
         {isEditing && (
           <Button
             variant="contained"
@@ -87,32 +87,32 @@ const EditablePoliticianCard: React.FC<EditablePoliticianCardProps> = ({
         <div className={styles.editSection}>
           <PartySelect
             label="Major Party"
-            value={currentPolitician.majorParty}
+            value={currentCandidate.majorParty}
             onChange={(e) => handlePartyChange(e, "major")}
             options={partyNames}
           />
           <PartySelect
             label="Minor Party"
-            value={currentPolitician.minorParty}
+            value={currentCandidate.minorParty}
             onChange={(e) => handlePartyChange(e, "minor")}
             options={partyNames}
           />
           <PopularitySlider
-            value={currentPolitician.popularity}
+            value={currentCandidate.popularity}
             onChange={handlePopularityChange}
           />
         </div>
       ) : (
         <div className={styles.viewSection}>
-          <p>Major Party: {currentPolitician.majorParty}</p>
-          {currentPolitician.minorParty && (
-            <p>Minor Party: {currentPolitician.minorParty}</p>
+          <p>Major Party: {currentCandidate.majorParty}</p>
+          {currentCandidate.minorParty && (
+            <p>Minor Party: {currentCandidate.minorParty}</p>
           )}
-          <p>Popularity: {currentPolitician.popularity}</p>
+          <p>Popularity: {currentCandidate.popularity}</p>
         </div>
       )}
     </div>
   );
 };
 
-export default EditablePoliticianCard;
+export default EditableCandidateCard;

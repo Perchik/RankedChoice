@@ -1,5 +1,5 @@
-// src/services/politicianService.ts
-import { Politician } from "../types/types";
+// src/services/candidateService.ts
+import { Candidate } from "../types/types";
 import { fetchRandomName } from "./nameService";
 import { partyNames } from "../constants/PartyData";
 
@@ -12,7 +12,7 @@ const getRandomParty = (exclude?: string): string => {
   return filteredParties[Math.floor(Math.random() * filteredParties.length)];
 };
 
-export const generateRandomPolitician = async (): Promise<Politician> => {
+export const generateRandomCandidate = async (): Promise<Candidate> => {
   try {
     const { firstName, lastName } = await fetchRandomName();
     const majorParty = getRandomParty();
@@ -30,7 +30,7 @@ export const generateRandomPolitician = async (): Promise<Politician> => {
       photoSvg,
     };
   } catch (error) {
-    console.error("Error generating random politician:", error);
-    throw new Error("Failed to generate random politician");
+    console.error("Error generating random candidate:", error);
+    throw new Error("Failed to generate random candidate");
   }
 };

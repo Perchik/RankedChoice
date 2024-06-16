@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PartyState, PartyStatus } from "../models/Party";
+import { Candidate } from "../models/Candidate";
 
 interface PartiesState {
   parties: PartyState[];
@@ -84,6 +85,15 @@ const partiesSlice = createSlice({
     setPartyConfiguration: (state, action: PayloadAction<PartyState[]>) => {
       state.parties = action.payload;
     },
+    addCandidate: (
+      state,
+      action: PayloadAction<{ partyId: string; candidate: Candidate }>
+    ) => {
+      const party = state.parties.find((p) => p.id === action.payload.partyId);
+      if (party) {
+        party.candidates = [...party.candidates, action.payload.candidate];
+      }
+    },
   },
 });
 
@@ -95,6 +105,7 @@ export const {
   updateInteraction,
   removeInteraction,
   setPartyConfiguration,
+  addCandidate,
 } = partiesSlice.actions;
 
 export default partiesSlice.reducer;

@@ -20,6 +20,7 @@ export const addPartyToStore = (id: string, status: PartyStatus) => {
       fontColor: data.fontColor,
       status,
       interactions: {},
+      candidates: [],
     };
     return addParty(newParty);
   }

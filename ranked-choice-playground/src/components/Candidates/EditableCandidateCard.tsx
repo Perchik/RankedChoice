@@ -1,41 +1,57 @@
-import React, { useState } from "react";
+import React from "react";
+import { useDispatch } from "react-redux";
 import styles from "./EditableCandidateCard.module.css";
 import { Box, Typography, IconButton, Tooltip } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { fetchRandomName } from "../../services/nameService";
 import { Candidate } from "../../models/Candidate";
 import PopularitySlider from "../Common/PopularitySlider";
+import {
+  updateCandidate,
+  updateCandidateName,
+} from "../../slices/candidatesSlice";
 
 interface EditableCandidateCardProps {
-  candidate: Candidate;
-  onUpdate: (candidate: Candidate) => void;
+  partyId: string;
+  candidate: any; // Use any for plain object
+  candidateIndex: number;
 }
 
 const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
+  partyId,
   candidate,
-  onUpdate,
+  candidateIndex,
 }) => {
-  const [currentCandidate, setCurrentCandidate] =
-    useState<Candidate>(candidate);
-  const [avatarUrl, setAvatarUrl] = useState(
+  const dispatch = useDispatch();
+  const candidateInstance = new Candidate(
+    candidate.fullName,
+    candidate.shortName,
+    candidate.popularity,
+    candidate.inPartyPopularity,
+    candidate.color
+  );
+  const [avatarUrl, setAvatarUrl] = React.useState(
     `https://api.adorable.io/avatars/285/${candidate.shortName}.png`
   );
 
   const handleFetchNewName = async () => {
     const { title, firstName, lastName, suffix } = await fetchRandomName();
-    const newFullName = `${title ? title + " " : ""}${firstName} ${lastName}${suffix ? ", " + suffix : ""}`;
-    const newShortName = `${firstName.charAt(0)}. ${lastName}`;
-
-    const updatedCandidate = new Candidate(
-      newFullName,
-      newShortName,
-      currentCandidate.popularity,
-      currentCandidate.inPartyPopularity,
-      currentCandidate.color
+    const newFullName = Candidate.generateFullName(
+      title,
+      firstName,
+      lastName,
+      suffix
     );
+    const newShortName = Candidate.generateShortName(firstName, lastName);
 
-    setCurrentCandidate(updatedCandidate);
-    onUpdate(updatedCandidate);
+    dispatch(
+      updateCandidateName({
+        partyId,
+        candidateIndex,
+        fullName: newFullName,
+        shortName: newShortName,
+      })
+    );
   };
 
   const regenerateAvatar = () => {
@@ -48,18 +64,23 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
     type: "popularity" | "inPartyPopularity"
   ) => {
     const updatedCandidate = new Candidate(
-      currentCandidate.fullName,
-      currentCandidate.shortName,
+      candidateInstance.fullName,
+      candidateInstance.shortName,
       type === "popularity"
         ? (newValue as number)
-        : currentCandidate.popularity,
+        : candidateInstance.popularity,
       type === "inPartyPopularity"
         ? (newValue as number)
-        : currentCandidate.inPartyPopularity,
-      currentCandidate.color
+        : candidateInstance.inPartyPopularity,
+      candidateInstance.color
     );
-    setCurrentCandidate(updatedCandidate);
-    onUpdate(updatedCandidate);
+    dispatch(
+      updateCandidate({
+        partyId,
+        candidateIndex,
+        candidate: { ...updatedCandidate },
+      })
+    );
   };
 
   return (
@@ -94,7 +115,7 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
             className={styles.nameContainer}
           >
             <Typography variant="h5" className={styles.candidateName}>
-              {currentCandidate.fullName}
+              {candidateInstance.fullName}
             </Typography>
             <Box className={styles.nameReloadIconBox}>
               <RefreshIcon fontSize="small" className={styles.reloadIcon} />
@@ -103,10 +124,10 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
           <Box display="flex" alignItems="center">
             <Box
               className={styles.partyColor}
-              style={{ backgroundColor: currentCandidate.color }}
+              style={{ backgroundColor: candidateInstance.color }}
             ></Box>
             <Typography variant="subtitle1" className={styles.partyName}>
-              {currentCandidate.color} Party
+              {candidateInstance.color} Party
             </Typography>
           </Box>
         </Box>
@@ -114,7 +135,7 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
           <Box className={styles.popularityContainer}>
             <Typography variant="subtitle2">Overall popularity</Typography>
             <PopularitySlider
-              value={currentCandidate.popularity}
+              value={candidateInstance.popularity}
               onChange={(event, newValue) =>
                 handlePopularityChange(event, newValue, "popularity")
               }
@@ -123,7 +144,7 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
           <Box className={styles.popularityContainer}>
             <Typography variant="subtitle2">In-party popularity</Typography>
             <PopularitySlider
-              value={currentCandidate.inPartyPopularity}
+              value={candidateInstance.inPartyPopularity}
               onChange={(event, newValue) =>
                 handlePopularityChange(event, newValue, "inPartyPopularity")
               }

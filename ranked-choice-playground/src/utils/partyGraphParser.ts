@@ -20,6 +20,7 @@ export function parseParties(line: string, status: PartyStatus): PartyState[] {
     color: "#000000", // Replace with actual color if available
     fontColor: "#FFFFFF", // Replace with actual font color if available
     status,
+    candidates: [],
     interactions: {},
   }));
 }

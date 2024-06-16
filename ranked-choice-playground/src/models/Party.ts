@@ -1,3 +1,5 @@
+import { Candidate } from "./Candidate";
+
 export enum PartyStatus {
   Major = 1,
   Minor = 2,
@@ -17,5 +19,6 @@ export interface PartyState {
   color: string;
   fontColor: string;
   status: PartyStatus;
+  candidates: Candidate[];
   interactions: { [key: string]: PartyInteraction };
 }

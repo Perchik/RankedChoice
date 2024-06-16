@@ -1,9 +1,10 @@
 .candidateCard {
   display: flex;
-  border: 1px solid #e0e0e0;
+  border: 1px solid black;
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 16px;
+  background-color: #ebebeb;
 }
 
 .leftSection {

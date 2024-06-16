@@ -27,9 +27,7 @@ export class Candidate {
     lastName: string,
     suffix?: string
   ): string {
-    return `${title ? title + " " : ""}${firstName} ${lastName}${
-      suffix ? ", " + suffix : ""
-    }`;
+    return `${title ? title + " " : ""}${firstName} ${lastName}${suffix ? ", " + suffix : ""}`;
   }
 
   static generateShortName(firstName: string, lastName: string): string {
@@ -37,23 +35,27 @@ export class Candidate {
   }
 
   static async fromRandomComponents(color: string): Promise<Candidate> {
-    const { title, firstName, lastName, suffix } = await fetchRandomName();
-    const fullName = Candidate.generateFullName(
-      title,
-      firstName,
-      lastName,
-      suffix
-    );
-    const shortName = Candidate.generateShortName(firstName, lastName);
-    const popularity = Math.floor(Math.random() * 5) + 1; // Generate random popularity between 1 and 5
-    const inPartyPopularity = Math.floor(Math.random() * 5) + 1; // Generate random in-party popularity between 1 and 5
-
-    return new Candidate(
-      fullName,
-      shortName,
-      popularity,
-      inPartyPopularity,
-      color
-    );
+    try {
+      const { title, firstName, lastName, suffix } = await fetchRandomName();
+      const fullName = this.generateFullName(
+        title,
+        firstName,
+        lastName,
+        suffix
+      );
+      const shortName = this.generateShortName(firstName, lastName);
+      const popularity = Math.floor(Math.random() * 5) + 1;
+      const inPartyPopularity = Math.floor(Math.random() * 5) + 1;
+      return new Candidate(
+        fullName,
+        shortName,
+        popularity,
+        inPartyPopularity,
+        color
+      );
+    } catch (error) {
+      console.error("Error generating candidate:", error);
+      throw new Error("Failed to generate candidate");
+    }
   }
 }

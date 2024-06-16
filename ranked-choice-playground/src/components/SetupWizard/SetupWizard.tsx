@@ -17,6 +17,7 @@ import SetupElectionDetails from "./SetupElectionDetails";
 import SetupSummary from "./SetupSummaryCard";
 import SetupPoliticalParties from "./SetupPoliticalParties";
 import { RootState } from "../../store";
+import CandidateList from "../Candidates/CandidateManager";
 const steps = [
   "Setup Election",
   "Select Political Parties",
@@ -31,7 +32,7 @@ function getStepContent(stepIndex: number) {
     case 1:
       return <SetupPoliticalParties />;
     case 2:
-      return "Setup candidates";
+      return <CandidateList />;
     case 3:
       return "Setup voters";
     default:

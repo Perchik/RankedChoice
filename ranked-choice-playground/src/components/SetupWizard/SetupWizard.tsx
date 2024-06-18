@@ -25,12 +25,12 @@ const steps = [
   "Setup Voters",
 ];
 
-function getStepContent(stepIndex: number) {
+function getStepContent(stepIndex: number, handleNext: () => void) {
   switch (stepIndex) {
     case 0:
       return <SetupElectionDetails />;
     case 1:
-      return <SetupPoliticalParties />;
+      return <SetupPoliticalParties handleNext={handleNext} />;
     case 2:
       return <CandidateManager />;
     case 3:
@@ -114,7 +114,7 @@ const ElectionSetupStepper = () => {
               </Box>
             ) : (
               <Box sx={{ mt: 2 }}>
-                {getStepContent(activeStep)}
+                {getStepContent(activeStep, handleNext)}
                 <Box
                   sx={{
                     mt: 2,

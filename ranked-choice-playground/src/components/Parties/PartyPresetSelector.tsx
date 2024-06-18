@@ -51,8 +51,9 @@ const PartyPresetSelector: React.FC<PresetSelectionProps> = ({
       .then((data) => {
         const partyConfiguration = parseConfig(data);
         dispatch(setPartyConfigurationInStore(partyConfiguration));
-        onPresetSelect(data);
         setSelectedPreset(key);
+
+        onPresetSelect(data);
       })
       .catch((error) => console.error("Error loading text file:", error));
   };

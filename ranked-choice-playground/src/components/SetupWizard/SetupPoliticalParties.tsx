@@ -10,11 +10,17 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import PartyPresetSelector from "../Parties/PartyPresetSelector";
 
-const SetupPoliticalParties: React.FC = () => {
+interface SetupPoliticalPartiesProps {
+  handleNext: () => void;
+}
+
+const SetupPoliticalParties: React.FC<SetupPoliticalPartiesProps> = ({
+  handleNext,
+}) => {
   return (
     <>
       <PartyPresetSelector
-        onPresetSelect={() => {}}
+        onPresetSelect={() => handleNext()}
         onCreateCustomScenario={() => {}}
       />
       <Accordion>

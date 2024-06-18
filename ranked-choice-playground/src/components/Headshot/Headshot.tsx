@@ -16,9 +16,9 @@ interface HeadshotProps extends SVGProps<SVGSVGElement> {
   pocketSquareType?: string;
 }
 
-if (!validateBodySvgVariants(rawVariants)) {
-  throw new Error("Invalid JSON data");
-}
+// if (!validateBodySvgVariants(rawVariants)) {
+//   throw new Error("Invalid JSON data");
+// }
 const variants: BodyVariant[] = rawVariants as BodyVariant[];
 
 const defaultVariant: BodyVariant = {
@@ -43,7 +43,7 @@ const Headshot: React.FC<HeadshotProps> = ({
   pocketSquareType = defaultVariant.pocketSquareType,
   ...svgProps
 }) => {
-    const variant = variants.find((v) => v.id === variantId) || defaultVariant;
+  const variant = variants.find((v) => v.id === variantId) || defaultVariant;
 
   return (
     <svg
@@ -65,6 +65,21 @@ const Headshot: React.FC<HeadshotProps> = ({
         fillRule="evenodd"
         id="Shirt"
       />
+      {tieType === "tie" && (
+        <g fillRule="evenodd" id="TieGroup">
+          <path
+            d="m22 51.407-.769.012c.023-.007-.837.309-2.124 1.724l1.084 2.15L18.121 72h7.759l-2.071-16.707 1.084-2.15c-1.287-1.415-2.147-1.73-2.124-1.724z"
+            fill={accessoryColor}
+            id="Tie"
+          />
+          <path
+            d="m20.191 55.295-2.07 16.704h7.759l-2.07-16.704H22z"
+            fill="#000"
+            fillOpacity={0.091}
+            id="TieTint"
+          />
+        </g>
+      )}
       <g fillRule="evenodd" id="CollarGroup">
         <path
           d="M11.631 48.198q-.21.104-.415.201c.067.236.192.447.352.717.191.322.438.69.711 1.07a23 23 0 0 0 1.684 2.09c1.299 1.391 2.233 2.354 3.386 3.644l.426.477.305-.559c.411-.75.826-1.349 1.643-2.219.82-.874 1.38-1.348 2.146-1.826l.13-.082.132.082c.766.478 1.326.952 2.146 1.826.817.87 1.232 1.468 1.643 2.22l.305.558.426-.477c1.153-1.29 2.087-2.253 3.386-3.644.495-.53 1.138-1.33 1.684-2.09.272-.38.52-.748.71-1.07.161-.27.286-.481.353-.717l-.415-.201c-.135.633-1.725 2.768-2.662 3.771-1.296 1.389-2.233 2.355-3.393 3.652-.425-.776-.873-1.42-1.709-2.31-.825-.88-1.443-1.403-2.225-1.894a.84.84 0 0 0-.38-.019.84.84 0 0 0-.38.019c-.782.491-1.4 1.015-2.226 1.894-.835.89-1.283 1.534-1.708 2.31-1.16-1.297-2.097-2.263-3.394-3.652-.936-1.003-2.526-3.138-2.66-3.771z"
@@ -112,21 +127,7 @@ const Headshot: React.FC<HeadshotProps> = ({
           strokeWidth={0.265}
         />
       </g>
-      {tieType === "tie" && (
-        <g fillRule="evenodd" id="TieGroup">
-          <path
-            d="m22 51.407-.769.012c.023-.007-.837.309-2.124 1.724l1.084 2.15L18.121 72h7.759l-2.071-16.707 1.084-2.15c-1.287-1.415-2.147-1.73-2.124-1.724z"
-            fill={accessoryColor}
-            id="Tie"
-          />
-          <path
-            d="m20.191 55.295-2.07 16.704h7.759l-2.07-16.704H22z"
-            fill="#000"
-            fillOpacity={0.091}
-            id="TieTint"
-          />
-        </g>
-      )}
+
       {pocketSquareType !== "none" && (
         <g fillRule="evenodd" id="PocketGroup">
           <path

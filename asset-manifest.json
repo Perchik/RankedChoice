@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/RankedChoice/static/css/main.0540b306.css",
-    "main.js": "/RankedChoice/static/js/main.54afc3a7.js",
+    "main.css": "/RankedChoice/static/css/main.73e47ac2.css",
+    "main.js": "/RankedChoice/static/js/main.9d864bec.js",
     "static/media/lexend-latin-400-normal.woff": "/RankedChoice/static/media/lexend-latin-400-normal.9a2c7d1d446478d88243.woff",
     "static/media/manrope-latin-400-normal.woff": "/RankedChoice/static/media/manrope-latin-400-normal.82cf2a7ba70209a07253.woff",
     "static/media/lexend-latin-ext-400-normal.woff": "/RankedChoice/static/media/lexend-latin-ext-400-normal.8e756ad848cf290cf99c.woff",
@@ -22,14 +22,17 @@
     "static/media/lexend-vietnamese-400-normal.woff2": "/RankedChoice/static/media/lexend-vietnamese-400-normal.674964b431dfddb11928.woff2",
     "static/media/manrope-vietnamese-400-normal.woff2": "/RankedChoice/static/media/manrope-vietnamese-400-normal.9221e5e7b086d4b2bac8.woff2",
     "static/media/logo.svg": "/RankedChoice/static/media/logo.7e0bce4e520d46faeb2de7b48789c0e0.svg",
+    "static/media/icon_group.svg": "/RankedChoice/static/media/icon_group.ab74bfd00ed24867c25cbe5a9aaace81.svg",
     "static/media/manrope-cyrillic-ext-400-normal.woff": "/RankedChoice/static/media/manrope-cyrillic-ext-400-normal.03566edbfda34929f9fd.woff",
     "static/media/manrope-cyrillic-ext-400-normal.woff2": "/RankedChoice/static/media/manrope-cyrillic-ext-400-normal.6ba15efc9d2f0b9ed4a8.woff2",
+    "static/media/icon_podium.svg": "/RankedChoice/static/media/icon_podium.e4c306e39555c8796291781240876381.svg",
+    "static/media/icon_person.svg": "/RankedChoice/static/media/icon_person.5a6b890c6cbf817c2b6e289b9d862d47.svg",
     "index.html": "/RankedChoice/index.html",
-    "main.0540b306.css.map": "/RankedChoice/static/css/main.0540b306.css.map",
-    "main.54afc3a7.js.map": "/RankedChoice/static/js/main.54afc3a7.js.map"
+    "main.73e47ac2.css.map": "/RankedChoice/static/css/main.73e47ac2.css.map",
+    "main.9d864bec.js.map": "/RankedChoice/static/js/main.9d864bec.js.map"
   },
   "entrypoints": [
-    "static/css/main.0540b306.css",
-    "static/js/main.54afc3a7.js"
+    "static/css/main.73e47ac2.css",
+    "static/js/main.9d864bec.js"
   ]
 }

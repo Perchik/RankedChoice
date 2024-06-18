@@ -25,7 +25,7 @@ interface Variant {
   shirtColor: string;
   lapelColor: string;
   tieType: "none" | "tie" | "bowtie";
-  pocketSquareVariation: "none" | "variation1" | "variation2";
+  pocketSquareType: "none" | "type1" | "type2";
 }
 
 const skinColors = [
@@ -50,7 +50,7 @@ const HeadshotConfigurator: React.FC = () => {
     shirtColor: "#ffffff",
     lapelColor: "#ffffff",
     tieType: "tie",
-    pocketSquareVariation: "none",
+    pocketSquareType: "none",
   });
   const [currentColor, setCurrentColor] = useState("#000000");
   const [colorTarget, setColorTarget] = useState<keyof Variant>("suitColor");
@@ -68,7 +68,7 @@ const HeadshotConfigurator: React.FC = () => {
       | React.ChangeEvent<HTMLSelectElement>
   ) => {
     const { name, value } = event.target;
-    setCurrentVariant({ ...currentVariant, [name as keyof Variant]: value });
+    setCurrentVariant({ ...currentVariant, [name]: value });
   };
 
   const handleAddVariant = () => {
@@ -78,8 +78,8 @@ const HeadshotConfigurator: React.FC = () => {
       suitColor: "#000000",
       shirtColor: "#ffffff",
       lapelColor: "#ffffff",
-      tieType: "none",
-      pocketSquareVariation: "none",
+      tieType: "tie",
+      pocketSquareType: "none",
     });
   };
 
@@ -148,18 +148,18 @@ const HeadshotConfigurator: React.FC = () => {
           <FormControl component="fieldset" margin="normal">
             <FormLabel component="legend">Pocket Square Variation</FormLabel>
             <RadioGroup
-              name="pocketSquareVariation"
-              value={currentVariant.pocketSquareVariation}
+              name="pocketSquareType"
+              value={currentVariant.pocketSquareType}
               onChange={handleInputChange}
             >
               <FormControlLabel value="none" control={<Radio />} label="None" />
               <FormControlLabel
-                value="variation1"
+                value="type1"
                 control={<Radio />}
                 label="Variation 1"
               />
               <FormControlLabel
-                value="variation2"
+                value="type2"
                 control={<Radio />}
                 label="Variation 2"
               />

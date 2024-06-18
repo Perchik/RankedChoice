@@ -28,21 +28,22 @@ const defaultVariant: BodyVariant = {
   lapelColor: "#2b3763",
   collarColor: "#ffffff",
   tieType: "tie",
-  pocketSquareType: "emptypocket",
+  pocketSquareType: "none",
 };
 
-const Headshot = (props: HeadshotProps) => {
-  const { variantId, accessoryColor, skinColor, ...svgProps } = props;
-  const variant = variants.find((v) => v.id === variantId) || defaultVariant;
-
-  const {
-    suitColor = variant.suitColor || "#1c2546",
-    shirtColor = variant.shirtColor || "#ffffff",
-    lapelColor = variant.lapelColor || "#2b3763",
-    collarColor = variant.collarColor || "#ffffff",
-    tieType = variant.tieType || "tie",
-    pocketSquareType = variant.pocketSquareType || "emptypocket",
-  } = svgProps;
+const Headshot: React.FC<HeadshotProps> = ({
+  variantId,
+  accessoryColor,
+  skinColor,
+  suitColor = defaultVariant.suitColor,
+  shirtColor = defaultVariant.shirtColor,
+  lapelColor = defaultVariant.lapelColor,
+  collarColor = defaultVariant.collarColor,
+  tieType = defaultVariant.tieType,
+  pocketSquareType = defaultVariant.pocketSquareType,
+  ...svgProps
+}) => {
+    const variant = variants.find((v) => v.id === variantId) || defaultVariant;
 
   return (
     <svg

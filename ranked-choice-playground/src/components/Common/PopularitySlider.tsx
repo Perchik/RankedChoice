@@ -25,13 +25,15 @@ const PopularitySlider: React.FC<PopularitySliderProps> = ({
   value,
   onChange,
 }) => {
-  const handleDecrease = () => {
+  const handleDecrease = (event: React.MouseEvent) => {
+    event.stopPropagation();
     if (value > 1) {
       onChange(new Event("input"), value - 1, 0);
     }
   };
 
-  const handleIncrease = () => {
+  const handleIncrease = (event: React.MouseEvent) => {
+    event.stopPropagation();
     if (value < 5) {
       onChange(new Event("input"), value + 1, 0);
     }
@@ -45,7 +47,10 @@ const PopularitySlider: React.FC<PopularitySliderProps> = ({
       <Box className={styles.sliderContainer}>
         <Slider
           value={value}
-          onChange={onChange}
+          onChange={(event, newValue, activeThumb) => {
+            event.stopPropagation();
+            onChange(event, newValue, activeThumb);
+          }}
           step={1}
           marks={marks}
           min={1}

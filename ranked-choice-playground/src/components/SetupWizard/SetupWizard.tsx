@@ -17,7 +17,7 @@ import SetupElectionDetails from "./SetupElectionDetails";
 import SetupSummary from "./SetupSummaryCard";
 import SetupPoliticalParties from "./SetupPoliticalParties";
 import { RootState } from "../../store";
-import CandidateList from "../Candidates/CandidateManager";
+import CandidateManager from "../Candidates/CandidateManager";
 const steps = [
   "Setup Election",
   "Select Political Parties",
@@ -32,7 +32,7 @@ function getStepContent(stepIndex: number) {
     case 1:
       return <SetupPoliticalParties />;
     case 2:
-      return <CandidateList />;
+      return <CandidateManager />;
     case 3:
       return "Setup voters";
     default:
@@ -53,6 +53,8 @@ const ElectionSetupStepper = () => {
         return Boolean(electionTitle);
       case 1:
         return parties.length > 0;
+      case 2:
+        return true;
       default:
         return false;
     }

@@ -1,24 +1,37 @@
+import { partyAlternateColors, partyColors } from "../constants/PartyData";
 import { fetchRandomName } from "../services/nameService";
+import { getRandomElement } from "../utils/randomHelpers";
+
+let candidateCounter = 1; // Simple counter to generate unique IDs
 
 export class Candidate {
+  id: number;
   fullName: string;
   shortName: string;
+  partyId: string;
   popularity: number;
   inPartyPopularity: number;
-  color: string;
+  partyColor: string;
+  personalColor: string;
 
   constructor(
+    id: number,
     fullName: string,
     shortName: string,
+    party: string,
     popularity: number,
     inPartyPopularity: number,
-    color: string
+    partyColor: string,
+    personalColor: string
   ) {
+    this.id = id;
     this.fullName = fullName;
     this.shortName = shortName;
+    this.partyId = party;
     this.popularity = popularity;
     this.inPartyPopularity = inPartyPopularity;
-    this.color = color;
+    this.partyColor = partyColor;
+    this.personalColor = personalColor;
   }
 
   static generateFullName(
@@ -30,11 +43,11 @@ export class Candidate {
     return `${title ? title + " " : ""}${firstName} ${lastName}${suffix ? ", " + suffix : ""}`;
   }
 
-  static generateShortName(firstName: string, lastName: string): string {
-    return `${firstName.charAt(0)}. ${lastName}`;
+  static generateShortName(party: string, lastName: string): string {
+    return `${lastName} [${party.charAt(0).toUpperCase()}] `;
   }
 
-  static async fromRandomComponents(color: string): Promise<Candidate> {
+  static async fromRandomComponents(partyId: string): Promise<Candidate> {
     try {
       const { title, firstName, lastName, suffix } = await fetchRandomName();
       const fullName = this.generateFullName(
@@ -43,15 +56,21 @@ export class Candidate {
         lastName,
         suffix
       );
-      const shortName = this.generateShortName(firstName, lastName);
+      const shortName = this.generateShortName(partyId, lastName);
       const popularity = Math.floor(Math.random() * 5) + 1;
       const inPartyPopularity = Math.floor(Math.random() * 5) + 1;
+      const partyColor = partyColors[partyId];
+      const personalColor = getRandomElement(partyAlternateColors[partyId]);
+      const id = candidateCounter++;
       return new Candidate(
+        id,
         fullName,
         shortName,
+        partyId,
         popularity,
         inPartyPopularity,
-        color
+        partyColor,
+        personalColor
       );
     } catch (error) {
       console.error("Error generating candidate:", error);

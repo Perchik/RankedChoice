@@ -5,8 +5,8 @@
 
 .sliderContainer {
   position: relative;
-  width: 120px; /* Adjusted width to fit 5 circles */
-  margin: 0 8px;
+  width: 100px; /* Adjusted width to fit 5 circles */
+  margin: 0 4px;
 }
 
 .maskLayer {

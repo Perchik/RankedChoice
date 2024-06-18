@@ -91,7 +91,7 @@ const partiesSlice = createSlice({
     ) => {
       const party = state.parties.find((p) => p.id === action.payload.partyId);
       if (party) {
-        party.candidates = [...party.candidates, action.payload.candidate];
+        party.candidates.push(action.payload.candidate);
       }
     },
   },

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Candidate } from "../models/Candidate";
 
 interface CandidatesState {
-  candidates: { [id: string]: any[] }; // Use `any` to indicate plain objects
+  candidates: { [partyId: string]: Candidate[] };
 }
 
 const initialState: CandidatesState = {
@@ -15,7 +15,7 @@ const candidatesSlice = createSlice({
   reducers: {
     addCandidate: (
       state,
-      action: PayloadAction<{ partyId: string; candidate: any }>
+      action: PayloadAction<{ partyId: string; candidate: Candidate }>
     ) => {
       const { partyId, candidate } = action.payload;
       if (!state.candidates[partyId]) {
@@ -28,7 +28,7 @@ const candidatesSlice = createSlice({
       action: PayloadAction<{
         partyId: string;
         candidateIndex: number;
-        candidate: any;
+        candidate: Candidate;
       }>
     ) => {
       const { partyId, candidateIndex, candidate } = action.payload;
@@ -54,11 +54,13 @@ const candidatesSlice = createSlice({
     },
     removeCandidate: (
       state,
-      action: PayloadAction<{ partyId: string; candidateIndex: number }>
+      action: PayloadAction<{ partyId: string; candidateId: number }>
     ) => {
-      const { partyId, candidateIndex } = action.payload;
+      const { partyId, candidateId } = action.payload;
       if (state.candidates[partyId]) {
-        state.candidates[partyId].splice(candidateIndex, 1);
+        state.candidates[partyId] = state.candidates[partyId].filter(
+          (candidate) => candidate.id !== candidateId
+        );
       }
     },
   },

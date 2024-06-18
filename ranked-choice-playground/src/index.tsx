@@ -7,9 +7,12 @@ import theme from "./styles/theme";
 import { Provider } from "react-redux";
 import store from "./store";
 import { enableMapSet } from "immer";
+import { registerLicense } from "@syncfusion/ej2-base";
 
 enableMapSet();
-
+registerLicense(
+  "Ngo9BigBOggjHTQxAR8/V1NCaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXlfdnZXRmJdWEJ/WUU="
+);
 const root = createRoot(document.getElementById("root") as HTMLElement);
 root.render(
   // <React.StrictMode>

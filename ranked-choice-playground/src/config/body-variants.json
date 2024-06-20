@@ -30,7 +30,7 @@
     "shirtColor": "#ffffff",
     "lapelColor": "#4c4e55",
     "tieType": "bowtie",
-    "pocketSquareType": "none"
+    "pocketSquareType": "emptypocket"
   },
   {
     "id": "103",
@@ -62,7 +62,7 @@
     "shirtColor": "#ffffff",
     "lapelColor": "#4c4e55",
     "tieType": "tie",
-    "pocketSquareType": "none"
+    "pocketSquareType": "emptypocket"
   },
   {
     "id": "107",
@@ -93,8 +93,8 @@
     "suitColor": "#4682b4",
     "shirtColor": "#ffffff",
     "lapelColor": "#b0c4de",
-    "tieType": "none",
-    "pocketSquareType": "none"
+    "tieType": "emptypocket",
+    "pocketSquareType": "emptypocket"
   },
   {
     "id": "111",
@@ -110,7 +110,7 @@
     "shirtColor": "#ffffff",
     "lapelColor": "#000000",
     "tieType": "bowtie",
-    "pocketSquareType": "none"
+    "pocketSquareType": "emptypocket"
   },
   {
     "id": "113",
@@ -134,7 +134,7 @@
     "shirtColor": "#6495ed",
     "lapelColor": "#000000",
     "tieType": "tie",
-    "pocketSquareType": "none"
+    "pocketSquareType": "emptypocket"
   },
   {
     "id": "116",
@@ -142,7 +142,7 @@
     "shirtColor": "#6495ed",
     "lapelColor": "#000000",
     "tieType": "bowtie",
-    "pocketSquareType": "none"
+    "pocketSquareType": "emptypocket"
   },
   {
     "id": "117",
@@ -150,7 +150,7 @@
     "shirtColor": "#909096",
     "lapelColor": "#000000",
     "tieType": "bowtie",
-    "pocketSquareType": "none"
+    "pocketSquareType": "emptypocket"
   },
   {
     "id": "118",
@@ -158,7 +158,7 @@
     "shirtColor": "#6495ed",
     "lapelColor": "#2a2a2a",
     "tieType": "tie",
-    "pocketSquareType": "none"
+    "pocketSquareType": "emptypocket"
   },
   {
     "id": "119",
@@ -173,7 +173,7 @@
     "suitColor": "#000000",
     "shirtColor": "#000000",
     "lapelColor": "#000000",
-    "tieType": "none",
+    "tieType": "emptypocket",
     "pocketSquareType": "type2"
   },
   {
@@ -183,5 +183,54 @@
     "lapelColor": "#4c4c4c",
     "tieType": "tie",
     "pocketSquareType": "type1"
+  },
+
+  {
+    "id": "122",
+    "suitColor": "#d2b48c",
+    "shirtColor": "#ffffff",
+    "lapelColor": "#c3b091",
+    "tieType": "tie",
+    "pocketSquareType": "emptypocket"
+  },
+  {
+    "id": "123",
+    "suitColor": "#9e824e",
+    "shirtColor": "#ffffff",
+    "lapelColor": "#c0954a",
+    "tieType": "bowtie",
+    "pocketSquareType": "emptypocket"
+  },
+  {
+    "id": "124",
+    "suitColor": "#dfa062",
+    "shirtColor": "#ffffff",
+    "lapelColor": "#da9959",
+    "tieType": "bowtie",
+    "pocketSquareType": "emptypocket"
+  },
+  {
+    "id": "125",
+    "suitColor": "#dfa062",
+    "shirtColor": "#ffffff",
+    "lapelColor": "#fac490",
+    "tieType": "bowtie",
+    "pocketSquareType": "emptypocket"
+  },
+  {
+    "id": "126",
+    "suitColor": "#dfa062",
+    "shirtColor": "#ffffff",
+    "lapelColor": "#fac490",
+    "tieType": "bowtie",
+    "pocketSquareType": "type1"
+  },
+  {
+    "id": "127",
+    "suitColor": "#c07f40",
+    "shirtColor": "#ffffff",
+    "lapelColor": "#fac490",
+    "tieType": "tie",
+    "pocketSquareType": "type2"
   }
 ]

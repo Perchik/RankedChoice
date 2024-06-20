@@ -40,7 +40,7 @@ const HeadshotList: React.FC = () => {
         Headshot List
       </Typography>
       <Grid container spacing={1}>
-        {variants.map((variant) => {
+        {variants.map((variant, index) => {
           const { skinColor, hairColor } = getRandomElement(skinHairOptions);
           const accessoryColor = partyColors[getRandomElement(partyIds)];
 
@@ -57,6 +57,8 @@ const HeadshotList: React.FC = () => {
                   pocketSquareType={variant.pocketSquareType}
                   accessoryColor={accessoryColor}
                   skinColor={skinColor}
+                  hairColor={hairColor}
+                  hairToUse={index}
                   width="100px"
                   height="160px"
                 />

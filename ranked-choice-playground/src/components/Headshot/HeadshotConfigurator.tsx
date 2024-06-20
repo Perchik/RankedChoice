@@ -203,6 +203,7 @@ const HeadshotConfigurator: React.FC = () => {
             variantId=""
             accessoryColor={accessoryColor}
             skinColor={skinColor}
+            hairColor="lime"
             width="auto"
             height="400px"
             {...currentVariant}

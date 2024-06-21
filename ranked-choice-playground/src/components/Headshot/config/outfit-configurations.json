@@ -1,14 +1,5 @@
 [
   {
-    "id": "default",
-    "suitColor": "#1c2546",
-    "shirtColor": "#ffffff",
-    "lapelColor": "#2b3763",
-    "collarColor": "#ffffff",
-    "tieType": "tie",
-    "pocketSquareType": "emptypocket"
-  },
-  {
     "id": "100",
     "suitColor": "#343d63",
     "shirtColor": "#ffffff",
@@ -93,7 +84,7 @@
     "suitColor": "#4682b4",
     "shirtColor": "#ffffff",
     "lapelColor": "#b0c4de",
-    "tieType": "emptypocket",
+    "tieType": "tie",
     "pocketSquareType": "emptypocket"
   },
   {
@@ -157,6 +148,7 @@
     "suitColor": "#000000",
     "shirtColor": "#6495ed",
     "lapelColor": "#2a2a2a",
+    "collarColor": "#ffffff",
     "tieType": "tie",
     "pocketSquareType": "emptypocket"
   },
@@ -164,6 +156,7 @@
     "id": "119",
     "suitColor": "#000000",
     "shirtColor": "#6495ed",
+    "collarColor": "#ffffff",
     "lapelColor": "#2a2a2a",
     "tieType": "tie",
     "pocketSquareType": "type2"
@@ -172,7 +165,7 @@
     "id": "120",
     "suitColor": "#000000",
     "shirtColor": "#000000",
-    "lapelColor": "#000000",
+    "lapelColor": "#4c4c4c",
     "tieType": "emptypocket",
     "pocketSquareType": "type2"
   },

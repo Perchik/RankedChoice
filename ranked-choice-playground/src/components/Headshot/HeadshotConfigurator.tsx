@@ -199,7 +199,7 @@ const HeadshotConfigurator: React.FC = () => {
           justifyContent="center"
           alignItems="flex-start"
         >
-          <Headshot
+          {/* <Headshot
             variantId=""
             accessoryColor={accessoryColor}
             skinColor={skinColor}
@@ -207,7 +207,7 @@ const HeadshotConfigurator: React.FC = () => {
             width="auto"
             height="400px"
             {...currentVariant}
-          />
+          /> */}
           <Box border={1} borderColor="grey.300" borderRadius={4} padding={2}>
             <FormControl fullWidth margin="normal">
               <TextField

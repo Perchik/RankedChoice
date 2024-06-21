@@ -304,6 +304,9 @@ export const partyNames = Object.values(parties).map((party) => party.name);
 export const partyColors = Object.fromEntries(
   Object.entries(parties).map(([id, party]) => [id, party.color])
 );
+export const partyColorsList = Object.values(parties).map(
+  (party) => party.color
+);
 
 export const partyAlternateColors = Object.fromEntries(
   Object.entries(parties).map(([id, party]) => [id, party.alternateColors])

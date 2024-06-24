@@ -97,10 +97,5 @@
   ["#4e342e", "#d3d3d3", "Dark brown skin, grey hair"],
   ["#4e342e", "#e8e8e8", "Dark brown skin, white hair"],
   ["#4e342e", "#000000", "Dark brown skin, black hair"],
-  ["#4e342e", "#140900", "Dark brown skin, very dark hair"],
-
-  ["#21150b", "#e8e8e8", "Very dark skin, white hair"],
-  ["#21150b", "#d3d3d3", "Very dark skin, grey hair"],
-  ["#21150b", "#000000", "Very dark skin, black hair"],
-  ["#21150b", "#140900", "Very dark skin, very dark hair"]
+  ["#4e342e", "#140900", "Dark brown skin, very dark hair"]
 ]

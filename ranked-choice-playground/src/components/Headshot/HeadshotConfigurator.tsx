@@ -20,7 +20,7 @@ import Headshot from "./Headshot";
 import { partyColors } from "../../constants/PartyData";
 import ColorPalette from "../Common/ColorPalette";
 
-interface Variant {
+interface Outfit {
   id: string;
   suitColor: string;
   shirtColor: string;
@@ -29,18 +29,6 @@ interface Variant {
   pocketSquareType: "none" | "type1" | "type2";
 }
 
-const skinColors = [
-  "#f9c9b6", // Light skin
-  "#f0d5c9", // Fair skin
-  "#d1a684", // Medium skin
-  "#a67c52", // Tan skin
-  "#8d5524", // Olive skin
-  "#7d4b1f", // Brown skin
-  "#4e342e", // Dark brown skin
-  "#21150b", // Very dark skin
-];
-
-const defaultSkinColor = skinColors[0];
 const defaultAccessoryColor = partyColors["red"];
 
 const clothingColors = [
@@ -69,8 +57,8 @@ const clothingColors = [
 ];
 
 const HeadshotConfigurator: React.FC = () => {
-  const [variants, setVariants] = useState<Variant[]>([]);
-  const [currentVariant, setCurrentVariant] = useState<Variant>({
+  const [outfits, setOutfits] = useState<Outfit[]>([]);
+  const [currentOutfit, setCurrentOutfit] = useState<Outfit>({
     id: "100",
     suitColor: "#000000",
     shirtColor: "#ffffff",
@@ -79,14 +67,13 @@ const HeadshotConfigurator: React.FC = () => {
     pocketSquareType: "none",
   });
   const [currentColor, setCurrentColor] = useState("#000000");
-  const [colorTarget, setColorTarget] = useState<keyof Variant>("suitColor");
+  const [colorTarget, setColorTarget] = useState<keyof Outfit>("suitColor");
   const [accessoryColor, setAccessoryColor] = useState(defaultAccessoryColor);
-  const [skinColor, setSkinColor] = useState(defaultSkinColor);
   const [currentId, setCurrentId] = useState(101); // Start ID at 100 and increment
 
   const handleColorChange = (color: any) => {
     setCurrentColor(color.hex);
-    setCurrentVariant({ ...currentVariant, [colorTarget]: color.hex });
+    setCurrentOutfit({ ...currentOutfit, [colorTarget]: color.hex });
   };
 
   const handleInputChange = (
@@ -95,13 +82,13 @@ const HeadshotConfigurator: React.FC = () => {
       | React.ChangeEvent<HTMLSelectElement>
   ) => {
     const { name, value } = event.target;
-    setCurrentVariant({ ...currentVariant, [name]: value });
+    setCurrentOutfit({ ...currentOutfit, [name]: value });
   };
 
-  const handleAddVariant = () => {
-    setVariants([...variants, { ...currentVariant }]);
-    setCurrentVariant({
-      ...currentVariant,
+  const handleAddOutfit = () => {
+    setOutfits([...outfits, { ...currentOutfit }]);
+    setCurrentOutfit({
+      ...currentOutfit,
       id: currentId.toString(),
     });
     setCurrentId(currentId + 1);
@@ -110,7 +97,7 @@ const HeadshotConfigurator: React.FC = () => {
   return (
     <Box padding="20px">
       <Typography variant="h4" mb={3} align="center">
-        SVG Variant Creator
+        SVG Outfit Creator
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={3}>
@@ -135,7 +122,6 @@ const HeadshotConfigurator: React.FC = () => {
             mb={3}
           >
             <Typography variant="h6">Skin Color</Typography>
-            <ColorPalette colors={skinColors} onClick={setSkinColor} />
           </Box>
           <Box
             border={1}
@@ -148,7 +134,7 @@ const HeadshotConfigurator: React.FC = () => {
               <FormLabel component="legend">Tie Type</FormLabel>
               <RadioGroup
                 name="tieType"
-                value={currentVariant.tieType}
+                value={currentOutfit.tieType}
                 onChange={handleInputChange}
               >
                 <FormControlLabel
@@ -168,7 +154,7 @@ const HeadshotConfigurator: React.FC = () => {
               <FormLabel component="legend">Pocket Square Type</FormLabel>
               <RadioGroup
                 name="pocketSquareType"
-                value={currentVariant.pocketSquareType}
+                value={currentOutfit.pocketSquareType}
                 onChange={handleInputChange}
               >
                 <FormControlLabel
@@ -200,13 +186,13 @@ const HeadshotConfigurator: React.FC = () => {
           alignItems="flex-start"
         >
           {/* <Headshot
-            variantId=""
+            outfitId=""
             accessoryColor={accessoryColor}
             skinColor={skinColor}
             hairColor="lime"
             width="auto"
             height="400px"
-            {...currentVariant}
+            {...currentOutfit}
           /> */}
           <Box border={1} borderColor="grey.300" borderRadius={4} padding={2}>
             <FormControl fullWidth margin="normal">
@@ -214,7 +200,7 @@ const HeadshotConfigurator: React.FC = () => {
                 label="ID"
                 type="text"
                 name="id"
-                value={currentVariant.id}
+                value={currentOutfit.id}
                 onChange={(event) => handleInputChange(event as any)}
                 size="small"
               />
@@ -222,11 +208,11 @@ const HeadshotConfigurator: React.FC = () => {
             <Button
               variant="contained"
               color="primary"
-              onClick={handleAddVariant}
+              onClick={handleAddOutfit}
               fullWidth
               style={{ marginTop: "20px" }}
             >
-              Add Variant
+              Add Outfit
             </Button>
           </Box>
         </Grid>
@@ -243,7 +229,7 @@ const HeadshotConfigurator: React.FC = () => {
               <Select
                 value={colorTarget}
                 onChange={(event) =>
-                  setColorTarget(event.target.value as keyof Variant)
+                  setColorTarget(event.target.value as keyof Outfit)
                 }
               >
                 <MenuItem value="suitColor">Suit Color</MenuItem>
@@ -260,13 +246,13 @@ const HeadshotConfigurator: React.FC = () => {
         </Grid>
       </Grid>
       <Box mt={3}>
-        <Typography variant="h5">Variants</Typography>
-        <pre>{JSON.stringify(variants, null, 2)}</pre>
+        <Typography variant="h5">Outfits</Typography>
+        <pre>{JSON.stringify(outfits, null, 2)}</pre>
         <Button
           variant="contained"
           color="secondary"
           onClick={() =>
-            navigator.clipboard.writeText(JSON.stringify(variants, null, 2))
+            navigator.clipboard.writeText(JSON.stringify(outfits, null, 2))
           }
           style={{ marginTop: "10px" }}
           fullWidth

@@ -12,14 +12,9 @@ import { SVGProps } from "react";
 import complexionColors from "./config/complexion-colors.json";
 import outfitConfigurations from "./config/outfit-configurations.json";
 import { getRandomElement, getRandomInt } from "../../utils/randomHelpers";
+import { ComplexionColor, OutfitConfiguration } from "./types";
 
 const HAIR_COUNT = 16;
-
-interface ComplexionColor {
-  skinColor: string;
-  hairColor: string;
-  description: string; // Unused, but functions as a comment in the json file.
-}
 
 const complexionOptions: ComplexionColor[] = complexionColors.map(
   ([skinColor, hairColor, description]) => ({
@@ -29,23 +24,12 @@ const complexionOptions: ComplexionColor[] = complexionColors.map(
   })
 );
 
-interface OutfitConfiguration {
-  id: string;
-  suitColor: string;
-  shirtColor: string;
-  lapelColor: string;
-  collarColor?: string;
-  tieType: string;
-  pocketSquareType: string;
-}
-
 const outfits: OutfitConfiguration[] =
   outfitConfigurations as OutfitConfiguration[];
 
 interface HeadshotProps extends SVGProps<SVGSVGElement> {
   accessoryColor?: string;
   outfitId?: string;
-  forceSequential?: boolean;
 }
 
 interface HeadshotHandle {
@@ -57,7 +41,7 @@ let sharedOutfitIndex = 0;
 let sharedHairIndex = 0;
 
 const Headshot: ForwardRefRenderFunction<HeadshotHandle, HeadshotProps> = (
-  { outfitId, accessoryColor, forceSequential = false, ...svgProps },
+  { outfitId, accessoryColor, ...svgProps },
   ref
 ) => {
   const [outfitIndex, setOutfitIndex] = useState<number>(() => {
@@ -65,14 +49,11 @@ const Headshot: ForwardRefRenderFunction<HeadshotHandle, HeadshotProps> = (
     return sharedOutfitIndex;
   });
   const [outfit, setOutfit] = useState<OutfitConfiguration>(() =>
-    forceSequential
-      ? outfits[outfitIndex]
-      : outfitId
-        ? outfits.find((v) => v.id === outfitId) || getRandomElement(outfits)
-        : getRandomElement(outfits)
+    outfitId
+      ? outfits.find((v) => v.id === outfitId) || getRandomElement(outfits)
+      : getRandomElement(outfits)
   );
 
-  // We don't use forceSequential here because there are too many complexion options.
   const [complexion, setComplexion] = useState<ComplexionColor>(() =>
     getRandomElement(complexionOptions)
   );

@@ -20,7 +20,6 @@ const HeadshotList: React.FC = () => {
             <Box display="flex" flexDirection="column" alignItems="center">
               <Headshot
                 accessoryColor={partyColorsList[index % partyColorsList.length]}
-                forceSequential={true}
               />
             </Box>
           </Grid>

@@ -1,8 +1,7 @@
 import React from "react";
 import { Box, Typography, Grid } from "@mui/material";
-import Headshot from "./Headshot";
+import RandomHeadshot from "./RandomHeadshot";
 import outfitConfigurations from "./config/outfit-configurations.json";
-
 import { partyColorsList } from "../../constants/PartyData";
 
 const HeadshotList: React.FC = () => {
@@ -14,11 +13,9 @@ const HeadshotList: React.FC = () => {
       <Grid container spacing={1}>
         {outfitConfigurations.map((_, index) => (
           <Grid item xs={1} spacing={1} key={index}>
-            <Typography>
-              {partyColorsList[index % partyColorsList.length]}
-            </Typography>
             <Box display="flex" flexDirection="column" alignItems="center">
-              <Headshot
+              <RandomHeadshot
+                forceSequential={true}
                 accessoryColor={partyColorsList[index % partyColorsList.length]}
               />
             </Box>

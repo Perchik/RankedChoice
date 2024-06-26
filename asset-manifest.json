@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/RankedChoice/static/css/main.73e47ac2.css",
-    "main.js": "/RankedChoice/static/js/main.9d864bec.js",
+    "main.css": "/RankedChoice/static/css/main.78fdabe0.css",
+    "main.js": "/RankedChoice/static/js/main.e3e5360c.js",
     "static/media/lexend-latin-400-normal.woff": "/RankedChoice/static/media/lexend-latin-400-normal.9a2c7d1d446478d88243.woff",
     "static/media/manrope-latin-400-normal.woff": "/RankedChoice/static/media/manrope-latin-400-normal.82cf2a7ba70209a07253.woff",
     "static/media/lexend-latin-ext-400-normal.woff": "/RankedChoice/static/media/lexend-latin-ext-400-normal.8e756ad848cf290cf99c.woff",
@@ -28,11 +28,11 @@
     "static/media/icon_podium.svg": "/RankedChoice/static/media/icon_podium.e4c306e39555c8796291781240876381.svg",
     "static/media/icon_person.svg": "/RankedChoice/static/media/icon_person.5a6b890c6cbf817c2b6e289b9d862d47.svg",
     "index.html": "/RankedChoice/index.html",
-    "main.73e47ac2.css.map": "/RankedChoice/static/css/main.73e47ac2.css.map",
-    "main.9d864bec.js.map": "/RankedChoice/static/js/main.9d864bec.js.map"
+    "main.78fdabe0.css.map": "/RankedChoice/static/css/main.78fdabe0.css.map",
+    "main.e3e5360c.js.map": "/RankedChoice/static/js/main.e3e5360c.js.map"
   },
   "entrypoints": [
-    "static/css/main.73e47ac2.css",
-    "static/js/main.9d864bec.js"
+    "static/css/main.78fdabe0.css",
+    "static/js/main.e3e5360c.js"
   ]
 }

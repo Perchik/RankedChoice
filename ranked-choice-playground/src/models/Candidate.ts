@@ -1,6 +1,6 @@
 import { partyAlternateColors, partyColors } from "../constants/PartyData";
 import { fetchRandomName } from "../services/nameService";
-import { getRandomElement } from "../utils/randomHelpers";
+import { getRandomElement, getRandomInt } from "../utils/randomHelpers";
 
 let candidateCounter = 1; // Simple counter to generate unique IDs
 
@@ -37,7 +37,7 @@ export class Candidate {
   static generateFullName(
     title: string,
     firstName: string,
-    lastName: string,
+    lastName: string
   ): string {
     return `${title ? title + " " : ""}${firstName} ${lastName}`;
   }
@@ -48,15 +48,11 @@ export class Candidate {
 
   static async fromRandomComponents(partyId: string): Promise<Candidate> {
     try {
-      const { title, firstName, lastName} = await fetchRandomName();
-      const fullName = this.generateFullName(
-        title,
-        firstName,
-        lastName
-      );
+      const { title, firstName, lastName } = await fetchRandomName();
+      const fullName = this.generateFullName(title, firstName, lastName);
       const shortName = this.generateShortName(partyId, lastName);
-      const popularity = Math.floor(Math.random() * 5) + 1;
-      const inPartyPopularity = Math.floor(Math.random() * 5) + 1;
+      const popularity = getRandomInt(0, 3);
+      const inPartyPopularity = getRandomInt(0, 3);
       const partyColor = partyColors[partyId];
       const personalColor = getRandomElement(partyAlternateColors[partyId]);
       const id = candidateCounter++;

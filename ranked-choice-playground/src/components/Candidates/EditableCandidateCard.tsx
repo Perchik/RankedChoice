@@ -1,6 +1,14 @@
 import React, { useRef } from "react";
 import { useDispatch } from "react-redux";
-import { Box, Card, Typography, IconButton, Tooltip } from "@mui/material";
+import {
+  Box,
+  Card,
+  Paper,
+  Typography,
+  IconButton,
+  Tooltip,
+  styled,
+} from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { fetchRandomName } from "../../services/nameService";
@@ -15,7 +23,6 @@ import RandomHeadshot, {
   RandomHeadshotHandle,
   RandomHeadshotProps,
 } from "../Headshot/RandomHeadshot";
-import palette from "../../styles/palette";
 
 interface EditableCandidateCardProps {
   partyId: string;
@@ -24,6 +31,28 @@ interface EditableCandidateCardProps {
   onDelete: () => void;
 }
 
+const PhotoCard = styled(Card)(({ theme }) => ({
+  display: "flex",
+  position: "relative",
+  alignItems: "stretch",
+  boxShadow: "0 10px 15px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1)",
+  border: "1px solid #ccc",
+  overflow: "hidden",
+
+  backgroundImage: "linear-gradient(to bottom right,#ffffff,#a7b2d3)",
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: "0px",
+    left: "0px",
+    right: "0px",
+    bottom: "0px",
+    borderRadius: "8px",
+    border: "2px solid #fff",
+    boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.4)",
+    pointerEvents: "none",
+  },
+}));
 const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
   partyId,
   candidate,
@@ -47,13 +76,8 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
   const handleFetchNewName = async (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    const { title, firstName, lastName, suffix } = await fetchRandomName();
-    const newFullName = Candidate.generateFullName(
-      title,
-      firstName,
-      lastName,
-      suffix
-    );
+    const { title, firstName, lastName } = await fetchRandomName();
+    const newFullName = Candidate.generateFullName(title, firstName, lastName);
     const newShortName = Candidate.generateShortName(firstName, lastName);
 
     dispatch(
@@ -81,9 +105,8 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
   };
 
   const handlePopularityChange = (
-    event: Event,
-    newValue: number | number[],
-    activeThumb: number,
+    event: React.ChangeEvent<{}>,
+    newValue: number | null,
     type: "popularity" | "inPartyPopularity"
   ) => {
     event.preventDefault();
@@ -142,7 +165,8 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
   };
 
   return (
-    <Box
+    <Paper
+      elevation={6}
       sx={{
         display: "flex",
         alignItems: "stretch",
@@ -155,15 +179,7 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
         p: 1,
       }}
     >
-      <Card
-        sx={{
-          display: "flex",
-          position: "relative",
-          alignItems: "stretch",
-          boxShadow: 2,
-          backgroundImage: "linear-gradient(to bottom right,#ffffff,#a7b2d3)",
-        }}
-      >
+      <PhotoCard>
         <RandomHeadshot ref={headshotRef} {...randomHeadshotProps} />
         <Tooltip
           title="Change head"
@@ -240,7 +256,7 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
             />
           </Box>
         </Tooltip>
-      </Card>
+      </PhotoCard>
 
       <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
         <Box
@@ -302,35 +318,33 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
           ></Box>
           <Typography variant="subtitle2">{partyName} Party</Typography>
         </Box>
+        <Typography variant="body1" fontWeight={"bold"}>
+          Popularity
+        </Typography>
         <Box sx={{ display: "flex", alignItems: "right", height: "24px" }}>
           <Typography variant="body2" sx={{ flexGrow: 1, textAlign: "right" }}>
-            Overall popularity
+            Overall
           </Typography>
           <PopularitySlider
             value={candidateInstance.popularity}
-            onChange={(event, newValue, activeThumb) =>
-              handlePopularityChange(event, newValue, activeThumb, "popularity")
+            onChange={(event, newValue) =>
+              handlePopularityChange(event, newValue, "popularity")
             }
           />
         </Box>
         <Box sx={{ display: "flex", alignItems: "right", height: "24px" }}>
           <Typography variant="body2" sx={{ flexGrow: 1, textAlign: "right" }}>
-            In-party popularity
+            Party
           </Typography>
           <PopularitySlider
             value={candidateInstance.inPartyPopularity}
-            onChange={(event, newValue, activeThumb) =>
-              handlePopularityChange(
-                event,
-                newValue,
-                activeThumb,
-                "inPartyPopularity"
-              )
+            onChange={(event, newValue) =>
+              handlePopularityChange(event, newValue, "inPartyPopularity")
             }
           />
         </Box>
       </Box>
-    </Box>
+    </Paper>
   );
 };
 

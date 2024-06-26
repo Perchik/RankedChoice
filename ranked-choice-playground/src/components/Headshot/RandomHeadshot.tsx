@@ -1,4 +1,12 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+  useEffect,
+  useCallback,
+  ForwardRefRenderFunction,
+} from "react";
 import { ComplexionConfiguration, OutfitConfiguration } from "./types";
 import Headshot, { HeadshotHandle } from "./Headshot";
 import ComplexionConfigurations from "./config/complexion-colors.json";
@@ -15,10 +23,17 @@ const complexionOptions: ComplexionConfiguration[] =
 const outfits: OutfitConfiguration[] =
   outfitConfigurations as OutfitConfiguration[];
 
-interface RandomHeadshotProps {
+export interface RandomHeadshotProps {
   accessoryColor?: string;
   outfitId?: string;
   forceSequential?: boolean; // Whether to sequentially go through the arrays of outfits.
+}
+
+export interface RandomHeadshotHandle {
+  regenerateHeadshot: (options?: {
+    reloadHead?: boolean;
+    reloadBody?: boolean;
+  }) => void;
 }
 
 // If forceSequential is enabled, we incrementally go through the arrays for Hair and Outfit, instead of randomly.
@@ -49,12 +64,13 @@ const getNextOutfit = (
   }
 };
 
-const RandomHeadshot: React.FC<RandomHeadshotProps> = ({
-  outfitId,
-  accessoryColor,
-  forceSequential = false,
-  ...svgProps
-}) => {
+const RandomHeadshot: ForwardRefRenderFunction<
+  RandomHeadshotHandle,
+  RandomHeadshotProps
+> = (
+  { outfitId, accessoryColor, forceSequential = false, ...svgProps },
+  ref
+) => {
   const headshotRef = useRef<HeadshotHandle>(null);
   const [hairCount, setHairCount] = useState<number>(0);
   const [hairId, setHairId] = useState<number>(
@@ -84,7 +100,7 @@ const RandomHeadshot: React.FC<RandomHeadshotProps> = ({
   }, [hairCount, forceSequential]);
 
   const regenerateHeadshot = useCallback(
-    (reloadHead: boolean = true, reloadBody: boolean = true) => {
+    ({ reloadHead = true, reloadBody = true } = {}) => {
       if (reloadHead) {
         setComplexion(getRandomElement(complexionOptions));
         if (hairCount > 0) {
@@ -102,6 +118,9 @@ const RandomHeadshot: React.FC<RandomHeadshotProps> = ({
     [hairCount, outfitId, forceSequential, accessoryColor]
   );
 
+  useImperativeHandle(ref, () => ({
+    regenerateHeadshot,
+  }));
   return (
     <Headshot
       ref={headshotRef}
@@ -114,4 +133,4 @@ const RandomHeadshot: React.FC<RandomHeadshotProps> = ({
   );
 };
 
-export default RandomHeadshot;
+export default forwardRef(RandomHeadshot);

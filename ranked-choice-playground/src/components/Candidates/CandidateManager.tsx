@@ -110,6 +110,7 @@ const CandidateManager: React.FC = () => {
                     key={candidate.id}
                     timeout={400}
                     orientation="horizontal"
+                    in={false}
                   >
                     <EditableCandidateCard
                       partyId={party.id}

@@ -273,26 +273,32 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
               flexDirection: "row",
               alignItems: "center",
               position: "relative",
-              "&:hover .nameRefreshIcon": {
-                visibility: "visible",
+              "&:hover": {
+                cursor: "pointer",
+                border: "1px solid",
+                borderColor: "primary.main",
               },
             }}
+            onClick={handleFetchNewName}
           >
-            <Typography variant="h6" sx={{ fontSize: 18 }}>
-              {candidateInstance.fullName}
-            </Typography>
-            <Tooltip title="Regenerate candidate name">
-              <IconButton
-                size="small"
-                onClick={handleFetchNewName}
-                sx={{
-                  visibility: "hidden",
-                  transition: "visibility 0.2s",
-                }}
-                className="nameRefreshIcon"
-              >
-                <RefreshIcon fontSize="small" />
-              </IconButton>
+            <Tooltip
+              title="Regenerate candidate name"
+              arrow
+              placement="top"
+              PopperProps={{
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [0, 0],
+                    },
+                  },
+                ],
+              }}
+            >
+              <Typography variant="h6" sx={{ fontSize: 18 }}>
+                {candidateInstance.fullName}
+              </Typography>
             </Tooltip>
           </Box>
           <Tooltip title="Delete Candidate">

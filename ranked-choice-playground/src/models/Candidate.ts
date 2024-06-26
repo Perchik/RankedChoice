@@ -38,9 +38,8 @@ export class Candidate {
     title: string,
     firstName: string,
     lastName: string,
-    suffix?: string
   ): string {
-    return `${title ? title + " " : ""}${firstName} ${lastName}${suffix ? ", " + suffix : ""}`;
+    return `${title ? title + " " : ""}${firstName} ${lastName}`;
   }
 
   static generateShortName(party: string, lastName: string): string {
@@ -49,12 +48,11 @@ export class Candidate {
 
   static async fromRandomComponents(partyId: string): Promise<Candidate> {
     try {
-      const { title, firstName, lastName, suffix } = await fetchRandomName();
+      const { title, firstName, lastName} = await fetchRandomName();
       const fullName = this.generateFullName(
         title,
         firstName,
-        lastName,
-        suffix
+        lastName
       );
       const shortName = this.generateShortName(partyId, lastName);
       const popularity = Math.floor(Math.random() * 5) + 1;

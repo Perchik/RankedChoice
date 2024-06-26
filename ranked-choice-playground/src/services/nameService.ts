@@ -1,10 +1,9 @@
 import axios from "axios";
-
+import { getWeightedRandomElement } from "../utils/randomHelpers";
 type Name = {
   title: string;
   firstName: string;
   lastName: string;
-  suffix?: string;
 };
 
 class NameService {
@@ -17,16 +16,6 @@ class NameService {
     "Dr.": 5,
     "Rev.": 1,
     "Prof.": 2,
-  };
-
-  private suffixWeights: { [key: string]: number } = {
-    "Jr.": 5,
-    "Sr.": 5,
-    "Esq.": 1,
-    PhD: 10,
-    MD: 5,
-    DMin: 1,
-    "": 100,
   };
 
   constructor(batchSize: number = 10) {
@@ -53,7 +42,6 @@ class NameService {
           title: this.assignRandomTitle(),
           firstName: user.name.first,
           lastName: user.name.last,
-          suffix: this.assignRandomSuffix(),
         }))
       );
     } catch (error) {
@@ -74,32 +62,7 @@ class NameService {
   }
 
   private assignRandomTitle(): string | undefined {
-    return this.weightedRandomSelection(this.titleWeights);
-  }
-
-  private assignRandomSuffix(): string | undefined {
-    return this.weightedRandomSelection(this.suffixWeights);
-  }
-
-  private weightedRandomSelection(
-    weights: { [key: string]: number },
-    defaultValue?: string
-  ): string | undefined {
-    const totalWeight = Object.values(weights).reduce(
-      (sum, weight) => sum + weight,
-      0
-    );
-    const randomValue = Math.random() * totalWeight;
-
-    let cumulativeWeight = 0;
-    for (const [key, weight] of Object.entries(weights)) {
-      cumulativeWeight += weight;
-      if (randomValue < cumulativeWeight) {
-        return key;
-      }
-    }
-
-    return defaultValue;
+    return getWeightedRandomElement(this.titleWeights);
   }
 
   public async getNextName(): Promise<Name> {

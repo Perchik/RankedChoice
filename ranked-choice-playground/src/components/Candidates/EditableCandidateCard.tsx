@@ -118,10 +118,10 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
       candidateInstance.shortName,
       candidateInstance.partyId,
       type === "popularity"
-        ? (newValue as number) + 1 // We want to 1-index the popularity
+        ? (newValue as number)
         : candidateInstance.popularity,
       type === "inPartyPopularity"
-        ? (newValue as number) + 1
+        ? (newValue as number)
         : candidateInstance.inPartyPopularity,
       candidateInstance.partyColor,
       candidateInstance.personalColor

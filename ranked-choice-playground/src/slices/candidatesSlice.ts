@@ -22,6 +22,10 @@ const candidatesSlice = createSlice({
         state.candidates[partyId] = [];
       }
       state.candidates[partyId].push(candidate);
+
+      if (state.candidates[partyId].length === 1) {
+        state.candidates[partyId][0].inPartyPopularity = 3;
+      }
     },
     updateCandidate: (
       state,
@@ -61,6 +65,10 @@ const candidatesSlice = createSlice({
         state.candidates[partyId] = state.candidates[partyId].filter(
           (candidate) => candidate.id !== candidateId
         );
+
+        if (state.candidates[partyId].length === 1) {
+          state.candidates[partyId][0].inPartyPopularity = 3;
+        }
       }
     },
   },

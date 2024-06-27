@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Card,
@@ -23,6 +23,7 @@ import RandomHeadshot, {
   RandomHeadshotHandle,
   RandomHeadshotProps,
 } from "../Headshot/RandomHeadshot";
+import { RootState } from "../../store";
 
 interface EditableCandidateCardProps {
   partyId: string;
@@ -38,7 +39,6 @@ const PhotoCard = styled(Card)(({ theme }) => ({
   boxShadow: "0 10px 15px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1)",
   border: "1px solid #ccc",
   overflow: "hidden",
-
   backgroundImage: "linear-gradient(to bottom right,#ffffff,#a7b2d3)",
   "&::before": {
     content: '""',
@@ -53,6 +53,7 @@ const PhotoCard = styled(Card)(({ theme }) => ({
     pointerEvents: "none",
   },
 }));
+
 const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
   partyId,
   candidate,
@@ -163,6 +164,12 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
       },
     },
   };
+
+  const partyCandidates = useSelector(
+    (state: RootState) => state.candidates.candidates[partyId]
+  );
+
+  const isSingleCandidate = partyCandidates && partyCandidates.length === 1;
 
   return (
     <Paper
@@ -339,7 +346,15 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
           />
         </Box>
         <Box sx={{ display: "flex", alignItems: "right", height: "24px" }}>
-          <Typography variant="body2" sx={{ flexGrow: 1, textAlign: "right" }}>
+          <Typography
+            variant="body2"
+            sx={{
+              flexGrow: 1,
+              textAlign: "right",
+              fontStyle: isSingleCandidate ? "italic" : "none",
+              color: isSingleCandidate ? "#c0c0c0" : "inherit",
+            }}
+          >
             Party
           </Typography>
           <PopularitySlider
@@ -347,6 +362,7 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
             onChange={(event, newValue) =>
               handlePopularityChange(event, newValue, "inPartyPopularity")
             }
+            disabled={isSingleCandidate}
           />
         </Box>
       </Box>

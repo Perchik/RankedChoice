@@ -80,7 +80,6 @@ const CandidateManager: React.FC = () => {
       {partyList.map((party: PartyState) => {
         const partyName = parties[party.id].name;
         const firstChar = partyName.charAt(0);
-        const restOfName = partyName.slice(1);
 
         return (
           <Accordion
@@ -94,7 +93,7 @@ const CandidateManager: React.FC = () => {
                 variant="h6"
                 sx={{ color: parties[party.id].fontColor }}
               >
-                [{firstChar}]{restOfName} Party
+                {partyName} Party [{firstChar}]
               </Typography>
             </AccordionSummary>
             <AccordionDetails sx={{ backgroundColor: "background.paper" }}>

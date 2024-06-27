@@ -14,12 +14,12 @@ import "@fontsource/lexend";
 import "@fontsource/manrope";
 
 import ElectionSetupStepper from "./components/SetupWizard/SetupWizard";
-import EditBody from "./pages/EditBody";
+import Headshots from "./pages/Headshots";
 import Glossary from "./pages/Glossary";
 import logo from "./assets/logo.svg";
 
 import "./App.css";
-import HeadshotList from "./components/Headshot/HeadshotList";
+import PartyGraphPage from "./pages/PartyGraph";
 
 const App: React.FC = () => {
   return (
@@ -40,11 +40,11 @@ const App: React.FC = () => {
           <Button color="inherit" component={Link} to="/setup">
             Setup Election
           </Button>
-          <Button color="inherit" component={Link} to="/edit-body">
-            Edit Body SVG
-          </Button>
           <Button color="inherit" component={Link} to="/headshots">
-            View Headshots
+            Headshots
+          </Button>
+          <Button color="inherit" component={Link} to="/oldparties">
+            Parties
           </Button>
           <Button color="inherit" component={Link} to="/glossary">
             Glossary
@@ -54,9 +54,9 @@ const App: React.FC = () => {
       <Box>
         <Routes>
           <Route path="/setup" element={<ElectionSetupStepper />} />
-          <Route path="/edit-body" element={<EditBody />} />
+          <Route path="/headshots" element={<Headshots />} />
           <Route path="/glossary" element={<Glossary />} />
-          <Route path="/headshots" element={<HeadshotList />} />
+          <Route path="/oldparties" element={<PartyGraphPage />} />
         </Routes>
       </Box>
     </Router>

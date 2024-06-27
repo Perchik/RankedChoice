@@ -51,8 +51,8 @@ export class Candidate {
       const { title, firstName, lastName } = await fetchRandomName();
       const fullName = this.generateFullName(title, firstName, lastName);
       const shortName = this.generateShortName(partyId, lastName);
-      const popularity = getRandomInt(0, 3);
-      const inPartyPopularity = getRandomInt(0, 3);
+      const popularity = getRandomInt(1, 5);
+      const inPartyPopularity = getRandomInt(1, 5);
       const partyColor = partyColors[partyId];
       const personalColor = getRandomElement(partyAlternateColors[partyId]);
       const id = candidateCounter++;

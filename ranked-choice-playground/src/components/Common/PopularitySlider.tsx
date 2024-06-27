@@ -40,7 +40,7 @@ const PopularitySlider: React.FC<PopularitySliderProps> = ({
 
   const handleIncrease = (event: React.MouseEvent<SVGSVGElement>) => {
     event.stopPropagation();
-    if (!disabled && value < 3) {
+    if (!disabled && value < 5) {
       onChange(event as any, value + 1);
     }
   };

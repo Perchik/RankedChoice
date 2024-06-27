@@ -66,7 +66,7 @@ const PopularitySlider: React.FC<PopularitySliderProps> = ({
             onChange(event, newValue);
           }
         }}
-        max={3}
+        max={5}
         icon={<AccountCircleIcon fontSize="inherit" />}
         emptyIcon={<AccountCircleOutlinedIcon fontSize="inherit" />}
         readOnly={disabled}

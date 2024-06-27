@@ -310,8 +310,8 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
             </Tooltip>
           </Box>
           <Tooltip title="Delete Candidate">
-            <IconButton size="medium" onClick={handleDelete}>
-              <DeleteIcon fontSize="medium" />
+            <IconButton size="small" onClick={handleDelete}>
+              <DeleteIcon fontSize="inherit" />
             </IconButton>
           </Tooltip>
         </Box>

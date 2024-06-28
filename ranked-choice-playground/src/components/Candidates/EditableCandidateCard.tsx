@@ -24,6 +24,7 @@ import RandomHeadshot, {
   RandomHeadshotProps,
 } from "../Headshot/RandomHeadshot";
 import { RootState } from "../../store";
+import { useTheme } from "@mui/material/styles";
 
 interface EditableCandidateCardProps {
   partyId: string;
@@ -71,6 +72,7 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
     candidate.partyColor,
     candidate.personalColor
   );
+  const theme = useTheme();
 
   const headshotRef = useRef<RandomHeadshotHandle>(null);
 
@@ -141,8 +143,6 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
     onDelete();
   };
 
-  const partyName = parties[partyId].name;
-
   const randomHeadshotProps: RandomHeadshotProps = {
     accessoryColor: candidateInstance.partyColor,
   };
@@ -170,7 +170,9 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
   );
 
   const isSingleCandidate = partyCandidates && partyCandidates.length === 1;
-
+  const contrastColor = theme.palette.getContrastText(
+    candidateInstance.personalColor
+  );
   return (
     <Paper
       elevation={6}
@@ -184,8 +186,23 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
         borderRadius: 1,
         gap: 1,
         p: 1,
+        position: "relative",
       }}
     >
+      {/* Draw a solid colored stripe on the background */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "50px",
+          width: "100%",
+          display: "block",
+          backgroundColor: candidateInstance.personalColor,
+          zIndex: 0,
+        }}
+      />
       <PhotoCard>
         <RandomHeadshot ref={headshotRef} {...randomHeadshotProps} />
         <Tooltip
@@ -271,6 +288,9 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            color: contrastColor,
+            zIndex: 1,
+            mt: "2px",
           }}
         >
           <Box
@@ -304,67 +324,94 @@ const EditableCandidateCard: React.FC<EditableCandidateCardProps> = ({
                 ],
               }}
             >
-              <Typography variant="h6" sx={{ fontSize: 18 }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontSize: 18,
+                }}
+              >
                 {candidateInstance.fullName}
               </Typography>
             </Tooltip>
           </Box>
           <Tooltip title="Delete Candidate">
-            <IconButton size="small" onClick={handleDelete}>
+            <IconButton
+              size="small"
+              onClick={handleDelete}
+              sx={{
+                color: contrastColor,
+              }}
+            >
               <DeleteIcon fontSize="inherit" />
             </IconButton>
           </Tooltip>
         </Box>
         <Box
           sx={{
-            display: "flex",
             flexGrow: "1",
-            alignItems: "start",
+            flexDirection: "column",
+            px: 0.5,
+            ml: "1px",
+            mt: 2,
+            display: "flex",
           }}
         >
+          <Typography
+            variant="body1"
+            fontWeight={"bold"}
+            sx={{ marginTop: "auto" }}
+          >
+            Popularity
+          </Typography>
           <Box
             sx={{
-              backgroundColor: candidateInstance.partyColor,
-              width: 16,
-              height: 16,
-              marginRight: 1,
-            }}
-          ></Box>
-          <Typography variant="subtitle2">{partyName} Party</Typography>
-        </Box>
-        <Typography variant="body1" fontWeight={"bold"}>
-          Popularity
-        </Typography>
-        <Box sx={{ display: "flex", alignItems: "right", height: "24px" }}>
-          <Typography variant="body2" sx={{ flexGrow: 1, textAlign: "right" }}>
-            Overall
-          </Typography>
-          <PopularitySlider
-            value={candidateInstance.popularity}
-            onChange={(event, newValue) =>
-              handlePopularityChange(event, newValue, "popularity")
-            }
-          />
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "right", height: "24px" }}>
-          <Typography
-            variant="body2"
-            sx={{
-              flexGrow: 1,
-              textAlign: "right",
-              fontStyle: isSingleCandidate ? "italic" : "none",
-              color: isSingleCandidate ? "#c0c0c0" : "inherit",
+              width: "100%",
+              display: "flex",
+              alignItems: "right",
+              height: "24px",
+              mt: .5,
             }}
           >
-            Party
-          </Typography>
-          <PopularitySlider
-            value={candidateInstance.inPartyPopularity}
-            onChange={(event, newValue) =>
-              handlePopularityChange(event, newValue, "inPartyPopularity")
-            }
-            disabled={isSingleCandidate}
-          />
+            <Typography
+              variant="body2"
+              sx={{ flexGrow: 1, textAlign: "right" }}
+            >
+              Overall
+            </Typography>
+            <PopularitySlider
+              value={candidateInstance.popularity}
+              onChange={(event, newValue) =>
+                handlePopularityChange(event, newValue, "popularity")
+              }
+            />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "right",
+              width: "100%",
+              height: "24px",
+            }}
+          >
+            <Typography
+              variant="body2"
+              sx={{
+                flexGrow: 1,
+                textAlign: "right",
+                fontStyle: isSingleCandidate ? "italic" : "none",
+                color: isSingleCandidate ? "#c0c0c0" : "inherit",
+              }}
+            >
+              Party
+            </Typography>
+            <PopularitySlider
+              value={candidateInstance.inPartyPopularity}
+              onChange={(event, newValue) =>
+                handlePopularityChange(event, newValue, "inPartyPopularity")
+              }
+              disabled={isSingleCandidate}
+            />
+          </Box>
         </Box>
       </Box>
     </Paper>

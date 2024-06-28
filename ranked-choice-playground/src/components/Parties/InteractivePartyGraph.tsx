@@ -24,6 +24,7 @@ import cytoscapeStylesheet from "./cytoscapeStylesheet";
 import { addInteractionToStore } from "../../utils/partyUtils";
 import { RootState } from "../../store";
 import { PartyStatus } from "../../models/Party";
+import { useTheme } from "@mui/material/styles";
 
 Cytoscape.use(fcose);
 Cytoscape.use(gridGuide as any);
@@ -49,6 +50,7 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
   const [isOpposition, setIsOpposition] = useState<boolean>(false);
   const [weight, setWeight] = useState<number>(0.5);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const theme = useTheme();
 
   const layoutOptions = useCallback(
     () => ({
@@ -75,7 +77,7 @@ const InteractivePartyGraph: React.FC<InteractivePartyGraphProps> = ({
                 : party.status === PartyStatus.Minor
                   ? 40
                   : 20,
-            fontColor: party.fontColor,
+            fontColor: theme.palette.getContrastText(party.color),
             fontSize:
               party.status === PartyStatus.Major
                 ? 20

@@ -17,7 +17,6 @@ export const addPartyToStore = (id: string, status: PartyStatus) => {
       id,
       name: data.name,
       color: data.color,
-      fontColor: data.fontColor,
       status,
       interactions: {},
       candidates: [],

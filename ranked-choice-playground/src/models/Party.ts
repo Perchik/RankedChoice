@@ -17,7 +17,6 @@ export interface PartyState {
   id: string;
   name: string;
   color: string;
-  fontColor: string;
   status: PartyStatus;
   candidates: Candidate[];
   interactions: { [key: string]: PartyInteraction };

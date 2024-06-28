@@ -34,7 +34,6 @@ const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
     const [isResetting, setIsResetting] = useState<boolean>(false);
     const spinningTextRef = useRef<HTMLDivElement>(null);
     const generatedWordRef = useRef<string | null>(null);
-    const theme = useTheme();
     const textRef = useRef<HTMLDivElement>(null);
     const [wordHeight, setWordHeight] = useState<number>(2); // default height
 
@@ -82,7 +81,7 @@ const WordSpinner = forwardRef<{ startSpinning: () => void }, WordSpinnerProps>(
     const startSpinning = () => {
       const randomIndex = Math.floor(Math.random() * words.length);
       const newFinalIndex = randomIndex + words.length; // We loop through once before settling on a random entry, so we add words.length here.
-      const newAnimationDuration = 2 + Math.random() * 2; // total duration 2-4s. Randomized to prevent multiple spinners from running in sync.
+      const newAnimationDuration = 1 + Math.random() * 2; // total duration 1-3s. Randomized to prevent multiple spinners from running in sync.
 
       setFinalIndex(newFinalIndex);
       setAnimationDuration(newAnimationDuration);

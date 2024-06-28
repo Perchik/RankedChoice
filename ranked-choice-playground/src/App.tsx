@@ -13,7 +13,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import "@fontsource/lexend";
 import "@fontsource/manrope";
 
-import ElectionSetupStepper from "./components/SetupWizard/SetupWizard";
+import SetupWizard from "./components/SetupWizard/SetupWizard";
 import Headshots from "./pages/Headshots";
 import Glossary from "./pages/Glossary";
 import logo from "./assets/logo.svg";
@@ -53,7 +53,7 @@ const App: React.FC = () => {
       </AppBar>
       <Box>
         <Routes>
-          <Route path="/setup" element={<ElectionSetupStepper />} />
+          <Route path="/setup" element={<SetupWizard />} />
           <Route path="/headshots" element={<Headshots />} />
           <Route path="/glossary" element={<Glossary />} />
           <Route path="/oldparties" element={<PartyGraphPage />} />

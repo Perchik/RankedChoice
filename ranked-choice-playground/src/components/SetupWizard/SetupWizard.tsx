@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-
 import {
   Box,
   Button,
@@ -11,13 +10,19 @@ import {
   Stepper,
   Typography,
   useTheme,
+  useMediaQuery,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import SetupElectionDetails from "./SetupElectionDetails";
 import SetupSummary from "./SetupSummaryCard";
 import SetupPoliticalParties from "./SetupPoliticalParties";
 import { RootState } from "../../store";
 import CandidateManager from "../Candidates/CandidateManager";
+
 const steps = [
   "Setup Election",
   "Select Political Parties",
@@ -42,6 +47,7 @@ function getStepContent(stepIndex: number, handleNext: () => void) {
 
 const ElectionSetupStepper = () => {
   const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [activeStep, setActiveStep] = useState(0);
 
   const electionTitle = useSelector((state: RootState) => state.election.title);
@@ -73,8 +79,32 @@ const ElectionSetupStepper = () => {
   };
 
   return (
-    <>
-      <Grid container spacing={2} sx={{ mt: 0, px: 2 }}>
+    <Grid container spacing={2} sx={{ mt: 0, px: 2 }}>
+      {isSmallScreen ? (
+        <>
+          <Grid item xs={12}>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography>Election Summary</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <SetupSummary />
+              </AccordionDetails>
+            </Accordion>
+            <Stepper activeStep={activeStep} sx={{ p: 2 }}>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Grid>
+        </>
+      ) : (
         <Grid item xs={2}>
           <SetupSummary />
           <Stepper
@@ -98,52 +128,52 @@ const ElectionSetupStepper = () => {
             ))}
           </Stepper>
         </Grid>
-        <Grid item xs={10}>
-          <Paper sx={{ p: 2, m: 0 }}>
-            {activeStep === steps.length ? (
-              <Box sx={{ mt: 2 }}>
-                <Typography>
-                  All steps completed - you&apos;re finished
-                </Typography>
+      )}
+      <Grid item xs={isSmallScreen ? 12 : 10}>
+        <Paper sx={{ p: 2, m: 0 }}>
+          {activeStep === steps.length ? (
+            <Box sx={{ mt: 2 }}>
+              <Typography>
+                All steps completed - you&apos;re finished
+              </Typography>
+              <Button
+                onClick={handleReset}
+                sx={{ color: theme.palette.secondary.main }}
+              >
+                Reset
+              </Button>
+            </Box>
+          ) : (
+            <Box sx={{ mt: 2 }}>
+              {getStepContent(activeStep, handleNext)}
+              <Box
+                sx={{
+                  mt: 2,
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
                 <Button
-                  onClick={handleReset}
-                  sx={{ color: theme.palette.secondary.main }}
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  sx={{ mr: 1, color: theme.palette.secondary.main }}
                 >
-                  Reset
+                  Back
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleNext}
+                  disabled={!isFormComplete}
+                  color="secondary"
+                >
+                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
                 </Button>
               </Box>
-            ) : (
-              <Box sx={{ mt: 2 }}>
-                {getStepContent(activeStep, handleNext)}
-                <Box
-                  sx={{
-                    mt: 2,
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Button
-                    disabled={activeStep === 0}
-                    onClick={handleBack}
-                    sx={{ mr: 1, color: theme.palette.secondary.main }}
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    variant="contained"
-                    onClick={handleNext}
-                    disabled={!isFormComplete}
-                    color="secondary"
-                  >
-                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                  </Button>
-                </Box>
-              </Box>
-            )}
-          </Paper>
-        </Grid>
+            </Box>
+          )}
+        </Paper>
       </Grid>
-    </>
+    </Grid>
   );
 };
 

@@ -1,3 +1,40 @@
-.carousel-item {
-  margin-right: 20px;
+.preset-container {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 16px 0;
+  scrollbar-width: none; /* Firefox */
+}
+
+.preset-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.scroll-fab {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.scroll-fab.left {
+  left: 8px;
+}
+
+.scroll-fab.right {
+  right: 8px;
+}
+
+@media (max-width: 600px) {
+  .preset-container {
+    display: flex;
+    flex-direction: column;
+    overflow-x: visible;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  .scroll-fab {
+    display: none;
+  }
 }

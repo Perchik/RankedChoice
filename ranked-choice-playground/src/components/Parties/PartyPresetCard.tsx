@@ -11,7 +11,7 @@ import {
   Modal,
   IconButton,
 } from "@mui/material";
-import { styled, keyframes } from "@mui/system";
+import { styled, keyframes, Theme, useTheme } from "@mui/material/styles";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
 import { PartyPreset } from "../../models/PartyPreset";
@@ -31,13 +31,11 @@ const StyledCard = styled(Card, {
 })<{ selected: boolean }>(({ theme, selected }) => ({
   border: selected
     ? `2px solid ${theme.palette.primary.main}`
-    : "1px solid grey",
+    : `1px solid ${theme.palette.divider}`,
   backgroundColor: selected
     ? palette.primary[50]
     : theme.palette.background.paper,
-  boxShadow: selected
-    ? "rgba(0, 0, 0, 0.2) 0px 2px 1px -1px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px"
-    : "none",
+  boxShadow: selected ? theme.shadows[4] : theme.shadows[1],
   transition: "background-color 0.3s, border 0.3s, box-shadow 0.3s",
   "&:hover": {
     backgroundColor: selected
@@ -50,6 +48,8 @@ const StyledCard = styled(Card, {
   position: "relative",
   animation: selected ? `${scaleUp} 0.3s ease-in-out forwards` : "none",
   transformOrigin: "center",
+  display: "flex", // Added
+  flexDirection: "column", // Added
 }));
 
 interface PartyPresetCardProps {
@@ -87,7 +87,7 @@ const PartyPresetCard = forwardRef<HTMLDivElement, PartyPresetCardProps>(
     return (
       <Box
         ref={ref}
-        sx={{ p: 2, boxSizing: "border-box", width: "100$" }}
+        sx={{ py: 2, px: 1, boxSizing: "border-box", width: "100%" }}
         onClick={onClick}
       >
         <StyledCard selected={selected}>
@@ -146,8 +146,8 @@ const PartyPresetCard = forwardRef<HTMLDivElement, PartyPresetCardProps>(
                 width: "40px",
                 right: 8,
                 padding: 0,
-                backgroundColor: "white", // Set the background color
-                borderRadius: "50%", // To make the background color a circle
+                backgroundColor: "white",
+                borderRadius: "50%",
               }}
             >
               <CheckCircleIcon

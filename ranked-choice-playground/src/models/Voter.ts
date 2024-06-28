@@ -1,11 +1,11 @@
 export class Voter {
   preferredParty: string;
-  preferences: { [candidateName: string]: number };
+  preferences: { [candidate:string]: number };
   civicMindedness: number; // This will determine how much of the ballot the voter will fill out.
  
   constructor(
     preferredParty: string,
-    preferences: { [candidateName: string]: number },
+    preferences: { [candidate: string]: number },
     civicMindedness: number
   ) {
     this.preferredParty = preferredParty;

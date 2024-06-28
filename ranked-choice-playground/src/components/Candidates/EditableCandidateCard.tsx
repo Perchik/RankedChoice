@@ -18,7 +18,6 @@ import {
   updateCandidate,
   updateCandidateName,
 } from "../../slices/candidatesSlice";
-import { parties } from "../../constants/PartyData";
 import RandomHeadshot, {
   RandomHeadshotHandle,
   RandomHeadshotProps,
